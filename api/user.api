@@ -1,0 +1,16 @@
+syntax = "v1"
+
+type (
+    PhoneNumberLoginReq {
+        PhoneNumber string `json:"phoneNumber"`
+    }
+
+    PhoneNumberLoginRep {
+        Token string `json:"token"`
+    }
+)
+
+service carservice {
+    @handler PhoneNumberLogin
+    post /user/login/phoneNumber (PhoneNumberLoginReq) returns (PhoneNumberLoginRep)
+}

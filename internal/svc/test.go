@@ -1,3 +1,0 @@
-package svc
-
-func TestNew

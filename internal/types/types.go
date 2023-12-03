@@ -3,6 +3,7 @@ package types
 
 type PhoneNumberLoginReq struct {
 	PhoneNumber string `json:"phoneNumber"`
+	Captcha     string `json:"captcha"`
 }
 
 type PhoneNumberLoginRep struct {

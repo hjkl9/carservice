@@ -1,11 +1,12 @@
-package handler
+package user
 
 import (
 	"net/http"
 
-	"carservice/internal/logic"
+	"carservice/internal/logic/user"
 	"carservice/internal/svc"
 	"carservice/internal/types"
+
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
@@ -17,7 +18,7 @@ func PhoneNumberLoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewPhoneNumberLoginLogic(r.Context(), svcCtx)
+		l := user.NewPhoneNumberLoginLogic(r.Context(), svcCtx)
 		resp, err := l.PhoneNumberLogin(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)

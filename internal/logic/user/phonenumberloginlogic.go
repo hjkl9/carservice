@@ -1,4 +1,4 @@
-package logic
+package user
 
 import (
 	"context"
@@ -25,6 +25,5 @@ func NewPhoneNumberLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq) (resp *types.PhoneNumberLoginRep, err error) {
 	// todo: add your logic here and delete this line
-
 	return
 }

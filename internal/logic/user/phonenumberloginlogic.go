@@ -2,7 +2,9 @@ package user
 
 import (
 	"context"
+	"errors"
 
+	"carservice/internal/pkg/sms"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -25,5 +27,9 @@ func NewPhoneNumberLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq) (resp *types.PhoneNumberLoginRep, err error) {
 	// todo: add your logic here and delete this line
+	if !sms.CheckPhoneNumber(req.PhoneNumber) {
+		return nil, errors.New("invalid \"phoneNumber\"")
+	}
+	
 	return
 }

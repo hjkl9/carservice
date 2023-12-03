@@ -2,7 +2,11 @@ module carservice
 
 go 1.21.4
 
-require github.com/zeromicro/go-zero v1.6.0
+require (
+	github.com/go-sql-driver/mysql v1.7.1
+	github.com/jmoiron/sqlx v1.3.5
+	github.com/zeromicro/go-zero v1.6.0
+)
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect

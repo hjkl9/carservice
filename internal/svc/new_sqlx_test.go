@@ -7,10 +7,13 @@ import (
 )
 
 func TestNewSqlx(t *testing.T) {
-	dbc := NewSqlx(config.MysqlConf{
-		Driver: "mysql",
-		Source: "root:@tcp(127.0.0.1:3306)/carservicedb",
-	})
+	c := config.Config{
+		MysqlConf: config.MysqlConf{
+			Driver: "mysql",
+			Source: "root:@tcp(127.0.0.1:3306)/carservicedb",
+		},
+	}
+	dbc := NewSqlx(c)
 	rows, err := dbc.Query("SELECT 1")
 	if err != nil {
 		t.Errorf("数据库查询数据时发生了错误, err: %s\n", err.Error())

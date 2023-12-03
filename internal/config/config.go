@@ -10,6 +10,9 @@ type Config struct {
 	rest.RestConf
 	MysqlConf MysqlConf
 	RedisConf RedisConf
+
+	JwtConf JwtConf
+	SmsConf SmsConf
 }
 
 type MysqlConf struct {
@@ -19,11 +22,21 @@ type MysqlConf struct {
 
 type RedisConf struct {
 	Addr        string
-	Type        string `json:",default=node,options=node|cluster"`
 	DB          int
 	Requirepass string `json:",optional"`
-	Tls         bool   `json:",optional"`
-	NonBlock    bool   `json:",default=true"`
 	// PingTimeout is the timeout for ping redis.
 	PingTimeout time.Duration `json:",default=1s"`
+}
+
+type JwtConf struct {
+	SecretKey string
+	Expire    int `json:",optional"`
+}
+
+type SmsConf struct {
+	SecretId   string
+	SecretKey  string
+	SdkAppId   string
+	SignName   string
+	TemplateId string
 }

@@ -1,0 +1,17 @@
+syntax = "v1"
+
+type (
+    SendCaptchaReq {
+        PhoneNumber string `form:"phoneNumber"`
+    }
+
+    SendCaptchaRep {}
+)
+
+@server (
+    group: sms
+)
+service carservice {
+    @handler SendCaptcha
+    get /common/sms/sendCaptcha (SendCaptchaReq) returns (SendCaptchaRep)
+}

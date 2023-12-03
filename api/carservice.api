@@ -1,3 +1,4 @@
 syntax = "v1"
 
+import "sms.api"
 import "user.api"

@@ -12,9 +12,7 @@ type (
 )
 
 @server (
-    // 代表当前 service 代码块下的路由生成代码时都会被放到 login 目录下
     group: user
-    // 定义路由前缀为 "/v1"
     prefix: /v1
 )
 service carservice {

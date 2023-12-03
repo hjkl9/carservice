@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	sms "carservice/internal/handler/sms"
 	user "carservice/internal/handler/user"
 	"carservice/internal/svc"
 
@@ -11,6 +12,16 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/common/sms/sendCaptcha",
+				Handler: sms.SendCaptchaHandler(serverCtx),
+			},
+		},
+	)
+
 	server.AddRoutes(
 		[]rest.Route{
 			{

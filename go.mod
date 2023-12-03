@@ -4,9 +4,13 @@ go 1.21.4
 
 require (
 	github.com/go-sql-driver/mysql v1.7.1
+	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/redis/go-redis/v9 v9.3.0
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.808
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.808
 	github.com/zeromicro/go-zero v1.6.0
+	github.com/zeromicro/x v0.0.0-20230424055333-01c7fb9548d4
 )
 
 require (

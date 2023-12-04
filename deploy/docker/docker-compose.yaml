@@ -18,7 +18,7 @@ services:
   mysql:
     image: mysql:8
     env_file:
-      - ./deploy/docker/.env
+      - .env
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
       MYSQL_USER: ${MYSQL_USER}

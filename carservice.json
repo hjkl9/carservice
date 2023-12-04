@@ -53,6 +53,15 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "httpCode",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
         "requestBody": {},
         "tags": [
           "carservice"
@@ -119,11 +128,28 @@
     },
     "PingRep": {
       "type": "object",
-      "title": "PingRep"
+      "properties": {
+        "result": {
+          "type": "string"
+        }
+      },
+      "title": "PingRep",
+      "required": [
+        "result"
+      ]
     },
     "PingReq": {
       "type": "object",
-      "title": "PingReq"
+      "properties": {
+        "httpCode": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "PingReq",
+      "required": [
+        "httpCode"
+      ]
     },
     "SendCaptchaRep": {
       "type": "object",

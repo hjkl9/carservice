@@ -11,3 +11,10 @@ LOCALUSR = "root"
 LOCALPWR = ""
 migratelocal:
 	migrate -database 'mysql://$(LOCALUSR):$(LOCALPWD)@$(LOCALADDR)/carservice?sslmode=disable' -path ./migrations up 1
+
+# deployment related.
+APP_NAME=carservice
+deploy:
+	git pull
+	docker build . -t ${APP_NAME}
+	docker run -d --name ${APP_NAME} -p 8888:8888 ${APP_NAME}

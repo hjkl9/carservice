@@ -1,0 +1,158 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/common/sms/sendCaptcha": {
+      "get": {
+        "summary": "send captcha for mobile phone number login.",
+        "operationId": "SendCaptcha",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/SendCaptchaRep"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "sms"
+        ]
+      }
+    },
+    "/ping": {
+      "get": {
+        "summary": "check server status.",
+        "operationId": "Ping",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/PingRep"
+            }
+          }
+        },
+        "requestBody": {},
+        "tags": [
+          "carservice"
+        ]
+      }
+    },
+    "/v1/user/login/phoneNumber": {
+      "post": {
+        "summary": "mobile phone number login.",
+        "operationId": "PhoneNumberLogin",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/PhoneNumberLoginRep"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PhoneNumberLoginReq"
+            }
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "user"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "PhoneNumberLoginRep": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "title": "PhoneNumberLoginRep",
+      "required": [
+        "token"
+      ]
+    },
+    "PhoneNumberLoginReq": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": {
+          "type": "string"
+        },
+        "captcha": {
+          "type": "string"
+        }
+      },
+      "title": "PhoneNumberLoginReq",
+      "required": [
+        "phoneNumber",
+        "captcha"
+      ]
+    },
+    "PingRep": {
+      "type": "object",
+      "title": "PingRep"
+    },
+    "PingReq": {
+      "type": "object",
+      "title": "PingReq"
+    },
+    "SendCaptchaRep": {
+      "type": "object",
+      "title": "SendCaptchaRep"
+    },
+    "SendCaptchaReq": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": {
+          "type": "string"
+        }
+      },
+      "title": "SendCaptchaReq",
+      "required": [
+        "phoneNumber"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "description": "Enter JWT Bearer token **_only_**",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ]
+}

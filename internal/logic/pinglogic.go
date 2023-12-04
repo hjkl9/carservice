@@ -28,5 +28,18 @@ func NewPingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PingLogic {
 }
 
 func (l *PingLogic) Ping(req *types.PingReq) (resp *types.PingRep, err error) {
-	return nil, errcode.New(http.StatusInternalServerError, "1234", "莫名其妙")
+	switch req.HttpCode {
+	case http.StatusOK:
+		return &types.PingRep{
+			Result: "请求成功",
+		}, errcode.New(http.StatusOK, "嘻嘻嘻", "OK")
+	case http.StatusInternalServerError:
+		return &types.PingRep{}, errcode.New(http.StatusInternalServerError, "呜呜呜", "No ok")
+	case http.StatusBadRequest:
+		return &types.PingRep{}, errcode.New(http.StatusInternalServerError, "呜呜呜", "No ok")
+	default:
+		return &types.PingRep{
+			Result: "",
+		}, errcode.New(http.StatusAccepted, "请求已接受", "莫名其妙")
+	}
 }

@@ -11,8 +11,12 @@ info(
 )
 
 type (
-	PingReq struct{}
-	PingRep struct{}
+	PingReq {
+		HttpCode int `form:"httpCode, default=200"`
+	}
+	PingRep {
+		Result string `json:"result"`
+	}
 )
 
 service carservice {

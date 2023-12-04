@@ -2,9 +2,11 @@
 package types
 
 type PingReq struct {
+	HttpCode int `form:"httpCode, default=200"`
 }
 
 type PingRep struct {
+	Result string `json:"result"`
 }
 
 type SendCaptchaReq struct {

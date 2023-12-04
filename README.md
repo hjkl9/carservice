@@ -16,6 +16,8 @@
 
 ## Create migration file
 ```migrate create -ext sql -dir ./migrations -seq create_xxx(s)_table```
+## Execute migration
+```migrate -database 'mysql://user:password@127.0.0.1:3306/carservice?sslmode=disable' -path ./migrations up 1```
 
 ## Swagger CLI
 1. Install go cli: ```go install github.com/zeromicro/goctl-swagger@latest```

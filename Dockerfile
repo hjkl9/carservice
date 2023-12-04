@@ -1,3 +1,5 @@
+# todo: should move to deploy/docker.
+
 FROM golang:alpine AS builder
 
 LABEL stage=gobuilder

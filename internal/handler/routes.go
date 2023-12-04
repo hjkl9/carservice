@@ -16,6 +16,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
+				Path:    "/ping",
+				Handler: PingHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
 				Path:    "/common/sms/sendCaptcha",
 				Handler: sms.SendCaptchaHandler(serverCtx),
 			},

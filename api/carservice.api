@@ -2,3 +2,13 @@ syntax = "v1"
 
 import "sms.api"
 import "user.api"
+
+type (
+	PingReq struct{}
+	PingRep struct{}
+)
+
+service carservice {
+	@handler Ping
+	get /ping (PingReq) returns (PingRep)
+}

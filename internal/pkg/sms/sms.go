@@ -2,7 +2,7 @@ package sms
 
 import (
 	"carservice/internal/config"
-	"fmt"
+	stderrors "errors"
 
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
@@ -53,7 +53,6 @@ func (s *Sms) Send(templateIdSet []string, templateSet []string, phoneNumberSet 
 	} else {
 		request.TemplateId = common.StringPtr(s.config.SmsConf.TemplateId)
 	}
-	fmt.Printf("%#v\n", templateSet)
 	request.TemplateParamSet = common.StringPtrs(templateSet)
 	request.PhoneNumberSet = common.StringPtrs(phoneNumberSet)
 
@@ -63,7 +62,10 @@ func (s *Sms) Send(templateIdSet []string, templateSet []string, phoneNumberSet 
 		// logger.Debugw("TencentCloudSDKError", err.Error())
 		return err
 	}
-	fmt.Printf("%#v\n", resp.ToJsonString())
+	// ? is a `insufficient balance in SMS package` an error?
+	if err = s.checkSendSmsStatus(resp); err != nil {
+		return err
+	}
 	// 非 SDK 异常而直接失败
 	// 当出现以下错误码时，快速解决方案参考
 	// [FailedOperation.SignatureIncorrectOrUnapproved](https://cloud.tencent.com/document/product/382/9558#.E7.9F.AD.E4.BF.A1.E5.8F.91.E9.80.81.E6.8F.90.E7.A4.BA.EF.BC.9Afailedoperation.signatureincorrectorunapproved-.E5.A6.82.E4.BD.95.E5.A4.84.E7.90.86.EF.BC.9F)
@@ -81,5 +83,14 @@ func (s *Sms) Send(templateIdSet []string, templateSet []string, phoneNumberSet 
 	// 	}
 	// }
 
+	return nil
+}
+
+func (s *Sms) checkSendSmsStatus(resp *sms.SendSmsResponse) error {
+	statusSet := resp.Response.SendStatusSet
+	// get first.
+	if len(statusSet) > 0 {
+		return stderrors.New(*statusSet[0].Message)
+	}
 	return nil
 }

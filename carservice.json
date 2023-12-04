@@ -4,6 +4,8 @@
     "title": "",
     "version": ""
   },
+  "host": "127.0.0.1",
+  "basePath": "/api",
   "schemes": [
     "http",
     "https"

@@ -15,5 +15,7 @@
 4. ```$ apt-get install -y migrate```
 
 ## Swagger CLI
-```go install github.com/zeromicro/goctl-swagger@latest```
-Run generation: ```goctl api plugin -plugin goctl-swagger="swagger -filename user.json" -api user.api -dir .```
+Install go cli: ```go install github.com/zeromicro/goctl-swagger@latest```
+Run generation 1: ```goctl api plugin -plugin goctl-swagger="swagger -filename carservice.json" -api api/carservice.api -dir .```
+Run generation 2: ```goctl api plugin -plugin goctl-swagger="swagger -filename carservice.json -host 127.0.0.1 -basepath /api" -api api/carservice.api -dir .```
+**On server** just using docker(No test): ```docker run --rm -p 8083:8080 -e SWAGGER_JSON=carservice.json -v $PWD:/ swaggerapi/swagger-ui```

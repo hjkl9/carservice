@@ -29,7 +29,7 @@ services:
       MYSQL_COLLATION: utf8mb4_general_ci
     volumes:
       - /datastore/docker/mysql/data:/var/lib/mysql
-      - /datastore/docker/mysql/conf/my.cnf:/etc/my.cnf
+      # - /datastore/docker/mysql/conf/my.cnf:/etc/my.cnf
       - /datastore/docker/mysql/init:/docker-entrypoint-initdb.d
     ports:
       - '3306:3306'

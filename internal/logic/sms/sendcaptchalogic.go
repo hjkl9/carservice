@@ -3,13 +3,19 @@ package sms
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"carservice/internal/pkg/constant"
+	smsutil "carservice/internal/pkg/sms"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/x/errors"
+)
+
+const (
+	captchaExpire = 10
 )
 
 type SendCaptchaLogic struct {
@@ -27,7 +33,6 @@ func NewSendCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendC
 }
 
 func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.SendCaptchaRep, err error) {
-	// todo: add your logic here and delete this line
 	key := req.PhoneNumber + constant.SmsCaptchaPrefix
 	cmd := l.svcCtx.RDBC.Exists(l.ctx, key)
 	n, err := cmd.Result()
@@ -38,9 +43,21 @@ func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.S
 	if n != 1 {
 		return nil, errors.New(http.StatusBadRequest, "不能重复发送验证码")
 	}
-	// todo: send sms logic.
-	// sms := smsutil.NewSms(l.svcCtx.Config)
-	// sms.Send()
+	// send sms logic.
+	smsutil := smsutil.NewSms(l.svcCtx.Config)
+	templateIdSet := []string{"1713784"}
+	templateSet := []string{"123456", string(captchaExpire)}
+	phoneNumberSet := []string{req.PhoneNumber}
+	err = smsutil.Send(templateIdSet, templateSet, phoneNumberSet)
+	if err != nil {
+		return nil, errors.New(http.StatusInternalServerError, "发送短信时出现错误")
+	}
+	// set CAPTCHA in the rdb when sending was successfully.
+	setCmd := l.svcCtx.RDBC.Set(l.ctx, key, req.PhoneNumber, captchaExpire*time.Minute)
+	if setCmd.Err() != nil {
+		return nil, errors.New(http.StatusInternalServerError, "Redis 数据库创建数据时出现错误")
+	}
+
 	resp = &types.SendCaptchaRep{}
 	return resp, errors.New(http.StatusOK, "It's ok.")
 }

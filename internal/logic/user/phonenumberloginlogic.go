@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"carservice/internal/datatypes/user"
+	"carservice/internal/pkg/constant"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
@@ -29,29 +30,29 @@ func NewPhoneNumberLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq) (resp *types.PhoneNumberLoginRep, err error) {
-	// key := constant.SmsCaptchaPrefix + req.PhoneNumber
-	// // Check if the phone number is in the cache.
-	// cmd := l.svcCtx.RDBC.Exists(l.ctx, key)
-	// exists, err := cmd.Result()
-	// if err != nil {
-	// 	return nil, errors.New(http.StatusInternalServerError, "Redis 数据库查询数据时出现错误")
-	// }
-	// if exists == 0 {
-	// 	return nil, errors.New(http.StatusBadRequest, "你还未发送短信")
-	// }
-	// // If the phone number exists.
-	// captcha, err := l.svcCtx.RDBC.Get(l.ctx, key).Result()
-	// if err != nil {
-	// 	return nil, errors.New(http.StatusInternalServerError, "Redis 数据库查询数据时出现错误")
-	// }
+	key := constant.SmsCaptchaPrefix + req.PhoneNumber
+	// Check if the phone number is in the cache.
+	cmd := l.svcCtx.RDBC.Exists(l.ctx, key)
+	exists, err := cmd.Result()
+	if err != nil {
+		return nil, errors.New(http.StatusInternalServerError, "Redis 数据库查询数据时出现错误")
+	}
+	if exists == 0 {
+		return nil, errors.New(http.StatusBadRequest, "你还未发送短信")
+	}
+	// If the phone number exists.
+	captcha, err := l.svcCtx.RDBC.Get(l.ctx, key).Result()
+	if err != nil {
+		return nil, errors.New(http.StatusInternalServerError, "Redis 数据库查询数据时出现错误")
+	}
 	// Check if the captcha is correct.
-	// if captcha != req.Captcha {
-	// 	return nil, errors.New(http.StatusBadRequest, "验证码不正确")
-	// }
-	// todo: waiting for SMS service to resume.
-	if req.Captcha != "888888" {
+	if captcha != req.Captcha {
 		return nil, errors.New(http.StatusBadRequest, "验证码不正确")
 	}
+	// // todo: waiting for SMS service to resume.
+	// if req.Captcha != "888888" {
+	// 	return nil, errors.New(http.StatusBadRequest, "验证码不正确")
+	// }
 	// Check the user if exsits in the database.
 	query := "SELECT 1 FROM `users` WHERE `phone_number` = ?"
 	var hasUser int8

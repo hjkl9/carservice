@@ -9,6 +9,9 @@ type (
 )
 
 service carservice {
+	@doc(
+		summary: "check server status."
+	)
 	@handler Ping
 	get /ping (PingReq) returns (PingRep)
 }

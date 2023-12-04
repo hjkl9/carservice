@@ -13,3 +13,7 @@
 2. ```$ echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/migrate.list```
 3. ```$ apt-get update```
 4. ```$ apt-get install -y migrate```
+
+## Swagger CLI
+```go install github.com/zeromicro/goctl-swagger@latest```
+Run generation: ```goctl api plugin -plugin goctl-swagger="swagger -filename user.json" -api user.api -dir .```

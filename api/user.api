@@ -16,6 +16,9 @@ type (
     prefix: /v1
 )
 service carservice {
+    @doc(
+		summary: "mobile phone number login."
+	)
     @handler PhoneNumberLogin
     post /user/login/phoneNumber (PhoneNumberLoginReq) returns (PhoneNumberLoginRep)
 }

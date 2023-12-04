@@ -12,6 +12,9 @@ type (
     group: sms
 )
 service carservice {
+    @doc(
+		summary: "send captcha for mobile phone number login."
+	)
     @handler SendCaptcha
     get /common/sms/sendCaptcha (SendCaptchaReq) returns (SendCaptchaRep)
 }

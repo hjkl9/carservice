@@ -1,0 +1,35 @@
+version: "3"
+
+# service list.
+services:
+  # make redis.
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - /datastore/docker/redis/redis.conf:/etc/redis/redis.conf
+      - /datastore/docker/redis/data:/data
+    networks:
+      - internal_network
+    command: redis-server /etc/redis/redis.conf 
+  
+  mysql:
+    image: mysql:8
+    env_file:
+      - deploy/docker/.env
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_general_ci
+    volumes:
+      - /datastore/docker/mysql/data:/var/lib/mysql
+      - /datastore/docker/mysql/conf/my.cnf:/etc/my.cnf
+      - /datastore/docker/mysql/init:/docker-entrypoint-initdb.d
+    ports:
+      - '3306:3306'

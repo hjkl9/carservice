@@ -3,6 +3,8 @@ package handler
 import (
 	"net/http"
 
+	"carservice/internal/logic"
+	stdresponse "carservice/internal/pkg/httper/response"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -17,8 +19,8 @@ func PingHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		// l := logic.NewPingLogic(r.Context(), svcCtx)
-		// resp, err := l.Ping(&req)
-		httpx.OkJsonCtx(r.Context(), w, "Pong")
+		l := logic.NewPingLogic(r.Context(), svcCtx)
+		resp, err := l.Ping(&req)
+		stdresponse.Response(w, resp, err)
 	}
 }

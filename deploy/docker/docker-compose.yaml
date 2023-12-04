@@ -13,8 +13,8 @@ services:
       - /datastore/docker/redis/data:/data
     networks:
       - internal_network
-    command: redis-server /etc/redis/redis.conf 
-  
+    command: redis-server /etc/redis/redis.conf
+
   mysql:
     image: mysql:8
     container_name: mysql

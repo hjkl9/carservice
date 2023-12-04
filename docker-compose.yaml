@@ -33,3 +33,6 @@ services:
       - /datastore/docker/mysql/init:/docker-entrypoint-initdb.d
     ports:
       - '3306:3306'
+    networks:
+      - internal_network
+    command: --default-authentication-plugin=mysql_native_password

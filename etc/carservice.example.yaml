@@ -4,7 +4,7 @@ Port: 8888
 
 MysqlConf:
   Driver: mysql
-  Source: root:@tcp(127.0.0.1:3306)/carservicedb
+  Source: root:@tcp(127.0.0.1:3306)/carservicedb?charset=utf8mb4&parseTime=True
 
 RedisConf:
   Addr: 127.0.0.1:6379

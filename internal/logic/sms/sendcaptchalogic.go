@@ -3,6 +3,7 @@ package sms
 import (
 	"context"
 	"net/http"
+	"strconv"
 	"time"
 
 	"carservice/internal/pkg/constant"
@@ -46,7 +47,7 @@ func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.S
 	// send sms logic.
 	smsutil := smsutil.NewSms(l.svcCtx.Config)
 	templateIdSet := []string{"1713784"}
-	templateSet := []string{"123456", string(captchaExpire)}
+	templateSet := []string{"123456", strconv.Itoa(captchaExpire)}
 	phoneNumberSet := []string{req.PhoneNumber}
 	err = smsutil.Send(templateIdSet, templateSet, phoneNumberSet)
 	if err != nil {

@@ -3,7 +3,7 @@ version: "3"
 # service list.
 services:
   # make redis.
-  redis:
+  car-redis:
     image: redis:latest
     container_name: redis
     env_file:
@@ -17,7 +17,7 @@ services:
       - internal_network
     command: redis-server /etc/redis/redis.conf
 
-  mysql:
+  car-mysql:
     image: mysql:8
     container_name: mysql
     env_file:

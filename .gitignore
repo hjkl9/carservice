@@ -1,2 +1,2 @@
 etc/carservice.yaml
-deploy/docker/.env
+deploy/.env

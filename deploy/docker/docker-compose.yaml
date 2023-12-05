@@ -15,7 +15,7 @@ services:
       - /datastore/docker/redis/data:/data
     networks:
       - internal_network
-    command: redis-server --requirepass ${REDIS_REQUIREPASS} /etc/redis/redis.conf
+    command: redis-server /etc/redis/redis.conf
 
   mysql:
     image: mysql:8

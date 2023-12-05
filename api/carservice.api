@@ -11,6 +11,11 @@ info(
 )
 
 type (
+	RootReq {}
+	RootRep {
+		// todo: set response fields.
+	}
+	
 	PingReq {
 		HttpCode int `form:"httpCode, default=200"`
 	}
@@ -27,12 +32,22 @@ type (
 )
 
 service carservice {
+	// todo: should generate code.
+	@doc(
+		summary: "show basiclly server info."
+	)
+	@handler Root
+	get / (RootReq) returns (RootRep)
+	
 	@doc(
 		summary: "check server status."
 	)
 	@handler Ping
 	get /ping (PingReq) returns (PingRep)
 	
+	@doc(
+		summary: "check status of database in server."
+	)
 	@handler PingDb
 	get /pingDb (PingDbReq) returns (PingDbRep)
 }

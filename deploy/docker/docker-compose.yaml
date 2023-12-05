@@ -3,9 +3,9 @@ version: "3"
 # service list.
 services:
   # make redis.
-  car-redis:
+  carservice_redis:
     image: redis:latest
-    container_name: car-redis
+    container_name: carservice_redis
     env_file:
       - .env
     ports:
@@ -13,13 +13,13 @@ services:
     volumes:
       - /datastore/docker/redis/redis.conf:/etc/redis/redis.conf
       - /datastore/docker/redis/data:/data
-    networks:
-      - internal_network
+    # networks:
+    #   - carservice_network
     command: redis-server /etc/redis/redis.conf
 
-  car-mysql:
+  carservice_mysql:
     image: mysql:8
-    container_name: car-mysql
+    container_name: carservice_mysql
     env_file:
       - .env
     environment:
@@ -36,10 +36,10 @@ services:
       - /datastore/docker/mysql/init:/docker-entrypoint-initdb.d
     ports:
       - '3306:3306'
-    networks:
-      - internal_network
+    # networks:
+    #   - carservice_network
     command: --default-authentication-plugin=mysql_native_password
 
-networks:
-  internal_network:
-    driver: bridge
+# networks:
+#   carservice_network:
+#     driver: bridge

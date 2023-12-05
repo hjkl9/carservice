@@ -15,6 +15,9 @@ migratelocal:
 buildapp:
 	docker build . -t ${APP_NAME}
 
+swagger:
+	docker run --rm -p 8083:8080 -e "SWAGGER_JSON=/carservice.json" -v $PWD/carservice.json:/carservice.json  swaggerapi/swagger-ui
+
 # deployment related.
 APP_NAME=carservice
 # existing mirrors and containers need to be deleted before calling.

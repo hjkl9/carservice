@@ -6,7 +6,9 @@ import (
 	"github.com/zeromicro/x/errors"
 
 	"carservice/internal/logic/sms"
+	"carservice/internal/pkg/common/errcode"
 	response "carservice/internal/pkg/httper/response"
+	stdresponse "carservice/internal/pkg/httper/response"
 	smsutil "carservice/internal/pkg/sms"
 	"carservice/internal/svc"
 	"carservice/internal/types"
@@ -18,7 +20,7 @@ func SendCaptchaHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.SendCaptchaReq
 		if err := httpx.Parse(r, &req); err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
+			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
 			return
 		}
 

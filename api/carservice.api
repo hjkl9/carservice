@@ -17,6 +17,13 @@ type (
 	PingRep {
 		Result string `json:"result"`
 	}
+
+	PingDbReq {
+		Value string `json:"value, default=carservice"`
+	}
+	PingDbRep {
+		Result string `json:"result"`
+	}
 )
 
 service carservice {
@@ -25,4 +32,7 @@ service carservice {
 	)
 	@handler Ping
 	get /ping (PingReq) returns (PingRep)
+	
+	@handler PingDb
+	get /pingDb (PingDbReq) returns (PingDbRep)
 }

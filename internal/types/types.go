@@ -9,6 +9,14 @@ type PingRep struct {
 	Result string `json:"result"`
 }
 
+type PingDbReq struct {
+	Value string `json:"value, default=carservice"`
+}
+
+type PingDbRep struct {
+	Result string `json:"result"`
+}
+
 type SendCaptchaReq struct {
 	PhoneNumber string `form:"phoneNumber"`
 }

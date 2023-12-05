@@ -24,7 +24,7 @@
 
 2. Run generation 1: ```goctl api plugin -plugin goctl-swagger="swagger -filename carservice.json" -api api/carservice.api -dir .```
 
-3. Run generation 2: ```goctl api plugin -plugin goctl-swagger="swagger -filename carservice.json -host 127.0.0.1 -basepath /api" -api api/carservice.api -dir .```
+3. Run generation 2: ```goctl api plugin -plugin goctl-swagger="swagger -filename carservice.json -host 127.0.0.1" -api api/carservice.api -dir .```
 
 4. **On server** just using docker(No test): ```docker run --rm -p 8083:8080 -e "SWAGGER_JSON=/carservice.json" -v $PWD/carservice.json:/carservice.json  swaggerapi/swagger-ui```
 

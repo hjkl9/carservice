@@ -19,7 +19,7 @@ type (
 	}
 
 	PingDbReq {
-		Value string `json:"value, default=carservice"`
+		Value string `form:"value, default=carservice"`
 	}
 	PingDbRep {
 		Result string `json:"result"`

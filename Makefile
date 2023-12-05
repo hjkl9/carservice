@@ -15,7 +15,12 @@ migratelocal:
 # deployment related.
 APP_NAME=carservice
 # existing mirrors and containers need to be deleted before calling.
-prod:
+dockerup:
 	git pull
 	docker build . -t ${APP_NAME}
 	docker run -d --name ${APP_NAME} -p 8888:8888 ${APP_NAME}
+
+dockerdown:
+	docker stop ${APP_NAME}
+	docker rm ${APP_NAME}
+	docker rmi ${APP_NAME}

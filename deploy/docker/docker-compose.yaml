@@ -5,7 +5,7 @@ services:
   # make redis.
   car-redis:
     image: redis:latest
-    container_name: redis
+    container_name: car-redis
     env_file:
       - .env
     ports:
@@ -19,7 +19,7 @@ services:
 
   car-mysql:
     image: mysql:8
-    container_name: mysql
+    container_name: car-mysql
     env_file:
       - .env
     environment:

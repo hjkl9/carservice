@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"carservice/internal/pkg/common/errcode"
@@ -30,8 +31,9 @@ func (l *PingDbLogic) PingDb(req *types.PingDbReq) (resp *types.PingDbRep, err e
 	if err != nil {
 		return nil, errcode.New(http.StatusInternalServerError, "feature.", err.Error())
 	}
+	fmt.Println(req.AsResult)
 	query := "SELECT ? AS `result`"
 	var result string
-	l.svcCtx.DBC.Get(&result, query, req.Value)
+	l.svcCtx.DBC.Get(&result, query, req.AsResult)
 	return &types.PingDbRep{Result: result}, nil
 }

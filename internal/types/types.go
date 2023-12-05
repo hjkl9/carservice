@@ -10,7 +10,7 @@ type PingRep struct {
 }
 
 type PingDbReq struct {
-	Value string `json:"value, default=carservice"`
+	AsResult string `form:"asResult, default=carservice"`
 }
 
 type PingDbRep struct {

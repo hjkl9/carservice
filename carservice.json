@@ -4,6 +4,8 @@
     "title": "Carservice",
     "version": "v0.0.1"
   },
+  "host": "apidocs.cheyiyi.cn",
+  "basePath": "/api",
   "schemes": [
     "http",
     "https"
@@ -68,6 +70,31 @@
         ]
       }
     },
+    "/pingDb": {
+      "get": {
+        "operationId": "PingDb",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/PingDbRep"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "asResult",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "carservice"
+        ]
+      }
+    },
     "/v1/user/login/phoneNumber": {
       "post": {
         "summary": "mobile phone number login.",
@@ -124,6 +151,30 @@
       "required": [
         "phoneNumber",
         "captcha"
+      ]
+    },
+    "PingDbRep": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "string"
+        }
+      },
+      "title": "PingDbRep",
+      "required": [
+        "result"
+      ]
+    },
+    "PingDbReq": {
+      "type": "object",
+      "properties": {
+        "asResult": {
+          "type": "string"
+        }
+      },
+      "title": "PingDbReq",
+      "required": [
+        "asResult"
       ]
     },
     "PingRep": {

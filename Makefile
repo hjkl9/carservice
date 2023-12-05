@@ -16,7 +16,7 @@ buildapp:
 	docker build . -t ${APP_NAME}
 
 swagger:
-	docker run --rm -p 8083:8080 --name swagger_ui -e "SWAGGER_JSON=/carservice.json" -v $PWD/carservice.json:/carservice.json  swaggerapi/swagger-ui
+	docker run --rm -d -p 8083:8080 --name swagger_ui -e "SWAGGER_JSON=/carservice.json" -v $PWD/carservice.json:/carservice.json  swaggerapi/swagger-ui
 
 # deployment related.
 APP_NAME=carservice

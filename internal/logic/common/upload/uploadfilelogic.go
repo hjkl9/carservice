@@ -2,6 +2,7 @@ package upload
 
 import (
 	"context"
+	"mime/multipart"
 
 	"carservice/internal/svc"
 	"carservice/internal/types"
@@ -23,8 +24,7 @@ func NewUploadFileLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upload
 	}
 }
 
-func (l *UploadFileLogic) UploadFile() (resp *types.UploadFileRep, err error) {
-	// todo: add your logic here and delete this line
-
+func (l *UploadFileLogic) UploadFile(file multipart.File, fileHeader *multipart.FileHeader) (resp *types.UploadFileRep, err error) {
+	// todo: May use cloud storage. (Ali, Huawei, ...)
 	return
 }

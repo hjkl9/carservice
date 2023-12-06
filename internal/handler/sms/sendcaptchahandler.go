@@ -5,7 +5,6 @@ import (
 
 	"carservice/internal/logic/sms"
 	"carservice/internal/pkg/common/errcode"
-	response "carservice/internal/pkg/httper/response"
 	stdresponse "carservice/internal/pkg/httper/response"
 	smsutil "carservice/internal/pkg/sms"
 	"carservice/internal/svc"
@@ -30,6 +29,6 @@ func SendCaptchaHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := sms.NewSendCaptchaLogic(r.Context(), svcCtx)
 		resp, err := l.SendCaptcha(&req)
-		response.Response(w, resp, err)
+		stdresponse.Response(w, resp, err)
 	}
 }

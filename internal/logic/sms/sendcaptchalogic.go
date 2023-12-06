@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"carservice/internal/pkg/captcha"
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/constant"
 	smsutil "carservice/internal/pkg/sms"
@@ -48,7 +49,9 @@ func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.S
 	// send sms logic.
 	smsutil := smsutil.NewSms(l.svcCtx.Config)
 	templateIdSet := []string{"1713784"}
-	templateSet := []string{"123456", strconv.Itoa(captchaExpire)}
+	// generate random CAPTCHA.
+	randomCaptcha := captcha.PhoneNumberCaptcha()
+	templateSet := []string{randomCaptcha, strconv.Itoa(captchaExpire)}
 	phoneNumberSet := []string{req.PhoneNumber}
 	err = smsutil.Send(templateIdSet, templateSet, phoneNumberSet)
 	if err != nil {

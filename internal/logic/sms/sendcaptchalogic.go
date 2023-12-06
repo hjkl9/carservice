@@ -33,6 +33,7 @@ func NewSendCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendC
 	}
 }
 
+// todo: using RUST to make RPC server for SendCaptcha.
 func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.SendCaptchaRep, err error) {
 	key := constant.SmsCaptchaPrefix + req.PhoneNumber
 	cmd := l.svcCtx.RDBC.Exists(l.ctx, key)

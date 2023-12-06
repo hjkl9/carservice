@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	commonupload "carservice/internal/handler/common/upload"
 	sms "carservice/internal/handler/sms"
 	user "carservice/internal/handler/user"
 	"carservice/internal/svc"
@@ -25,6 +26,22 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: PingDbHandler(serverCtx),
 			},
 		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/common/fs/uploadFile",
+				Handler: commonupload.UploadFileHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/common/fs/uploadMultipleFiles",
+				Handler: commonupload.UploadMultipleFilesHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/common"),
 	)
 
 	server.AddRoutes(

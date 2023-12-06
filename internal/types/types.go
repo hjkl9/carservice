@@ -17,6 +17,16 @@ type PingDbRep struct {
 	Result string `json:"result"`
 }
 
+type UploadFileRep struct {
+	AbsolutePath string `json:"absolutePath"`
+	RelativePath string `json:"relativePath"`
+}
+
+type UploadMultipleFilesRep struct {
+	AbsolutePaths []string `json:"absolutePaths"`
+	RelativePaths []string `json:"relativePaths"`
+}
+
 type SendCaptchaReq struct {
 	PhoneNumber string `form:"phoneNumber"`
 }

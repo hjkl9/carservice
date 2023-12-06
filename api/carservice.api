@@ -1,5 +1,6 @@
 syntax = "v1"
 
+import "common.api"
 import "sms.api"
 import "user.api"
 
@@ -11,13 +12,12 @@ info(
 )
 
 type (
-	RootReq {}
-	RootRep {
-		AppName: string
-		GoVersion: string
-		// todo: set response fields.
-	}
-	
+	// RootReq {}
+	// RootRep {
+	// 	AppName string `json:"appName"`
+	// 	GoVersion string `json:"goVersion"`
+	// }
+
 	PingReq {
 		HttpCode int `form:"httpCode, default=200"`
 	}
@@ -34,12 +34,12 @@ type (
 )
 
 service carservice {
-	// todo: should generate code.
-	@doc(
-		summary: "show basiclly server info."
-	)
-	@handler Root
-	get / (RootReq) returns (RootRep)
+	// // todo: should generate code.
+	// @doc(
+	// 	summary: "show basiclly server info."
+	// )
+	// @handler Root
+	// get / (RootReq) returns (RootRep)
 	
 	@doc(
 		summary: "check server status."

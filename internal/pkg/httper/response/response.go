@@ -12,7 +12,7 @@ type Body struct {
 	HttpCode int         `json:"httpCode"`
 	ErrCode  string      `json:"errCode"`
 	Msg      string      `json:"msg"`
-	Details  []string    `json:"details, omitempty"`
+	Details  []string    `json:"details,omitempty"`
 	Data     interface{} `json:"data,omitempty"`
 }
 
@@ -33,8 +33,8 @@ func Response(w http.ResponseWriter, resp interface{}, err error) {
 
 	if err != nil {
 		body.HttpCode = realErr.Code
-		body.Details = realErr.Details
 		body.Msg = err.Error()
+		body.Details = realErr.Details
 	} else {
 		body.HttpCode = httpCode
 		body.Msg = "OK"

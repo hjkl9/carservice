@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	captchaExpire = 10
+	captchaExpire = 5
 )
 
 type SendCaptchaLogic struct {

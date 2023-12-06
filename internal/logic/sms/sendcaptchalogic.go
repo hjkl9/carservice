@@ -53,7 +53,7 @@ func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.S
 	phoneNumberSet := []string{req.PhoneNumber}
 	err = smsutil.Send(templateIdSet, templateSet, phoneNumberSet)
 	if err != nil {
-		return nil, errcode.New(http.StatusInternalServerError, "feature.", "发送短信时出现错误")
+		return nil, errcode.New(http.StatusInternalServerError, "feature.", err.Error())
 	}
 	// set CAPTCHA in the rdb when sending was successfully.
 	setCmd := l.svcCtx.RDBC.Set(l.ctx, key, req.PhoneNumber, captchaExpire*time.Minute)

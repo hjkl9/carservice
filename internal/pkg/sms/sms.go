@@ -90,7 +90,15 @@ func (s *Sms) checkSendSmsStatus(resp *sms.SendSmsResponse) error {
 	statusSet := resp.Response.SendStatusSet
 	// get first.
 	if len(statusSet) > 0 {
-		return stderrors.New(*statusSet[0].Message)
+		return s.matchSmsStatus(*statusSet[0].Code)
+	}
+	return nil
+}
+
+func (s *Sms) matchSmsStatus(code string) error {
+	switch code {
+	case sms.FAILEDOPERATION_INSUFFICIENTBALANCEINSMSPACKAGE:
+		return stderrors.New("短信服务套餐余量不足")
 	}
 	return nil
 }

@@ -91,7 +91,7 @@ func (s *Sms) Send(templateIdSet []string, templateSet []string, phoneNumberSet 
 func (s *Sms) checkSendSmsStatus(resp *sms.SendSmsResponse) error {
 	statusSet := resp.Response.SendStatusSet
 	// get first.
-	if len(statusSet) > 0 {
+	if len(statusSet) > 0 && *statusSet[0].Code != "Ok" {
 		return stderrors.New(*statusSet[0].Message)
 	}
 	return nil

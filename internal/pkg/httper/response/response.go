@@ -3,7 +3,6 @@ package http
 import (
 	"carservice/internal/pkg/common/errcode"
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -13,6 +12,7 @@ type Body struct {
 	HttpCode int         `json:"httpCode"`
 	ErrCode  string      `json:"errCode"`
 	Msg      string      `json:"msg"`
+	Details  []string    `json:"details, omitempty"`
 	Data     interface{} `json:"data,omitempty"`
 }
 
@@ -33,6 +33,7 @@ func Response(w http.ResponseWriter, resp interface{}, err error) {
 
 	if err != nil {
 		body.HttpCode = realErr.Code
+		body.Details = realErr.Details
 		body.Msg = err.Error()
 	} else {
 		body.HttpCode = httpCode
@@ -40,7 +41,6 @@ func Response(w http.ResponseWriter, resp interface{}, err error) {
 		body.Data = resp
 	}
 	body.ErrCode = "todo."
-	fmt.Printf("111111111111111%#v\n", realErr)
 	httpx.WriteJson(w, httpCode, body)
 }
 
@@ -49,12 +49,12 @@ func ResponseWithCtx(ctx context.Context, w http.ResponseWriter, err error) {
 	realErr := err.(*errcode.ErrCode)
 	if err != nil {
 		body.HttpCode = realErr.Code
+		body.Details = realErr.Details
 		body.Msg = err.Error()
 	} else {
 		body.HttpCode = realErr.Code
 		body.Msg = "OK"
 	}
 	body.ErrCode = "todo."
-	fmt.Printf("111111111111111%#v\n", realErr)
 	httpx.WriteJsonCtx(ctx, w, realErr.Code, body)
 }

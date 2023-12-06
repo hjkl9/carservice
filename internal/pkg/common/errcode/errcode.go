@@ -6,10 +6,15 @@ type ErrCode struct {
 	Msg     string
 }
 
+func New(code int, errCode, msg string) *ErrCode {
+	return &ErrCode{code, errCode, msg}
+}
+
 func (e *ErrCode) Error() string {
 	return e.Msg
 }
 
-func New(code int, errCode, msg string) error {
-	return &ErrCode{code, errCode, msg}
+func (e *ErrCode) SetMsg(msg string) *ErrCode {
+	e.Msg = msg
+	return e
 }

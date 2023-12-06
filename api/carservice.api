@@ -13,6 +13,8 @@ info(
 type (
 	RootReq {}
 	RootRep {
+		AppName: string
+		GoVersion: string
 		// todo: set response fields.
 	}
 	

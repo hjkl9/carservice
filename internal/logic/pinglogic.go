@@ -32,9 +32,9 @@ func (l *PingLogic) Ping(req *types.PingReq) (resp *types.PingRep, err error) {
 	case http.StatusOK:
 		return &types.PingRep{
 			Result: "请求成功",
-		}, errcode.New(http.StatusOK, "嘻嘻嘻", "OK").SetMsg("200, 测试自定义错误包的 SetMsg 方法")
+		}, nil
 	case http.StatusInternalServerError:
-		return &types.PingRep{}, errcode.New(http.StatusInternalServerError, "呜呜呜", "No ok")
+		return nil, errcode.New(http.StatusInternalServerError, "呜呜呜", "No ok")
 	case http.StatusBadRequest:
 		return &types.PingRep{}, errcode.New(http.StatusInternalServerError, "呜呜呜", "No ok")
 	default:

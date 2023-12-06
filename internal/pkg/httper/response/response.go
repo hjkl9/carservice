@@ -3,6 +3,7 @@ package http
 import (
 	"carservice/internal/pkg/common/errcode"
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -17,44 +18,48 @@ type Body struct {
 }
 
 // todo: wrapping duplicate code
-func makeBody() Body {
-	// Do something here...
-	return Body{}
+func makeErrorBody(err *errcode.ErrCode) Body {
+	fmt.Printf("%#v\n", err)
+
+	return Body{
+		HttpCode: err.Code,
+		Msg:      err.Error(),
+		Details:  err.Details,
+		ErrCode:  "todo.",
+	}
+}
+
+func makeOkBody(resp *interface{}) Body {
+	var body Body
+	body.HttpCode = 200
+	body.Msg = "ok"
+	if resp != nil {
+		body.Data = *resp
+	}
+	body.ErrCode = "todo."
+	return body
 }
 
 func Response(w http.ResponseWriter, resp interface{}, err error) {
 	var body Body
-	httpCode := http.StatusOK
-	var realErr *errcode.ErrCode
 	if err != nil {
-		realErr = err.(*errcode.ErrCode)
-		httpCode = realErr.Code
-	}
-
-	if err != nil {
-		body.HttpCode = realErr.Code
-		body.Msg = err.Error()
-		body.Details = realErr.Details
+		realErr := err.(*errcode.ErrCode)
+		body = makeErrorBody(realErr)
 	} else {
-		body.HttpCode = httpCode
-		body.Msg = "OK"
-		body.Data = resp
+		fmt.Println("here111111...")
+		body = makeOkBody(&resp)
 	}
-	body.ErrCode = "todo."
-	httpx.WriteJson(w, httpCode, body)
+	httpx.WriteJson(w, body.HttpCode, body)
 }
 
 func ResponseWithCtx(ctx context.Context, w http.ResponseWriter, err error) {
 	var body Body
-	realErr := err.(*errcode.ErrCode)
 	if err != nil {
-		body.HttpCode = realErr.Code
-		body.Details = realErr.Details
-		body.Msg = err.Error()
+		realErr := err.(*errcode.ErrCode)
+		body = makeErrorBody(realErr)
 	} else {
-		body.HttpCode = realErr.Code
-		body.Msg = "OK"
+		body = makeOkBody(nil)
 	}
 	body.ErrCode = "todo."
-	httpx.WriteJsonCtx(ctx, w, realErr.Code, body)
+	httpx.WriteJsonCtx(ctx, w, body.HttpCode, body)
 }

@@ -19,10 +19,8 @@ func PingHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
 			return
 		}
-
 		l := logic.NewPingLogic(r.Context(), svcCtx)
 		resp, err := l.Ping(&req)
-
 		stdresponse.Response(w, resp, err)
 	}
 }

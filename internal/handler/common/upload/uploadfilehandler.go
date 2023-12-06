@@ -7,8 +7,6 @@ import (
 	"carservice/internal/pkg/common/errcode"
 	stdresponse "carservice/internal/pkg/httper/response"
 	"carservice/internal/svc"
-
-	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func UploadFileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
@@ -27,10 +25,6 @@ func UploadFileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := upload.NewUploadFileLogic(r.Context(), svcCtx)
 		resp, err := l.UploadFile(file, fileHeader)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
-		}
+		stdresponse.Response(w, resp, err)
 	}
 }

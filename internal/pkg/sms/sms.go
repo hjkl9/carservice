@@ -3,6 +3,7 @@ package sms
 import (
 	"carservice/internal/config"
 	stderrors "errors"
+	"fmt"
 
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
@@ -58,9 +59,10 @@ func (s *Sms) Send(templateIdSet []string, templateSet []string, phoneNumberSet 
 
 	// First variable name is `resp`
 	resp, err := client.SendSms(request)
-	if _, ok := err.(*errors.TencentCloudSDKError); ok {
+	fmt.Println(err)
+	if err, ok := err.(*errors.TencentCloudSDKError); ok {
 		// logger.Debugw("TencentCloudSDKError", err.Error())
-		return err
+		return stderrors.New(err.Message)
 	}
 	// ? is a `insufficient balance in SMS package` an error?
 	if err = s.checkSendSmsStatus(resp); err != nil {

@@ -46,8 +46,13 @@ func Response(w http.ResponseWriter, resp interface{}, err error) {
 		realErr := err.(*errcode.ErrCode)
 		body = makeErrorBody(realErr)
 	} else {
-		fmt.Println("here111111...")
 		body = makeOkBody(&resp)
+		// todo: test as below.
+		// if resp == nil {
+		// 	body = makeOkBody(nil)
+		// } else {
+		// 	body = makeOkBody(&resp)
+		// }
 	}
 	httpx.WriteJson(w, body.HttpCode, body)
 }

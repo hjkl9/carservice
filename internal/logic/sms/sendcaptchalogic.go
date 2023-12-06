@@ -53,7 +53,7 @@ func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.S
 	err = smsutil.Send(templateIdSet, templateSet, phoneNumberSet)
 	if err != nil {
 		return nil, errcode.New(
-			http.StatusInternalServerError,
+			http.StatusServiceUnavailable,
 			"feature.",
 			"发送短信时出现错误",
 		).SetDetails(err.Error())

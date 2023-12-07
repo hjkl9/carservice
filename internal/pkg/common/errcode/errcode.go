@@ -4,10 +4,11 @@ type ErrCode struct {
 	Code    int
 	ErrCode string
 	Msg     string
+	Details []string
 }
 
 func New(code int, errCode, msg string) *ErrCode {
-	return &ErrCode{code, errCode, msg}
+	return &ErrCode{code, errCode, msg, nil}
 }
 
 func (e *ErrCode) Error() string {
@@ -16,5 +17,10 @@ func (e *ErrCode) Error() string {
 
 func (e *ErrCode) SetMsg(msg string) *ErrCode {
 	e.Msg = msg
+	return e
+}
+
+func (e *ErrCode) SetDetails(details ...string) *ErrCode {
+	e.Details = details
 	return e
 }

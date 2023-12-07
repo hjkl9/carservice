@@ -15,4 +15,5 @@ var (
 var (
 	InvalidPhoneNumberError = New(http.StatusBadRequest, "-", "无效的手机号码")
 	SmsSdkCallingError      = New(http.StatusInternalServerError, "-", "短信服务调用 SDK 时出现错误")
+	SmsSdkServiceException  = New(http.StatusServiceUnavailable, "-", "短信服务异常")
 )

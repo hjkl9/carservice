@@ -3,11 +3,8 @@ package sms
 import (
 	"net/http"
 
-	"github.com/zeromicro/x/errors"
-
 	"carservice/internal/logic/sms"
 	"carservice/internal/pkg/common/errcode"
-	response "carservice/internal/pkg/httper/response"
 	stdresponse "carservice/internal/pkg/httper/response"
 	smsutil "carservice/internal/pkg/sms"
 	"carservice/internal/svc"
@@ -26,12 +23,12 @@ func SendCaptchaHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		// Customize validation.
 		if !smsutil.CheckPhoneNumber(req.PhoneNumber) {
-			httpx.ErrorCtx(r.Context(), w, errors.New(http.StatusBadRequest, "无效的手机号码"))
+			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "feature.", "无效的手机号码"))
 			return
 		}
 
 		l := sms.NewSendCaptchaLogic(r.Context(), svcCtx)
 		resp, err := l.SendCaptcha(&req)
-		response.Response(w, resp, err)
+		stdresponse.Response(w, resp, err)
 	}
 }

@@ -46,11 +46,10 @@ func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.S
 	if n == 1 {
 		return nil, errcode.New(http.StatusInternalServerError, "feature.", "不能重复发送验证码")
 	}
-	// todo: generate CAPTCHA of 6-bit.
 	// send sms logic.
 	smsutil := smsutil.NewSms(l.svcCtx.Config)
 	templateIdSet := []string{"1713784"}
-	// generate random CAPTCHA.
+	// generate random CAPTCHA of 6-bit.
 	randomCaptcha := captcha.PhoneNumberCaptcha()
 	templateSet := []string{randomCaptcha, strconv.Itoa(captchaExpire)}
 	phoneNumberSet := []string{req.PhoneNumber}

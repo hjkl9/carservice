@@ -49,7 +49,7 @@ func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.S
 	// send sms logic.
 	smsutil := smsutil.NewSms(l.svcCtx.Config)
 	templateIdSet := []string{"1713784"}
-	// generate random CAPTCHA.
+	// generate random CAPTCHA of 6-bit.
 	randomCaptcha := captcha.PhoneNumberCaptcha()
 	templateSet := []string{randomCaptcha, strconv.Itoa(captchaExpire)}
 	phoneNumberSet := []string{req.PhoneNumber}

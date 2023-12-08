@@ -24,7 +24,11 @@ APP_NAME=carservice
 dockerup:
 	git pull
 	docker build . -t ${APP_NAME}
-	docker run -d --name ${APP_NAME} --link carservice_mysql:mysql --net deploy_default -p 8888:8888 ${APP_NAME}
+	docker run -d --name ${APP_NAME} \
+		--link carservice_mysql:mysql \
+		--link carservice_redis:redis \
+		--net deploy_default -p 8888:8888 \
+		${APP_NAME}
 
 dockerdown:
 	docker stop ${APP_NAME}

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 
 	"carservice/internal/config"
 	"carservice/internal/handler"
@@ -24,8 +25,18 @@ func main() {
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
+	// register global middlewares.
+	handler.RegisterGlobalMiddleware(server, ctx)
 	handler.RegisterHandlers(server, ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
+	server.PrintRoutes()
+
 	server.Start()
+}
+
+func NotFoundHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+	}
 }

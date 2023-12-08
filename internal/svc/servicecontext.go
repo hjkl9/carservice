@@ -2,6 +2,7 @@ package svc
 
 import (
 	"carservice/internal/config"
+	"carservice/internal/data"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -10,14 +11,17 @@ import (
 
 type ServiceContext struct {
 	Config config.Config
+	Repo   data.RepoFactory
 	DBC    *sqlx.DB
 	RDBC   *redis.Client
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	dbc := NewSqlx(c)
 	return &ServiceContext{
 		Config: c,
-		DBC:    NewSqlx(c),
+		Repo:   data.NewDatastore(dbc), // todo: testing
+		DBC:    dbc,                    // ! @deprecated
 		RDBC:   NewRedis(c),
 	}
 }

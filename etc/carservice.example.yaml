@@ -13,8 +13,8 @@ RedisConf:
   DB: 0
 
 JwtConf:
-  SecretKey:
-  Exipre: 10
+  AccessSecret:
+  AccessExipre: 10
 
 SmsConf:
   SecretId:

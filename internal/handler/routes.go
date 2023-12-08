@@ -64,4 +64,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithPrefix("/v1"),
 	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/user/getUserByPhoneNumber",
+				Handler: user.GetUserByPhoneNumberHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
+		rest.WithPrefix("/v1"),
+	)
 }

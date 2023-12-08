@@ -42,3 +42,12 @@ type PhoneNumberLoginReq struct {
 type PhoneNumberLoginRep struct {
 	Token string `json:"token"`
 }
+
+type GetUserByPhoneNumberReq struct {
+	PhoneNumber string `json:"phoneNumber"`
+}
+
+type GetUserByPhoneNumberRep struct {
+	Username  string `json:"username"`
+	AvatarUrl string `json:"avatarUrl"`
+}

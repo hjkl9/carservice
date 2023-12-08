@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -53,13 +54,14 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 	query := "SELECT 1 FROM `members` WHERE `phone_number` = ?"
 	var hasUser int8
 	l.svcCtx.DBC.Get(&hasUser, query, req.PhoneNumber)
-	nowString := time.Now().String()
+	nowString := time.Now().Unix()
 	if hasUser == 1 {
 		var u user.UserID
 		l.svcCtx.DBC.Get(&u, "SELECT id FROM `members` WHERE `phone_number` = ?", req.PhoneNumber)
 		// Generate token by jwt util.
 		// Payload contains [id].
-		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.SecretKey, nowString, "36000", u.ID)
+		fmt.Println(l.svcCtx.Config.JwtConf.AccessSecret)
+		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, u.ID)
 		if err != nil {
 			return nil, errcode.New(http.StatusInternalServerError, "-", "Token 颁发时发生错误")
 		}
@@ -82,7 +84,7 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 		return nil, errcode.New(http.StatusInternalServerError, "-", "Mysql 数据库查询数据时出现错误")
 	}
 	// This newId will be used to generate the jwt token.
-	token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.SecretKey, nowString, "36000", uint(newId))
+	token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, uint(newId))
 	// Generate token by jwt util.
 	// Payload contains [id].
 	if err != nil {

@@ -9,6 +9,15 @@ type (
     PhoneNumberLoginRep {
         Token string `json:"token"`
     }
+
+    GetUserByPhoneNumberReq {
+        PhoneNumber string `json:"phoneNumber"`
+    }
+
+    GetUserByPhoneNumberRep {
+        Username string `json:"username"`
+        AvatarUrl string `json:"avatarUrl"`
+    }
 )
 
 @server (
@@ -21,4 +30,14 @@ service carservice {
 	)
     @handler PhoneNumberLogin
     post /user/login/phoneNumber (PhoneNumberLoginReq) returns (PhoneNumberLoginRep)
+}
+
+@server (
+    group: user
+    prefix: /v1
+    jwt: JwtConf
+)
+service carservice {
+    @handler GetUserByPhoneNumber
+    get /user/getUserByPhoneNumber (GetUserByPhoneNumberReq) returns (GetUserByPhoneNumberRep)
 }

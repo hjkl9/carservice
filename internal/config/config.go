@@ -29,8 +29,8 @@ type RedisConf struct {
 }
 
 type JwtConf struct {
-	SecretKey string
-	Expire    int `json:",optional"`
+	AccessSecret string
+	AccessExipre int `json:",optional"`
 }
 
 type SmsConf struct {

@@ -16,6 +16,42 @@
     "application/json"
   ],
   "paths": {
+    "/common/fs/uploadFile": {
+      "post": {
+        "summary": "This api is used to upload the single file.",
+        "operationId": "UploadFile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UploadFileRep"
+            }
+          }
+        },
+        "requestBody": {},
+        "tags": [
+          "common/upload"
+        ]
+      }
+    },
+    "/common/fs/uploadMultipleFiles": {
+      "post": {
+        "summary": "This api is used to upload the multiple files.",
+        "operationId": "UploadMultipleFiles",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UploadMultipleFilesRep"
+            }
+          }
+        },
+        "requestBody": {},
+        "tags": [
+          "common/upload"
+        ]
+      }
+    },
     "/common/sms/sendCaptcha": {
       "get": {
         "summary": "send captcha for mobile phone number login.",
@@ -71,6 +107,7 @@
     },
     "/pingDb": {
       "get": {
+        "summary": "check status of database in server.",
         "operationId": "PingDb",
         "responses": {
           "200": {
@@ -91,6 +128,31 @@
         "requestBody": {},
         "tags": [
           "carservice"
+        ]
+      }
+    },
+    "/v1/user/getUserByPhoneNumber": {
+      "get": {
+        "operationId": "GetUserByPhoneNumber",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetUserByPhoneNumberRep"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "user"
         ]
       }
     },
@@ -124,6 +186,34 @@
     }
   },
   "definitions": {
+    "GetUserByPhoneNumberRep": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        }
+      },
+      "title": "GetUserByPhoneNumberRep",
+      "required": [
+        "username",
+        "avatarUrl"
+      ]
+    },
+    "GetUserByPhoneNumberReq": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": {
+          "type": "string"
+        }
+      },
+      "title": "GetUserByPhoneNumberReq",
+      "required": [
+        "phoneNumber"
+      ]
+    },
     "PhoneNumberLoginRep": {
       "type": "object",
       "properties": {
@@ -215,6 +305,44 @@
       "title": "SendCaptchaReq",
       "required": [
         "phoneNumber"
+      ]
+    },
+    "UploadFileRep": {
+      "type": "object",
+      "properties": {
+        "absolutePath": {
+          "type": "string"
+        },
+        "relativePath": {
+          "type": "string"
+        }
+      },
+      "title": "UploadFileRep",
+      "required": [
+        "absolutePath",
+        "relativePath"
+      ]
+    },
+    "UploadMultipleFilesRep": {
+      "type": "object",
+      "properties": {
+        "absolutePaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "relativePaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "UploadMultipleFilesRep",
+      "required": [
+        "absolutePaths",
+        "relativePaths"
       ]
     }
   },

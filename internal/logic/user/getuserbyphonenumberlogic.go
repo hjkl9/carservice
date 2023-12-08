@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"fmt"
 
 	"carservice/internal/svc"
 	"carservice/internal/types"
@@ -25,7 +24,8 @@ func NewGetUserByPhoneNumberLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *GetUserByPhoneNumberLogic) GetUserByPhoneNumber(req *types.GetUserByPhoneNumberReq) (resp *types.GetUserByPhoneNumberRep, err error) {
-	// todo: add your logic here and delete this line
-	fmt.Println("You're certified.")
-	return
+	return &types.GetUserByPhoneNumberRep{
+		Username:  "You're certified.",
+		AvatarUrl: "unknown",
+	}, nil
 }

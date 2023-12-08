@@ -11,7 +11,7 @@ type (
     }
 
     GetUserByPhoneNumberReq {
-        PhoneNumber string `json:"phoneNumber"`
+        PhoneNumber string `form:"phoneNumber"`
     }
 
     GetUserByPhoneNumberRep {

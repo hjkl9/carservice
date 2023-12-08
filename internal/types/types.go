@@ -44,7 +44,7 @@ type PhoneNumberLoginRep struct {
 }
 
 type GetUserByPhoneNumberReq struct {
-	PhoneNumber string `json:"phoneNumber"`
+	PhoneNumber string `form:"phoneNumber"`
 }
 
 type GetUserByPhoneNumberRep struct {

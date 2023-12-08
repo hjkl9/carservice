@@ -1,10 +1,14 @@
 package data
 
-import "github.com/jmoiron/sqlx"
+import (
+	"fmt"
+
+	"github.com/jmoiron/sqlx"
+)
 
 type UserRepo interface {
 	GetById() error
-	GetByPhoneNumber() error
+	GetByPhoneNumber(string) error
 }
 
 type user struct {
@@ -19,6 +23,8 @@ func (u *user) GetById() error {
 	return nil
 }
 
-func (u *user) GetByPhoneNumber() error {
+func (u *user) GetByPhoneNumber(phoneNumber string) error {
+	fmt.Println("Get user by phone number.")
+	// getting logic here...
 	return nil
 }

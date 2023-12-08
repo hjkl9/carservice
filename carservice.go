@@ -7,6 +7,7 @@ import (
 
 	"carservice/internal/config"
 	"carservice/internal/handler"
+	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -21,7 +22,10 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	server := rest.MustNewServer(c.RestConf)
+	server := rest.MustNewServer(
+		c.RestConf,
+		rest.WithUnauthorizedCallback(jwt.UnauthorizedCallback()),
+	)
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)

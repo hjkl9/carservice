@@ -54,13 +54,13 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 	// 	return nil, errors.New(http.StatusBadRequest, "验证码不正确")
 	// }
 	// Check the user if exsits in the database.
-	query := "SELECT 1 FROM `users` WHERE `phone_number` = ?"
+	query := "SELECT 1 FROM `members` WHERE `phone_number` = ?"
 	var hasUser int8
 	l.svcCtx.DBC.Get(&hasUser, query, req.PhoneNumber)
 	nowString := time.Now().String()
 	if hasUser == 1 {
 		var u user.UserID
-		l.svcCtx.DBC.Get(&u, "SELECT id FROM `users` WHERE `phone_number` = ?", req.PhoneNumber)
+		l.svcCtx.DBC.Get(&u, "SELECT id FROM `members` WHERE `phone_number` = ?", req.PhoneNumber)
 		// Generate token by jwt util.
 		// Payload contains [id].
 		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.SecretKey, nowString, "36000", u.ID)
@@ -75,7 +75,7 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 	}
 	// otherwise the new user because phone number doesn't exsit in database.
 	defaultUsername := "新用户"
-	query = "INSERT INTO `users`(`phone_number`, `username`) VALUES(?, ?)"
+	query = "INSERT INTO `members`(`phone_number`, `username`) VALUES(?, ?)"
 	result, err := l.svcCtx.DBC.Exec(query, req.PhoneNumber, defaultUsername)
 	if err != nil {
 		return nil, errors.New(http.StatusInternalServerError, "Mysql 数据库创建数据时出现错误")

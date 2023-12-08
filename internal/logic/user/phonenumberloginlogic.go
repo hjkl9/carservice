@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"carservice/internal/datatypes/user"
+	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/constant"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/x/errors"
 )
 
 type PhoneNumberLoginLogic struct {
@@ -35,24 +35,20 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 	cmd := l.svcCtx.RDBC.Exists(l.ctx, key)
 	exists, err := cmd.Result()
 	if err != nil {
-		return nil, errors.New(http.StatusInternalServerError, "Redis 数据库查询数据时出现错误")
+		return nil, errcode.New(http.StatusInternalServerError, "-", "Redis 数据库查询数据时发生错误")
 	}
 	if exists == 0 {
-		return nil, errors.New(http.StatusBadRequest, "你还未发送短信")
+		return nil, errcode.New(http.StatusBadRequest, "-", "你还未发送短信")
 	}
 	// If the phone number exists.
 	captcha, err := l.svcCtx.RDBC.Get(l.ctx, key).Result()
 	if err != nil {
-		return nil, errors.New(http.StatusInternalServerError, "Redis 数据库查询数据时出现错误")
+		return nil, errcode.New(http.StatusInternalServerError, "-", "Redis 数据库查询数据时发生错误")
 	}
 	// Check if the captcha is correct.
 	if captcha != req.Captcha {
-		return nil, errors.New(http.StatusBadRequest, "验证码不正确")
+		return nil, errcode.New(http.StatusBadRequest, "-", "手机验证码不正确")
 	}
-	// // todo: waiting for SMS service to resume.
-	// if req.Captcha != "888888" {
-	// 	return nil, errors.New(http.StatusBadRequest, "验证码不正确")
-	// }
 	// Check the user if exsits in the database.
 	query := "SELECT 1 FROM `members` WHERE `phone_number` = ?"
 	var hasUser int8
@@ -65,7 +61,7 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 		// Payload contains [id].
 		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.SecretKey, nowString, "36000", u.ID)
 		if err != nil {
-			return nil, errors.New(http.StatusInternalServerError, "Token 颁发时出现错误")
+			return nil, errcode.New(http.StatusInternalServerError, "-", "Token 颁发时发生错误")
 		}
 		// Set field token in resp.
 		resp = &types.PhoneNumberLoginRep{
@@ -78,20 +74,23 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 	query = "INSERT INTO `members`(`phone_number`, `username`) VALUES(?, ?)"
 	result, err := l.svcCtx.DBC.Exec(query, req.PhoneNumber, defaultUsername)
 	if err != nil {
-		return nil, errors.New(http.StatusInternalServerError, "Mysql 数据库创建数据时出现错误")
+		return nil, errcode.New(http.StatusInternalServerError, "-", "Mysql 数据库创建数据时出现错误")
 	}
 	// Get last insert id.
 	newId, err := result.LastInsertId()
 	if err != nil {
-		return nil, errors.New(http.StatusInternalServerError, "Mysql 数据库查询数据时出现错误")
+		return nil, errcode.New(http.StatusInternalServerError, "-", "Mysql 数据库查询数据时出现错误")
 	}
 	// This newId will be used to generate the jwt token.
 	token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.SecretKey, nowString, "36000", uint(newId))
 	// Generate token by jwt util.
 	// Payload contains [id].
 	if err != nil {
-		return nil, errors.New(http.StatusInternalServerError, "Mysql 数据库创建数据时出现错误")
+		return nil, errcode.New(http.StatusInternalServerError, "-", "Mysql 数据库创建数据时出现错误")
 	}
+	// delete the CAPTCHA in rdb.
+	// todo: errors may occur.
+	l.svcCtx.RDBC.Del(l.ctx, key)
 	// Set field token in resp.
 	resp = &types.PhoneNumberLoginRep{
 		Token: token,

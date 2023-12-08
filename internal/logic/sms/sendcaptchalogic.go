@@ -62,7 +62,7 @@ func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.S
 		).SetDetails(err.Error())
 	}
 	// set CAPTCHA in the rdb when sending was successfully.
-	setCmd := l.svcCtx.RDBC.Set(l.ctx, key, req.PhoneNumber, captchaExpire*time.Minute)
+	setCmd := l.svcCtx.RDBC.Set(l.ctx, key, randomCaptcha, captchaExpire*time.Minute)
 	if setCmd.Err() != nil {
 		return nil, errcode.New(http.StatusInternalServerError, "feature.", "Redis 数据库创建数据时出现错误")
 	}

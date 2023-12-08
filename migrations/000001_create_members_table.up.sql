@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
+DROP TABLE IF EXISTS `members`;
+CREATE TABLE `members` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(255),
   `avatar_url` VARCHAR(255),
@@ -10,6 +10,5 @@ CREATE TABLE `users` (
   `updated_at` datetime(3) DEFAULT NULL,
   `deleted_at` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_users_deleted_at` (`deleted_at`)
+  KEY `idx_members_deleted_at` (`deleted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
--- todo: write ddl.

@@ -32,12 +32,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/common/fs/uploadFile",
+				Path:    "/fs/uploadFile",
 				Handler: commonupload.UploadFileHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
-				Path:    "/common/fs/uploadMultipleFiles",
+				Path:    "/fs/uploadMultipleFiles",
 				Handler: commonupload.UploadMultipleFilesHandler(serverCtx),
 			},
 		},

@@ -25,12 +25,12 @@ service carservice {
 		summary: "This api is used to upload the single file."
 	)
     @handler UploadFile
-    post /common/fs/uploadFile returns (UploadFileRep)
+    post /fs/uploadFile returns (UploadFileRep)
 
     // upload multiple files handler.
     @doc(
 		summary: "This api is used to upload the multiple files."
 	)
     @handler UploadMultipleFiles
-    post /common/fs/uploadMultipleFiles returns (UploadMultipleFilesRep)
+    post /fs/uploadMultipleFiles returns (UploadMultipleFilesRep)
 }

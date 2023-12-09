@@ -44,7 +44,7 @@ func (l *SendCaptchaLogic) SendCaptcha(req *types.SendCaptchaReq) (resp *types.S
 	}
 	// cannot be sent repeatedly.
 	if n == 1 {
-		return nil, errcode.New(http.StatusInternalServerError, "feature.", "不能重复发送验证码")
+		return nil, errcode.New(http.StatusOK, "feature.", "不能重复发送验证码")
 	}
 	// send sms logic.
 	smsutil := smsutil.NewSms(l.svcCtx.Config)

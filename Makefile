@@ -15,8 +15,11 @@ migratelocal:
 buildapp:
 	docker build . -t ${APP_NAME}
 
-swagger:
-	docker run --rm -d -p 8083:8080 --name swagger_ui -e "SWAGGER_JSON=/carservice.json" -v $(shell pwd)/carservice.json:/carservice.json  swaggerapi/swagger-ui
+SWAGGER_CONTAINER_NAME = "swagger_ui"
+swaggerdown:
+	docker stop $(SWAGGER_CONTAINER_NAME)
+swaggerup:
+	docker run --rm -d -p 8083:8080 --name $(SWAGGER_CONTAINER_NAME) -e "SWAGGER_JSON=/carservice.json" -v $(shell pwd)/carservice.json:/carservice.json  swaggerapi/swagger-ui
 
 # deployment related.
 APP_NAME=carservice

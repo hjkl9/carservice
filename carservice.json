@@ -30,7 +30,7 @@
         },
         "requestBody": {},
         "tags": [
-          "common/upload"
+          "common"
         ]
       }
     },
@@ -48,7 +48,7 @@
         },
         "requestBody": {},
         "tags": [
-          "common/upload"
+          "common"
         ]
       }
     },
@@ -75,6 +75,32 @@
         "requestBody": {},
         "tags": [
           "sms"
+        ]
+      }
+    },
+    "/common/wechat/mp/getUserPhoneNumber": {
+      "get": {
+        "summary": "通过 code 向微信官方获取手机号码",
+        "operationId": "GetUserPhoneNumber",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetUserPhoneNumberRep"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "common"
         ]
       }
     },
@@ -212,6 +238,30 @@
       "title": "GetUserByPhoneNumberReq",
       "required": [
         "phoneNumber"
+      ]
+    },
+    "GetUserPhoneNumberRep": {
+      "type": "object",
+      "properties": {
+        "phoneNumber": {
+          "type": "string"
+        }
+      },
+      "title": "GetUserPhoneNumberRep",
+      "required": [
+        "phoneNumber"
+      ]
+    },
+    "GetUserPhoneNumberReq": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        }
+      },
+      "title": "GetUserPhoneNumberReq",
+      "required": [
+        "code"
       ]
     },
     "PhoneNumberLoginRep": {

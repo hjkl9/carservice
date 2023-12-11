@@ -12,7 +12,7 @@ import (
 
 type MiniProgram interface {
 	GetAccessToken() (string, error)
-	GetUserPhoneNumber(string, string) error
+	GetUserPhoneNumber(string, string) (string, error)
 }
 
 type MiniProgramProvider struct {
@@ -28,6 +28,33 @@ type AccessTokenResponse struct {
 	ExpiresIn   uint   `json:"expires_in"`
 	Errcode     int    `json:"errcode"`
 	Errmsg      string `json:"errmsg"`
+}
+
+//	{
+//	    "errcode":0,
+//	    "errmsg":"ok",
+//	    "phone_info": {
+//	        "phoneNumber":"xxxxxx",
+//	        "purePhoneNumber": "xxxxxx",
+//	        "countryCode": 86,
+//	        "watermark": {
+//	            "timestamp": 1637744274,
+//	            "appid": "xxxx"
+//	        }
+//	    }
+//	}
+type PhoneNumberResponse struct {
+	Errcode   int    `json:"errcode"`
+	Errmsg    string `json:"errmsg"`
+	PhoneInfo struct {
+		PhoneNumber     string
+		PurePhoneNumber string
+		CountryCode     int
+		// Watermark       struct {
+		// 	Timestamp uint
+		// 	Appid     string
+		// } `json:"watermark"`
+	} `json:"phone_info"`
 }
 
 func NewWechatProvider(config config.WechatConf) *MiniProgramProvider {
@@ -74,7 +101,7 @@ func (m *MiniProgramProvider) GetAccessToken() (string, error) {
 // GetUserPhoneNumber
 // 1. depends on GetAccessToken(...args)
 // 2. depends on Code of Frontend.
-func (m *MiniProgramProvider) GetUserPhoneNumber(accessToken, code string) error {
+func (m *MiniProgramProvider) GetUserPhoneNumber(accessToken, code string) (string, error) {
 	apiurl := "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken
 	data := map[string]string{
 		"code": code,
@@ -82,19 +109,33 @@ func (m *MiniProgramProvider) GetUserPhoneNumber(accessToken, code string) error
 	jsonData, _ := json.Marshal(data)
 	req, err := http.NewRequest(http.MethodPost, apiurl, bytes.NewBuffer(jsonData))
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return "", err
 	}
-	fmt.Println(string(body))
-	return nil
+	var response PhoneNumberResponse
+	json.Unmarshal(body, &response)
+	switch response.Errcode {
+	case 0:
+		return response.PhoneInfo.PhoneNumber, nil
+	case -1:
+		return "", errors.New("系统繁忙，请稍后重试")
+	case 40029:
+		return "", errors.New("js_code 无效")
+	case 45011:
+		return "", errors.New("API 调用太频繁，请稍候再试")
+	case 40013:
+		return "", errors.New("请求appid身份与获取code的小程序appid不匹配")
+	default:
+		return "", errors.New("其他错误")
+	}
 }

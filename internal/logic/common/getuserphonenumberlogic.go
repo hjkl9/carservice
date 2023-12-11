@@ -41,6 +41,7 @@ func (l *GetUserPhoneNumberLogic) GetUserPhoneNumber(req *types.GetUserPhoneNumb
 	if err != nil {
 		return nil, errcode.New(http.StatusOK, "", err.Error())
 	}
+	// response
 	return &types.GetUserPhoneNumberRep{
 		PhoneNumber: phoneNumber,
 	}, nil

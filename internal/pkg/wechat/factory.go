@@ -9,16 +9,20 @@ type WechatProvider interface {
 	MiniProgram() miniprogram.MiniProgram
 }
 
-type Wechat struct {
+func NewWechatProvider(config config.WechatConf) WechatProvider {
+	return NewWechat(config)
+}
+
+type wechat struct {
 	config config.WechatConf
 }
 
-func NewWechat(config config.WechatConf) *Wechat {
-	return &Wechat{
+func NewWechat(config config.WechatConf) *wechat {
+	return &wechat{
 		config,
 	}
 }
 
-func (w *Wechat) MiniProgram() miniprogram.MiniProgram {
+func (w *wechat) MiniProgram() miniprogram.MiniProgram {
 	return miniprogram.NewWechatProvider(w.config)
 }

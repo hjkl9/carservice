@@ -23,7 +23,7 @@ SmsConf:
   SignName:
   TemplateId:
 
-Wechat:
+WechatConf:
   MiniProgram:
     AppId:
     Secret:

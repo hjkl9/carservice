@@ -8,7 +8,7 @@ info(
 	title: "Carservice"
 	author: "hjkl1"
 	email: "nil"
-	version: "v0.0.1"
+	version: "v0.0.11"
 )
 
 type (
@@ -42,13 +42,13 @@ service carservice {
 	// get / (RootReq) returns (RootRep)
 	
 	@doc(
-		summary: "check server status."
+		summary: "检查服务器状态"
 	)
 	@handler Ping
 	get /ping (PingReq) returns (PingRep)
 	
 	@doc(
-		summary: "check status of database in server."
+		summary: "检查数据库在服务器中的状态，已经在中间件中被使用"
 	)
 	@handler PingDb
 	get /pingDb (PingDbReq) returns (PingDbRep)

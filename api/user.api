@@ -26,7 +26,7 @@ type (
 )
 service carservice {
     @doc(
-		summary: "mobile phone number login."
+		summary: "手机短信登录"
 	)
     @handler PhoneNumberLogin
     post /user/login/phoneNumber (PhoneNumberLoginReq) returns (PhoneNumberLoginRep)
@@ -38,6 +38,9 @@ service carservice {
     jwt: JwtConf
 )
 service carservice {
+    @doc(
+		summary: "通过手机号获取用户信息"
+	)
     @handler GetUserByPhoneNumber
     get /user/getUserByPhoneNumber (GetUserByPhoneNumberReq) returns (GetUserByPhoneNumberRep)
 }

@@ -13,7 +13,7 @@ type (
 )
 service carservice {
     @doc(
-		summary: "send captcha for mobile phone number login."
+		summary: "为手机号登录发送短信验证码通知"
 	)
     @handler SendCaptcha
     get /common/sms/sendCaptcha (SendCaptchaReq) returns (SendCaptchaRep)

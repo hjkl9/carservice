@@ -37,14 +37,14 @@ service carservice {
     
     // upload file handler.
     @doc(
-		summary: "This api is used to upload the single file."
+		summary: "上传单个文件 - 未完成"
 	)
     @handler UploadFile
     post /fs/uploadFile returns (UploadFileRep)
 
     // upload multiple files handler.
     @doc(
-		summary: "This api is used to upload the multiple files."
+		summary: "上传多个文件 - 未完成"
 	)
     @handler UploadMultipleFiles
     post /fs/uploadMultipleFiles returns (UploadMultipleFilesRep)

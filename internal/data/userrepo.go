@@ -12,7 +12,7 @@ type UserRepo interface {
 	GetByPhoneNumber(string) error
 	CheckIfUserExistsByPhoneNumber(string) bool
 	GetIdByPhoneNumber(string) UserID
-	CreateUser(CreateUser) (uint, error)
+	CreateUser(CreateUser) (int64, error)
 }
 
 type user struct {

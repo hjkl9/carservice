@@ -66,6 +66,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/user/login/phoneNumber",
 				Handler: user.PhoneNumberLoginHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/user/login/wechatAuthorization",
+				Handler: user.WechatAuthorizationHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/v1"),
 	)

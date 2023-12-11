@@ -18,6 +18,14 @@ type (
         Username string `json:"username"`
         AvatarUrl string `json:"avatarUrl"`
     }
+
+    WechatAuthorizationReq {
+        Code string `form:"code"`
+    }
+
+    WechatAuthorizationRep {
+        Token string `json:"token"`
+    }
 )
 
 @server (
@@ -30,6 +38,12 @@ service carservice {
 	)
     @handler PhoneNumberLogin
     post /user/login/phoneNumber (PhoneNumberLoginReq) returns (PhoneNumberLoginRep)
+
+    @doc(
+        summary: "微信授权登录"
+    )
+    @handler WechatAuthorization
+    post /user/login/wechatAuthorization (WechatAuthorizationReq) returns (WechatAuthorizationRep)
 }
 
 @server (

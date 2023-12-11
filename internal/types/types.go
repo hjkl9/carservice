@@ -59,3 +59,11 @@ type GetUserByPhoneNumberRep struct {
 	Username  string `json:"username"`
 	AvatarUrl string `json:"avatarUrl"`
 }
+
+type WechatAuthorizationReq struct {
+	Code string `form:"code"`
+}
+
+type WechatAuthorizationRep struct {
+	Token string `json:"token"`
+}

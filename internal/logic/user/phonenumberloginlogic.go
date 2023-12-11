@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"carservice/internal/datatypes/user"
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/constant"
 	"carservice/internal/pkg/jwt"
@@ -50,14 +49,10 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 	if captcha != req.Captcha {
 		return nil, errcode.New(http.StatusBadRequest, "-", "手机验证码不正确")
 	}
-	// Check the user if exsits in the database.
-	query := "SELECT 1 FROM `members` WHERE `phone_number` = ?"
-	var hasUser int8
-	l.svcCtx.DBC.Get(&hasUser, query, req.PhoneNumber)
+	// Check the user if exists in the database.
 	nowString := time.Now().Unix()
-	if hasUser == 1 {
-		var u user.UserID
-		l.svcCtx.DBC.Get(&u, "SELECT id FROM `members` WHERE `phone_number` = ?", req.PhoneNumber)
+	if l.svcCtx.Repo.UserRelated().CheckIfUserExistsByPhoneNumber(req.PhoneNumber) {
+		var u = l.svcCtx.Repo.UserRelated().GetIdByPhoneNumber(req.PhoneNumber)
 		// Generate token by jwt util.
 		// Payload contains [id].
 		fmt.Println(l.svcCtx.Config.JwtConf.AccessSecret)
@@ -73,7 +68,7 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 	}
 	// otherwise the new user because phone number doesn't exsit in database.
 	defaultUsername := "新用户"
-	query = "INSERT INTO `members`(`phone_number`, `username`) VALUES(?, ?)"
+	query := "INSERT INTO `members`(`phone_number`, `username`) VALUES(?, ?)"
 	result, err := l.svcCtx.DBC.Exec(query, req.PhoneNumber, defaultUsername)
 	if err != nil {
 		return nil, errcode.New(http.StatusInternalServerError, "-", "Mysql 数据库创建数据时出现错误")

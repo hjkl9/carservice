@@ -10,6 +10,11 @@ import (
 	"net/http"
 )
 
+type MiniProgram interface {
+	GetAccessToken() (string, error)
+	GetUserPhoneNumber(string, string) error
+}
+
 type MiniProgramProvider struct {
 	config config.WechatConf
 }
@@ -31,6 +36,8 @@ func NewWechatProvider(config config.WechatConf) *MiniProgramProvider {
 	}
 }
 
+// GetAccessToken
+// ? Should private?
 func (m *MiniProgramProvider) GetAccessToken() (string, error) {
 	apiurl := fmt.Sprintf(
 		"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",
@@ -64,9 +71,11 @@ func (m *MiniProgramProvider) GetAccessToken() (string, error) {
 	}
 }
 
-// todo: 应该区分小程序和其他应用
-func (m *MiniProgramProvider) GetUserPhoneNumber(code, token string) error {
-	apiurl := "https://api.weixin.qq.com/wxa/business/getuserphonenumber"
+// GetUserPhoneNumber
+// 1. depends on GetAccessToken(...args)
+// 2. depends on Code of Frontend.
+func (m *MiniProgramProvider) GetUserPhoneNumber(accessToken, code string) error {
+	apiurl := "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken
 	data := map[string]string{
 		"code": code,
 	}

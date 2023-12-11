@@ -1,10 +1,11 @@
-package upload
+package common
 
 import (
 	"net/http"
 
 	"carservice/internal/logic/common/upload"
 	"carservice/internal/svc"
+
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

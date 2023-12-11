@@ -2,6 +2,15 @@ syntax = "v1"
 
 // common
 type (
+    // Wechat related. //
+    // MiniProgram get user phone number.
+    GetUserPhoneNumberReq {
+        Code string `form:"code"`
+    }
+    GetUserPhoneNumberRep {
+        PhoneNumber string `json:"phoneNumber"`
+    }
+    
     // upload related. //
     // upload single file.
     UploadFileRep {
@@ -17,9 +26,15 @@ type (
 
 @server (
     prefix: /common
-    group: common/upload
+    group: common
 )
 service carservice {
+    @doc(
+		summary: "通过 code 向微信官方获取手机号码"
+    )
+    @handler GetUserPhoneNumber
+    get /wechat/mp/getUserPhoneNumber (GetUserPhoneNumberReq) returns (GetUserPhoneNumberRep)
+    
     // upload file handler.
     @doc(
 		summary: "This api is used to upload the single file."

@@ -11,8 +11,9 @@ type Config struct {
 	MysqlConf MysqlConf
 	RedisConf RedisConf
 
-	JwtConf JwtConf
-	SmsConf SmsConf
+	JwtConf    JwtConf
+	SmsConf    SmsConf
+	WechatConf WechatConf
 }
 
 type MysqlConf struct {
@@ -39,4 +40,11 @@ type SmsConf struct {
 	SdkAppId   string
 	SignName   string
 	TemplateId string
+}
+
+type WechatConf struct {
+	MiniProgram struct {
+		AppId  string
+		Secret string
+	}
 }

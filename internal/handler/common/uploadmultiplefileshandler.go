@@ -3,7 +3,7 @@ package common
 import (
 	"net/http"
 
-	"carservice/internal/logic/common/upload"
+	"carservice/internal/logic/common"
 	"carservice/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -11,7 +11,7 @@ import (
 
 func UploadMultipleFilesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		l := upload.NewUploadMultipleFilesLogic(r.Context(), svcCtx)
+		l := common.NewUploadMultipleFilesLogic(r.Context(), svcCtx)
 		resp, err := l.UploadMultipleFiles()
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)

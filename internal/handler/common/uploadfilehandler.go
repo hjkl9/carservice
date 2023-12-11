@@ -3,7 +3,7 @@ package common
 import (
 	"net/http"
 
-	"carservice/internal/logic/common/upload"
+	"carservice/internal/logic/common"
 	"carservice/internal/pkg/common/errcode"
 	stdresponse "carservice/internal/pkg/httper/response"
 	"carservice/internal/svc"
@@ -23,7 +23,7 @@ func UploadFileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 		defer file.Close()
 
-		l := upload.NewUploadFileLogic(r.Context(), svcCtx)
+		l := common.NewUploadFileLogic(r.Context(), svcCtx)
 		resp, err := l.UploadFile(file, fileHeader)
 		stdresponse.Response(w, resp, err)
 	}

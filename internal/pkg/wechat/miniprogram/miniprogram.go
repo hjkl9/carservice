@@ -13,6 +13,7 @@ import (
 type MiniProgram interface {
 	GetAccessToken() (string, error)
 	GetUserPhoneNumber(string, string) (string, error)
+	Code2session(code string) (*Code2SessionResponse, error)
 }
 
 type MiniProgramProvider struct {
@@ -140,4 +141,27 @@ func (m *MiniProgramProvider) GetUserPhoneNumber(accessToken, code string) (stri
 	default:
 		return "", errors.New("其他错误")
 	}
+}
+
+func (m *MiniProgramProvider) Code2session(code string) (*Code2SessionResponse, error) {
+	apiurl := fmt.Sprintf(
+		"https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
+		m.config.MiniProgram.AppId,
+		m.config.MiniProgram.Secret,
+		code,
+	)
+	resp, err := http.Get(apiurl)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	var response Code2SessionResponse
+	json.Unmarshal(body, &response)
+
+	return &response, nil
 }

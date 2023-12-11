@@ -43,7 +43,7 @@ service carservice {
         summary: "微信授权登录"
     )
     @handler WechatAuthorization
-    post /user/login/wechatAuthorization (WechatAuthorizationReq) returns (WechatAuthorizationRep)
+    get /user/login/wechatAuthorization (WechatAuthorizationReq) returns (WechatAuthorizationRep)
 }
 
 @server (

@@ -22,3 +22,8 @@ SmsConf:
   SdkAppId:
   SignName:
   TemplateId:
+
+Wechat:
+  MiniProgram:
+    AppId:
+    Secret:

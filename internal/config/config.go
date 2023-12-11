@@ -43,8 +43,10 @@ type SmsConf struct {
 }
 
 type WechatConf struct {
-	MiniProgram struct {
-		AppId  string
-		Secret string
-	}
+	MiniProgram MiniProgram
+}
+
+type MiniProgram struct {
+	AppId  string
+	Secret string
 }

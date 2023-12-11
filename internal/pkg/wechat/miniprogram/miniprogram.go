@@ -65,6 +65,7 @@ func NewWechatProvider(config config.WechatConf) *MiniProgramProvider {
 
 // GetAccessToken
 // ? Should private?
+// return real access token and ?errcode.
 func (m *MiniProgramProvider) GetAccessToken() (string, error) {
 	apiurl := fmt.Sprintf(
 		"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",
@@ -101,6 +102,7 @@ func (m *MiniProgramProvider) GetAccessToken() (string, error) {
 // GetUserPhoneNumber
 // 1. depends on GetAccessToken(...args)
 // 2. depends on Code of Frontend.
+// return real phone number and ?errcode.
 func (m *MiniProgramProvider) GetUserPhoneNumber(accessToken, code string) (string, error) {
 	apiurl := "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + accessToken
 	data := map[string]string{

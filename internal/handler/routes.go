@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	commonupload "carservice/internal/handler/common/upload"
+	common "carservice/internal/handler/common"
 	sms "carservice/internal/handler/sms"
 	user "carservice/internal/handler/user"
 	"carservice/internal/svc"
@@ -31,14 +31,19 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodGet,
+				Path:    "/wechat/mp/getUserPhoneNumber",
+				Handler: common.GetUserPhoneNumberHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodPost,
 				Path:    "/fs/uploadFile",
-				Handler: commonupload.UploadFileHandler(serverCtx),
+				Handler: common.UploadFileHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,
 				Path:    "/fs/uploadMultipleFiles",
-				Handler: commonupload.UploadMultipleFilesHandler(serverCtx),
+				Handler: common.UploadMultipleFilesHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/common"),

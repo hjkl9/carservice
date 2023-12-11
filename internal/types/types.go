@@ -17,6 +17,14 @@ type PingDbRep struct {
 	Result string `json:"result"`
 }
 
+type GetUserPhoneNumberReq struct {
+	Code string `form:"code"`
+}
+
+type GetUserPhoneNumberRep struct {
+	PhoneNumber string `json:"phoneNumber"`
+}
+
 type UploadFileRep struct {
 	AbsolutePath string `json:"absolutePath"`
 	RelativePath string `json:"relativePath"`

@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Carservice",
-    "version": "v0.0.1"
+    "version": "v0.0.11"
   },
   "host": "api.cheyiyi.cn",
   "schemes": [
@@ -18,7 +18,7 @@
   "paths": {
     "/common/fs/uploadFile": {
       "post": {
-        "summary": "This api is used to upload the single file.",
+        "summary": "上传单个文件 - 未完成",
         "operationId": "UploadFile",
         "responses": {
           "200": {
@@ -36,7 +36,7 @@
     },
     "/common/fs/uploadMultipleFiles": {
       "post": {
-        "summary": "This api is used to upload the multiple files.",
+        "summary": "上传多个文件 - 未完成",
         "operationId": "UploadMultipleFiles",
         "responses": {
           "200": {
@@ -54,7 +54,7 @@
     },
     "/common/sms/sendCaptcha": {
       "get": {
-        "summary": "send captcha for mobile phone number login.",
+        "summary": "为手机号登录发送短信验证码通知",
         "operationId": "SendCaptcha",
         "responses": {
           "200": {
@@ -106,7 +106,7 @@
     },
     "/ping": {
       "get": {
-        "summary": "check server status.",
+        "summary": "检查服务器状态",
         "operationId": "Ping",
         "responses": {
           "200": {
@@ -133,7 +133,7 @@
     },
     "/pingDb": {
       "get": {
-        "summary": "check status of database in server.",
+        "summary": "检查数据库在服务器中的状态，已经在中间件中被使用",
         "operationId": "PingDb",
         "responses": {
           "200": {
@@ -159,6 +159,7 @@
     },
     "/v1/user/getUserByPhoneNumber": {
       "get": {
+        "summary": "通过手机号获取用户信息",
         "operationId": "GetUserByPhoneNumber",
         "responses": {
           "200": {
@@ -184,7 +185,7 @@
     },
     "/v1/user/login/phoneNumber": {
       "post": {
-        "summary": "mobile phone number login.",
+        "summary": "手机短信登录",
         "operationId": "PhoneNumberLogin",
         "responses": {
           "200": {

@@ -1,0 +1,29 @@
+syntax = "v1"
+
+type (
+    BrandOptionListItem {
+        Id uint `json:"id"`
+        Label string `json:"label"`
+        Pinyin string `json:"pinyin"`
+    }
+    
+    CarBrandOptionListReq {
+        // 可选
+        Page int `form:"page,optional"`
+    }
+    CarBrandOptionListRep {
+
+    }
+)
+
+@server (
+    group: carbrand
+    prefix: /v1
+)
+service carservice {
+    @doc(
+        summary: "获取汽车品牌选项列表"
+    )
+    @handler BrandOptionList
+    get /carBrand/brandOptionList returns ([]BrandOptionListItem)
+}

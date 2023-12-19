@@ -67,3 +67,16 @@ type WechatAuthorizationReq struct {
 type WechatAuthorizationRep struct {
 	Token string `json:"token"`
 }
+
+type BrandOptionListItem struct {
+	Id     uint   `json:"id"`
+	Label  string `json:"label"`
+	Pinyin string `json:"pinyin"`
+}
+
+type CarBrandOptionListReq struct {
+	Page int `form:"page,optional"`
+}
+
+type CarBrandOptionListRep struct {
+}

@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	carbrand "carservice/internal/handler/carbrand"
 	common "carservice/internal/handler/common"
 	sms "carservice/internal/handler/sms"
 	user "carservice/internal/handler/user"
@@ -84,6 +85,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
+		rest.WithPrefix("/v1"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/carBrand/brandOptionList",
+				Handler: carbrand.BrandOptionListHandler(serverCtx),
+			},
+		},
 		rest.WithPrefix("/v1"),
 	)
 }

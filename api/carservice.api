@@ -3,6 +3,7 @@ syntax = "v1"
 import "common.api"
 import "sms.api"
 import "user.api"
+import "car_brand.api"
 
 info(
 	title: "Carservice"

@@ -11,6 +11,7 @@ import (
 	"carservice/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/rest"
 )
 
@@ -21,6 +22,9 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
+	fmt.Println(c.Log.Mode)
+	// setup logger
+	logc.MustSetup(c.LogConf)
 
 	server := rest.MustNewServer(
 		c.RestConf,
@@ -41,6 +45,5 @@ func main() {
 
 func NotFoundHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 	}
 }

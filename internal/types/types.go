@@ -153,3 +153,7 @@ type GetCarOwnerInfoRep struct {
 	MultilevelAddress string `json:"multilevelAddress"`
 	FullAddress       string `json:"fullAddress"`
 }
+
+type DeleteCarOwnerInfoReq struct {
+	Id uint `path:"id"`
+}

@@ -49,6 +49,10 @@ type (
         MultilevelAddress string `json:"multilevelAddress"`
         FullAddress string `json:"fullAddress"`
     }
+
+    DeleteCarOwnerInfoReq {
+        Id uint `path:"id"`
+    }
 )
 
 @server (
@@ -86,4 +90,10 @@ service carservice {
     )
     @handler GetCarOwnerInfo
     get /carOwnerInfo/:id (GetCarOwnerInfoReq) returns (GetCarOwnerInfoRep)
+
+    @doc(
+        summary: "删除用户车主信息"
+    )
+    @handler DeleteCarOwnerInfo
+    delete /carOwnerInfo/:id (DeleteCarOwnerInfoReq)
 }

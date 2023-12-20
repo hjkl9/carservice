@@ -24,6 +24,8 @@ func NewGetCarOwnerInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 	}
 }
 
+// todo: testing to do.
+// GetCarOwnerInfo 获取用户车主信息
 func (l *GetCarOwnerInfoLogic) GetCarOwnerInfo(req *types.GetCarOwnerInfoReq) (resp *types.GetCarOwnerInfoRep, err error) {
 	// todo: have not test below getting.
 	// user := l.ctx.Value("user").(jwt.UserPayload)

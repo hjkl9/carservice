@@ -11,6 +11,11 @@ var (
 	InternalServerError = New(http.StatusInternalServerError, "-", "服务器内部发生错误")
 )
 
+// 数据库错误
+var (
+	DatabaseError = New(http.StatusInternalServerError, "-", "操作数据库时发生错误")
+)
+
 // SMS-related errors.
 var (
 	InvalidPhoneNumberError = New(http.StatusBadRequest, "-", "无效的手机号码")

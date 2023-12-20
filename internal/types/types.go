@@ -94,3 +94,10 @@ type BrandSeriesOptionListReq struct {
 
 type BrandSeriesOptionListRep struct {
 }
+
+type CheckEmptyListReq struct {
+}
+
+type CheckEmptyListRep struct {
+	Listable bool `json:"listable"`
+}

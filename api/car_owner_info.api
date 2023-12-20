@@ -1,0 +1,21 @@
+syntax = "v1"
+
+type (
+    CheckEmptyListReq {}
+    CheckEmptyListRep {
+        Listable bool `json:"listable"`
+    }
+)
+
+@server (
+    group: carownerinfo
+    prefix: /v1
+    jwt: JwtConf
+)
+service carservice {
+    @doc(
+        summary: "检查当前用户是否已存在车辆信息列表"
+    )
+    @handler CheckEmptyList
+    get /carOwnerInfo/checkEmptyList returns (CheckEmptyListRep)
+}

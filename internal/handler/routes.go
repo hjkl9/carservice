@@ -6,6 +6,7 @@ import (
 
 	carbrand "carservice/internal/handler/carbrand"
 	carbrandseries "carservice/internal/handler/carbrandseries"
+	carownerinfo "carservice/internal/handler/carownerinfo"
 	common "carservice/internal/handler/common"
 	sms "carservice/internal/handler/sms"
 	user "carservice/internal/handler/user"
@@ -108,6 +109,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: carbrandseries.BrandSeriesOptionListHandler(serverCtx),
 			},
 		},
+		rest.WithPrefix("/v1"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/carOwnerInfo/checkEmptyList",
+				Handler: carownerinfo.CheckEmptyListHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
 		rest.WithPrefix("/v1"),
 	)
 }

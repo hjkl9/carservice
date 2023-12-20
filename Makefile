@@ -39,7 +39,7 @@ down1:
 	docker rmi ${APP_NAME}
 
 # todo: should add link for redis.
-# todo: assign mysql link and network
+# todo: specify the link of mysql and network.
 up2:
 	git pull
 	docker build . -t ${APP_NAME}

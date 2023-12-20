@@ -16,6 +16,17 @@ type (
         Latitude float64 `json:"latitude"`
     }
     CreateCarOwnerInfoRep {}
+
+    UpdateCarOwnerInfoReq {
+        Id uint `path:"id"`
+        Name string `json:"name"`
+        PhoneNumber string `json:"phoneNumber"`
+        MultilevelAddress string `json:"multilevelAddress"`
+        FullAddress string `json:"fullAddress"`
+        Longitude float64 `json:"longitude"`
+        Latitude float64 `json:"latitude"`
+    }
+    UpdateCarOwnerInfoRep {}
 )
 
 @server (
@@ -35,4 +46,10 @@ service carservice {
     )
     @handler CreateCarOwnerInfo
     post /carOwnerInfo (CreateCarOwnerInfoReq) returns (CreateCarOwnerInfoRep)
+
+    @doc(
+        summary: "更新用户车主信息"
+    )
+    @handler UpdateCarOwnerInfo
+    put /carOwnerInfo/:id (UpdateCarOwnerInfoReq) returns (UpdateCarOwnerInfoRep)
 }

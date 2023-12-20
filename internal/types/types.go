@@ -113,3 +113,16 @@ type CreateCarOwnerInfoReq struct {
 
 type CreateCarOwnerInfoRep struct {
 }
+
+type UpdateCarOwnerInfoReq struct {
+	Id                uint    `path:"id"`
+	Name              string  `json:"name"`
+	PhoneNumber       string  `json:"phoneNumber"`
+	MultilevelAddress string  `json:"multilevelAddress"`
+	FullAddress       string  `json:"fullAddress"`
+	Longitude         float64 `json:"longitude"`
+	Latitude          float64 `json:"latitude"`
+}
+
+type UpdateCarOwnerInfoRep struct {
+}

@@ -124,6 +124,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/carOwnerInfo",
 				Handler: carownerinfo.CreateCarOwnerInfoHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/carOwnerInfo/:id",
+				Handler: carownerinfo.UpdateCarOwnerInfoHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
 		rest.WithPrefix("/v1"),

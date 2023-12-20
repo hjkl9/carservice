@@ -25,8 +25,10 @@ func NewUpdateCarOwnerInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *UpdateCarOwnerInfoLogic) UpdateCarOwnerInfo(req *types.UpdateCarOwnerInfoReq) (resp *types.UpdateCarOwnerInfoRep, err error) {
+	// todo: have not test below getting.
+	// user := l.ctx.Value("user").(jwt.UserPayload)
+	// userId := user.UserId
 	userId := 1
-
 	var count uint
 	query := "SELECT count(1) AS `count` FROM `car_owner_infos` WHERE `id` = ? AND `user_id` = ?"
 	l.svcCtx.DBC.Get(&count, query, req.Id, userId)

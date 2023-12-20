@@ -56,7 +56,10 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 		// Generate token by jwt util.
 		// Payload contains [id].
 		fmt.Println(l.svcCtx.Config.JwtConf.AccessSecret)
-		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, u.ID)
+		userPayload := jwt.UserPayload{
+			UserId: u.ID,
+		}
+		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, userPayload)
 		if err != nil {
 			return nil, errcode.New(http.StatusInternalServerError, "-", "Token 颁发时发生错误")
 		}
@@ -79,7 +82,10 @@ func (l *PhoneNumberLoginLogic) PhoneNumberLogin(req *types.PhoneNumberLoginReq)
 		return nil, errcode.New(http.StatusInternalServerError, "-", "Mysql 数据库查询数据时出现错误")
 	}
 	// This newId will be used to generate the jwt token.
-	token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, uint(newId))
+	userPayload := jwt.UserPayload{
+		UserId: uint(newId),
+	}
+	token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, userPayload)
 	// Generate token by jwt util.
 	// Payload contains [id].
 	if err != nil {

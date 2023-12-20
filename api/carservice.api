@@ -4,6 +4,7 @@ import "common.api"
 import "sms.api"
 import "user.api"
 import "car_brand.api"
+import "car_brand_series.api"
 
 info(
 	title: "Carservice"

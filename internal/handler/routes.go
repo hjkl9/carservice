@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	carbrand "carservice/internal/handler/carbrand"
+	carbrandseries "carservice/internal/handler/carbrandseries"
 	common "carservice/internal/handler/common"
 	sms "carservice/internal/handler/sms"
 	user "carservice/internal/handler/user"
@@ -94,6 +95,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/carBrand/brandOptionList",
 				Handler: carbrand.BrandOptionListHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/v1"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/carBrandSeries/brandSeriesOptionList",
+				Handler: carbrandseries.BrandSeriesOptionListHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/v1"),

@@ -29,8 +29,8 @@ func (l *CreateCarOwnerInfoLogic) CreateCarOwnerInfo(req *types.CreateCarOwnerIn
 	// user := l.ctx.Value("user").(jwt.UserPayload)
 	// userId := user.UserId
 	userId := 1
-	query := "INSERT INTO `car_owner_infos`(`name`, `user_id`, `phone_number`, `multilevel_address`, `full_address`) VALUES(?, ?, ?, ?, ?)"
-	_, err = l.svcCtx.DBC.ExecContext(l.ctx, query, req.Name, userId, req.PhoneNumber, req.MultilevelAddress, req.FullAddress)
+	query := "INSERT INTO `car_owner_infos`(`name`, `user_id`, `phone_number`, `multilevel_address`, `full_address`, `longitude`, `latitude`) VALUES(?, ?, ?, ?, ?, ?, ?)"
+	_, err = l.svcCtx.DBC.ExecContext(l.ctx, query, req.Name, userId, req.PhoneNumber, req.MultilevelAddress, req.FullAddress, req.Longitude, req.Latitude)
 	if err != nil {
 		return nil, errcode.InternalServerError.SetMsg("创建数据时发生错误").SetDetails(err.Error())
 	}

@@ -24,7 +24,7 @@ swaggerup:
 # deployment related.
 APP_NAME=carservice
 # existing mirrors and containers need to be deleted before calling.
-dockerup:
+up1:
 	git pull
 	docker build . -t ${APP_NAME}
 	docker run -d --name ${APP_NAME} \
@@ -33,7 +33,22 @@ dockerup:
 		--net deploy_default -p 8888:8888 \
 		${APP_NAME}
 
-dockerdown:
+down1:
+	docker stop ${APP_NAME}
+	docker rm ${APP_NAME}
+	docker rmi ${APP_NAME}
+
+# todo: should add link for redis.
+# todo: assign mysql link and network
+up2:
+	git pull
+	docker build . -t ${APP_NAME}
+	docker run -d --name ${APP_NAME} \
+		--link carservice_mysql:mysql \
+		--net deploy_default -p 8888:8888 \
+		${APP_NAME}
+
+down2:
 	docker stop ${APP_NAME}
 	docker rm ${APP_NAME}
 	docker rmi ${APP_NAME}

@@ -1,2 +1,4 @@
 etc/carservice.yaml
 deploy/.env
+
+logs/*

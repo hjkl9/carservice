@@ -24,6 +24,8 @@ func NewCreateCarOwnerInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 	}
 }
 
+// todo: get user id
+// CreateCarOwnerInfo 创建用户车主信息
 func (l *CreateCarOwnerInfoLogic) CreateCarOwnerInfo(req *types.CreateCarOwnerInfoReq) (resp *types.CreateCarOwnerInfoRep, err error) {
 	// todo: have not test below getting.
 	// user := l.ctx.Value("user").(jwt.UserPayload)

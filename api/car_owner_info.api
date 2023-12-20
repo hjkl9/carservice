@@ -27,6 +27,28 @@ type (
         Latitude float64 `json:"latitude"`
     }
     UpdateCarOwnerInfoRep {}
+
+    CarOwnerInfoListItem {
+        Id uint `json:"id"`
+        Name string `json:"name"`
+        PhoneNumber string `json:"phoneNumber"`
+        MultilevelAddress string `json:"multilevelAddress"`
+        FullAddress string `json:"fullAddress"`
+    }
+    GetCarOwnerInfoListReq {
+        Id uint `path:"id"`
+    }
+    GetCarOwnerInfoListRep {}
+    GetCarOwnerInfoReq {
+        Id uint `path:"id"`
+    }
+    GetCarOwnerInfoRep {
+        Id uint `json:"id"`
+        Name string `json:"name"`
+        PhoneNumber string `json:"phoneNumber"`
+        MultilevelAddress string `json:"multilevelAddress"`
+        FullAddress string `json:"fullAddress"`
+    }
 )
 
 @server (
@@ -52,4 +74,16 @@ service carservice {
     )
     @handler UpdateCarOwnerInfo
     put /carOwnerInfo/:id (UpdateCarOwnerInfoReq) returns (UpdateCarOwnerInfoRep)
+
+    @doc(
+        summary: "获取用户车主信息列表"
+    )
+    @handler GetCarOwnerInfoList
+    get /carOwnerInfo/:id/list (GetCarOwnerInfoListReq) returns ([]CarOwnerInfoListItem)
+
+    @doc(
+        summary: "获取用户车主信息"
+    )
+    @handler GetCarOwnerInfo
+    get /carOwnerInfo/:id (GetCarOwnerInfoReq) returns (GetCarOwnerInfoRep)
 }

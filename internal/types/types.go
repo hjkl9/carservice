@@ -126,3 +126,30 @@ type UpdateCarOwnerInfoReq struct {
 
 type UpdateCarOwnerInfoRep struct {
 }
+
+type CarOwnerInfoListItem struct {
+	Id                uint   `json:"id"`
+	Name              string `json:"name"`
+	PhoneNumber       string `json:"phoneNumber"`
+	MultilevelAddress string `json:"multilevelAddress"`
+	FullAddress       string `json:"fullAddress"`
+}
+
+type GetCarOwnerInfoListReq struct {
+	Id uint `path:"id"`
+}
+
+type GetCarOwnerInfoListRep struct {
+}
+
+type GetCarOwnerInfoReq struct {
+	Id uint `path:"id"`
+}
+
+type GetCarOwnerInfoRep struct {
+	Id                uint   `json:"id"`
+	Name              string `json:"name"`
+	PhoneNumber       string `json:"phoneNumber"`
+	MultilevelAddress string `json:"multilevelAddress"`
+	FullAddress       string `json:"fullAddress"`
+}

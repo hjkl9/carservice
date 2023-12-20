@@ -119,6 +119,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/carOwnerInfo/checkEmptyList",
 				Handler: carownerinfo.CheckEmptyListHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/carOwnerInfo",
+				Handler: carownerinfo.CreateCarOwnerInfoHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
 		rest.WithPrefix("/v1"),

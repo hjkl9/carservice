@@ -101,3 +101,13 @@ type CheckEmptyListReq struct {
 type CheckEmptyListRep struct {
 	Listable bool `json:"listable"`
 }
+
+type CreateCarOwnerInfoReq struct {
+	Name              string `json:"name"`
+	PhoneNumber       string `json:"phoneNumber"`
+	MultilevelAddress string `json:"multilevelAddress"`
+	FullAddress       string `json:"fullAddress"`
+}
+
+type CreateCarOwnerInfoRep struct {
+}

@@ -5,6 +5,17 @@ type (
     CheckEmptyListRep {
         Listable bool `json:"listable"`
     }
+
+    // create CarOwnerInfo //
+    CreateCarOwnerInfoReq {
+        Name string `json:"name"`
+        PhoneNumber string `json:"phoneNumber"`
+        MultilevelAddress string `json:"multilevelAddress"`
+        FullAddress string `json:"fullAddress"`
+        Longitude float64 `json:"longitude"`
+        Latitude float64 `json:"latitude"`
+    }
+    CreateCarOwnerInfoRep {}
 )
 
 @server (
@@ -18,4 +29,10 @@ service carservice {
     )
     @handler CheckEmptyList
     get /carOwnerInfo/checkEmptyList returns (CheckEmptyListRep)
+
+    @doc(
+        summary: "创建用户车主信息"
+    )
+    @handler CreateCarOwnerInfo
+    post /carOwnerInfo (CreateCarOwnerInfoReq) returns (CreateCarOwnerInfoRep)
 }

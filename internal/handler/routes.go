@@ -10,6 +10,7 @@ import (
 	common "carservice/internal/handler/common"
 	sms "carservice/internal/handler/sms"
 	user "carservice/internal/handler/user"
+	userorder "carservice/internal/handler/userorder"
 	"carservice/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -143,6 +144,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodDelete,
 				Path:    "/carOwnerInfo/:id",
 				Handler: carownerinfo.DeleteCarOwnerInfoHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
+		rest.WithPrefix("/v1"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/userOrder",
+				Handler: userorder.CreateUserOrderHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),

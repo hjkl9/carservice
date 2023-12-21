@@ -30,4 +30,6 @@
 
 ## Deploy On Server.
 - Customize env: ```cp deploy/docker/.env.example deploy/docker/.env```
-- Run compose: ```docker-compose up```
+- Move in the project directory: ```cd carservice```
+- ┍ Run and Build Dockerfile: ```docker built . -t carservice```
+- ┖ Or run up* and down* command in Makefile.

@@ -26,6 +26,10 @@ type (
     WechatAuthorizationRep {
         Token string `json:"token"`
     }
+
+    MockLoginReq {
+        Token string `json:"token"`
+    }
 )
 
 @server (
@@ -33,6 +37,12 @@ type (
     prefix: /v1
 )
 service carservice {
+    @doc(
+        summary: "模拟登录获取 AccessToken"
+    )
+    @handler MockLogin
+    get /user/login/mock returns (MockLoginReq)
+    
     @doc(
 		summary: "手机短信登录"
 	)

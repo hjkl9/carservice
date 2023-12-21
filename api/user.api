@@ -46,6 +46,7 @@ service carservice {
     get /user/login/wechatAuthorization (WechatAuthorizationReq) returns (WechatAuthorizationRep)
 }
 
+// Authorization APIs //
 @server (
     group: user
     prefix: /v1

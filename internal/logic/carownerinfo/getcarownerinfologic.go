@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"carservice/internal/pkg/common/errcode"
+	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -27,10 +28,7 @@ func NewGetCarOwnerInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 // todo: testing to do.
 // GetCarOwnerInfo 获取用户车主信息
 func (l *GetCarOwnerInfoLogic) GetCarOwnerInfo(req *types.GetCarOwnerInfoReq) (resp *types.GetCarOwnerInfoRep, err error) {
-	// todo: have not test below getting.
-	// user := l.ctx.Value("user").(jwt.UserPayload)
-	// userId := user.UserId
-	userId := 1
+	userId := jwt.GetUserId(l.ctx)
 	var count int
 	query := "SELECT count(1) AS `count` FROM `car_owner_infos` WHERE `user_id` = ? AND `id` = ? LIMIT 1"
 	if err = l.svcCtx.DBC.Get(&count, query, userId, req.Id); err != nil {

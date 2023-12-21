@@ -2,8 +2,11 @@ package carownerinfo
 
 import (
 	"context"
+	"fmt"
 
+	"carservice/internal/data/tables"
 	"carservice/internal/pkg/common/errcode"
+	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -25,13 +28,10 @@ func NewCheckEmptyListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ch
 }
 
 func (l *CheckEmptyListLogic) CheckEmptyList() (resp *types.CheckEmptyListRep, err error) {
-	// todo: have not test below getting.
-	// user := l.ctx.Value("user").(jwt.UserPayload)
-	// userId := user.UserId
-	userId := 1
+	userId := jwt.GetUserId(l.ctx)
 	var count int
-	query := "SELECT COUNT(1) AS `count` FROM `car_owner_infos` WHERE `user_id` = ?"
-	if err = l.svcCtx.DBC.Get(&count, query, userId); err != nil {
+	query := "SELECT COUNT(1) AS `count` FROM `%s` WHERE `user_id` = ?"
+	if err = l.svcCtx.DBC.Get(&count, fmt.Sprintf(query, tables.CarOwnerInfo), userId); err != nil {
 		return nil, errcode.InternalServerError.SetMsg("查询数据时发生错误").SetDetails(err.Error())
 	}
 	return &types.CheckEmptyListRep{

@@ -2,8 +2,11 @@ package carownerinfo
 
 import (
 	"context"
+	"fmt"
 
+	"carservice/internal/data/tables"
 	"carservice/internal/pkg/common/errcode"
+	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -25,13 +28,10 @@ func NewUpdateCarOwnerInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *UpdateCarOwnerInfoLogic) UpdateCarOwnerInfo(req *types.UpdateCarOwnerInfoReq) (resp *types.UpdateCarOwnerInfoRep, err error) {
-	// todo: have not test below getting.
-	// user := l.ctx.Value("user").(jwt.UserPayload)
-	// userId := user.UserId
-	userId := 1
+	userId := jwt.GetUserId(l.ctx)
 	var count uint
-	query := "SELECT count(1) AS `count` FROM `car_owner_infos` WHERE `id` = ? AND `user_id` = ?"
-	l.svcCtx.DBC.Get(&count, query, req.Id, userId)
+	query := "SELECT count(1) AS `count` FROM `%s` WHERE `id` = ? AND `user_id` = ?"
+	l.svcCtx.DBC.Get(&count, fmt.Sprintf(query, tables.CarOwnerInfo), req.Id, userId)
 	if count == 0 {
 		return nil, errcode.NotFound.SetMsg("找不到该用户的车主信息")
 	}

@@ -65,10 +65,7 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 		l.svcCtx.DBC.Get(&userId, query, openid)
 		fmt.Printf("get user id: %d\n", userId)
 		// make token
-		userPayload := jwt.UserPayload{
-			UserId: uint(userId),
-		}
-		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, userPayload)
+		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, uint(userId))
 		if err != nil {
 			fmt.Printf("generate token occurs error, err: %s\n", err.Error())
 			return nil, errcode.InternalServerError.SetMsg("生成 token 时出现错误")
@@ -110,11 +107,8 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 			fmt.Printf("failed to create user bind, err: %s\n", err.Error())
 			return nil, errcode.InternalServerError.SetMsg("创建数据时发生错误")
 		}
-		userPayload := jwt.UserPayload{
-			UserId: uint(newUserId),
-		}
 		// make jwt token.
-		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, userPayload)
+		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, uint(newUserId))
 		if err != nil {
 			fmt.Printf("generate token occurs error after creating user, err: %s\n", err.Error())
 			return nil, errcode.InternalServerError.SetMsg("生成 token 时出现错误")

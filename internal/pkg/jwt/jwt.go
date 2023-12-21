@@ -18,11 +18,11 @@ type UserPayload struct {
 // @iat: 时间戳
 // @seconds: 过期时间，单位秒
 // @payload: 数据载体
-func GetJwtToken(secretKey string, iat, seconds int64, payload UserPayload) (string, error) {
+func GetJwtToken(secretKey string, iat, seconds int64, userId uint) (string, error) {
 	claims := make(jwt.MapClaims)
 	claims["exp"] = iat + seconds
 	claims["iat"] = iat
-	claims["user"] = payload
+	claims["user"] = userId
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims = claims
 	return token.SignedString([]byte(secretKey))

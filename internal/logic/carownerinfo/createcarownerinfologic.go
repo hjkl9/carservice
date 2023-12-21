@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"carservice/internal/pkg/common/errcode"
+	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -27,10 +28,7 @@ func NewCreateCarOwnerInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 // todo: get user id
 // CreateCarOwnerInfo 创建用户车主信息
 func (l *CreateCarOwnerInfoLogic) CreateCarOwnerInfo(req *types.CreateCarOwnerInfoReq) (resp *types.CreateCarOwnerInfoRep, err error) {
-	// todo: have not test below getting.
-	// user := l.ctx.Value("user").(jwt.UserPayload)
-	// userId := user.UserId
-	userId := 1
+	userId := jwt.GetUserId(l.ctx)
 	query := "INSERT INTO `car_owner_infos`(`name`, `user_id`, `phone_number`, `multilevel_address`, `full_address`, `longitude`, `latitude`) VALUES(?, ?, ?, ?, ?, ?, ?)"
 	_, err = l.svcCtx.DBC.ExecContext(l.ctx, query, req.Name, userId, req.PhoneNumber, req.MultilevelAddress, req.FullAddress, req.Longitude, req.Latitude)
 	if err != nil {

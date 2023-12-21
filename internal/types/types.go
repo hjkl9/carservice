@@ -68,6 +68,10 @@ type WechatAuthorizationRep struct {
 	Token string `json:"token"`
 }
 
+type MockLoginReq struct {
+	Token string `json:"token"`
+}
+
 type BrandOptionListItem struct {
 	Id     uint   `json:"id"`
 	Label  string `json:"label"`

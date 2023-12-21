@@ -66,6 +66,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodGet,
+				Path:    "/user/login/mock",
+				Handler: user.MockLoginHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodPost,
 				Path:    "/user/login/phoneNumber",
 				Handler: user.PhoneNumberLoginHandler(serverCtx),

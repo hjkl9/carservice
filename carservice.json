@@ -157,6 +157,203 @@
         ]
       }
     },
+    "/v1/carBrand/brandOptionList": {
+      "get": {
+        "summary": "获取汽车品牌选项列表",
+        "operationId": "BrandOptionList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/[]BrandOptionListItem"
+            }
+          }
+        },
+        "requestBody": {},
+        "tags": [
+          "carbrand"
+        ]
+      }
+    },
+    "/v1/carBrandSeries/brandSeriesOptionList": {
+      "get": {
+        "summary": "获取品牌下的系列",
+        "operationId": "BrandSeriesOptionList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/[]BrandSeriesOptionListItem"
+            }
+          }
+        },
+        "requestBody": {},
+        "tags": [
+          "carbrandseries"
+        ]
+      }
+    },
+    "/v1/carOwnerInfo": {
+      "post": {
+        "summary": "创建用户车主信息",
+        "operationId": "CreateCarOwnerInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CreateCarOwnerInfoRep"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " create CarOwnerInfo ",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateCarOwnerInfoReq"
+            }
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "carownerinfo"
+        ]
+      }
+    },
+    "/v1/carOwnerInfo/checkEmptyList": {
+      "get": {
+        "summary": "检查当前用户是否已存在车辆信息列表",
+        "operationId": "CheckEmptyList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CheckEmptyListRep"
+            }
+          }
+        },
+        "requestBody": {},
+        "tags": [
+          "carownerinfo"
+        ]
+      }
+    },
+    "/v1/carOwnerInfo/{id}": {
+      "get": {
+        "summary": "获取用户车主信息",
+        "operationId": "GetCarOwnerInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetCarOwnerInfoRep"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "carownerinfo"
+        ]
+      },
+      "delete": {
+        "summary": "删除用户车主信息",
+        "operationId": "DeleteCarOwnerInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteCarOwnerInfoReq"
+            }
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "carownerinfo"
+        ]
+      },
+      "put": {
+        "summary": "更新用户车主信息",
+        "operationId": "UpdateCarOwnerInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UpdateCarOwnerInfoRep"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateCarOwnerInfoReq"
+            }
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "carownerinfo"
+        ]
+      }
+    },
+    "/v1/carOwnerInfo/{id}/list": {
+      "get": {
+        "summary": "获取用户车主信息列表",
+        "operationId": "GetCarOwnerInfoList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/[]CarOwnerInfoListItem"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "carownerinfo"
+        ]
+      }
+    },
     "/v1/user/getUserByPhoneNumber": {
       "get": {
         "summary": "通过手机号获取用户信息",
@@ -177,6 +374,24 @@
             "type": "string"
           }
         ],
+        "requestBody": {},
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/v1/user/login/mock": {
+      "get": {
+        "summary": "模拟登录获取 AccessToken",
+        "operationId": "MockLogin",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/MockLoginReq"
+            }
+          }
+        },
         "requestBody": {},
         "tags": [
           "user"
@@ -210,9 +425,337 @@
           "user"
         ]
       }
+    },
+    "/v1/user/login/wechatAuthorization": {
+      "get": {
+        "summary": "微信授权登录",
+        "operationId": "WechatAuthorization",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/WechatAuthorizationRep"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/v1/userOrder": {
+      "post": {
+        "summary": "创建用户订单",
+        "operationId": "CreateUserOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 创建用户订单 ",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUserOrderReq"
+            }
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "userorder"
+        ]
+      }
     }
   },
   "definitions": {
+    "BrandOptionListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        },
+        "label": {
+          "type": "string"
+        },
+        "pinyin": {
+          "type": "string"
+        }
+      },
+      "title": "BrandOptionListItem",
+      "required": [
+        "id",
+        "label",
+        "pinyin"
+      ]
+    },
+    "BrandSeriesOptionListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        },
+        "label": {
+          "type": "string"
+        },
+        "pinyin": {
+          "type": "string"
+        }
+      },
+      "title": "BrandSeriesOptionListItem",
+      "required": [
+        "id",
+        "label",
+        "pinyin"
+      ]
+    },
+    "BrandSeriesOptionListRep": {
+      "type": "object",
+      "title": "BrandSeriesOptionListRep"
+    },
+    "BrandSeriesOptionListReq": {
+      "type": "object",
+      "properties": {
+        "brandId": {
+          "$ref": "#/definitions/uint"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "BrandSeriesOptionListReq",
+      "required": [
+        "brandId"
+      ]
+    },
+    "CarBrandOptionListRep": {
+      "type": "object",
+      "title": "CarBrandOptionListRep"
+    },
+    "CarBrandOptionListReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "CarBrandOptionListReq"
+    },
+    "CarOwnerInfoListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        },
+        "name": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "multilevelAddress": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
+        }
+      },
+      "title": "CarOwnerInfoListItem",
+      "required": [
+        "id",
+        "name",
+        "phoneNumber",
+        "multilevelAddress",
+        "fullAddress"
+      ]
+    },
+    "CheckEmptyListRep": {
+      "type": "object",
+      "properties": {
+        "listable": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "title": "CheckEmptyListRep",
+      "required": [
+        "listable"
+      ]
+    },
+    "CheckEmptyListReq": {
+      "type": "object",
+      "title": "CheckEmptyListReq"
+    },
+    "CreateCarOwnerInfoRep": {
+      "type": "object",
+      "title": "CreateCarOwnerInfoRep"
+    },
+    "CreateCarOwnerInfoReq": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "multilevelAddress": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "CreateCarOwnerInfoReq",
+      "required": [
+        "name",
+        "phoneNumber",
+        "multilevelAddress",
+        "fullAddress",
+        "longitude",
+        "latitude"
+      ]
+    },
+    "CreateUserOrderRep": {
+      "type": "object",
+      "title": "CreateUserOrderRep"
+    },
+    "CreateUserOrderReq": {
+      "type": "object",
+      "properties": {
+        "carOwnerName": {
+          "type": "string"
+        },
+        "carOwnerPhoneNumber": {
+          "type": "string"
+        },
+        "carOwnerLongitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "carOwnerLatitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "carOwnerMultilevelAddress": {
+          "type": "string"
+        },
+        "carOwnerFullAddress": {
+          "type": "string"
+        },
+        "carBrandId": {
+          "$ref": "#/definitions/uint"
+        },
+        "carBrandSeriesId": {
+          "$ref": "#/definitions/uint"
+        },
+        "requirements": {
+          "type": "string"
+        }
+      },
+      "title": "CreateUserOrderReq",
+      "required": [
+        "carOwnerName",
+        "carOwnerPhoneNumber",
+        "carOwnerLongitude",
+        "carOwnerLatitude",
+        "carOwnerMultilevelAddress",
+        "carOwnerFullAddress",
+        "carBrandId",
+        "carBrandSeriesId",
+        "requirements"
+      ]
+    },
+    "DeleteCarOwnerInfoReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        }
+      },
+      "title": "DeleteCarOwnerInfoReq",
+      "required": [
+        "id"
+      ]
+    },
+    "GetCarOwnerInfoListRep": {
+      "type": "object",
+      "title": "GetCarOwnerInfoListRep"
+    },
+    "GetCarOwnerInfoListReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        }
+      },
+      "title": "GetCarOwnerInfoListReq",
+      "required": [
+        "id"
+      ]
+    },
+    "GetCarOwnerInfoRep": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        },
+        "name": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "multilevelAddress": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
+        }
+      },
+      "title": "GetCarOwnerInfoRep",
+      "required": [
+        "id",
+        "name",
+        "phoneNumber",
+        "multilevelAddress",
+        "fullAddress"
+      ]
+    },
+    "GetCarOwnerInfoReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        }
+      },
+      "title": "GetCarOwnerInfoReq",
+      "required": [
+        "id"
+      ]
+    },
     "GetUserByPhoneNumberRep": {
       "type": "object",
       "properties": {
@@ -263,6 +806,18 @@
       "title": "GetUserPhoneNumberReq",
       "required": [
         "code"
+      ]
+    },
+    "MockLoginReq": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "title": "MockLoginReq",
+      "required": [
+        "token"
       ]
     },
     "PhoneNumberLoginRep": {
@@ -358,6 +913,48 @@
         "phoneNumber"
       ]
     },
+    "UpdateCarOwnerInfoRep": {
+      "type": "object",
+      "title": "UpdateCarOwnerInfoRep"
+    },
+    "UpdateCarOwnerInfoReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        },
+        "name": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "multilevelAddress": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "latitude": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "UpdateCarOwnerInfoReq",
+      "required": [
+        "id",
+        "name",
+        "phoneNumber",
+        "multilevelAddress",
+        "fullAddress",
+        "longitude",
+        "latitude"
+      ]
+    },
     "UploadFileRep": {
       "type": "object",
       "properties": {
@@ -394,6 +991,30 @@
       "required": [
         "absolutePaths",
         "relativePaths"
+      ]
+    },
+    "WechatAuthorizationRep": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "title": "WechatAuthorizationRep",
+      "required": [
+        "token"
+      ]
+    },
+    "WechatAuthorizationReq": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        }
+      },
+      "title": "WechatAuthorizationReq",
+      "required": [
+        "code"
       ]
     }
   },

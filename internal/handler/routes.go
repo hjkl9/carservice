@@ -49,6 +49,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/fs/uploadMultipleFiles",
 				Handler: common.UploadMultipleFilesHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/ws/test",
+				Handler: common.WebsocketTestHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/common"),
 	)

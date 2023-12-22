@@ -22,6 +22,11 @@ type (
         AbsolutePaths []string `json:"absolutePaths"`
         RelativePaths []string `json:"relativePaths"`
     }
+
+    // websocket test
+    WebsocketTestReq {
+        Arg string `form:"arg"`
+    }
 )
 
 @server (
@@ -48,4 +53,8 @@ service carservice {
 	)
     @handler UploadMultipleFiles
     post /fs/uploadMultipleFiles returns (UploadMultipleFilesRep)
+
+    // Websocket
+    @handler WebsocketTest
+    get /ws/test (WebsocketTestReq)
 }

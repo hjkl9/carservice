@@ -35,6 +35,10 @@ type UploadMultipleFilesRep struct {
 	RelativePaths []string `json:"relativePaths"`
 }
 
+type WebsocketTestReq struct {
+	Arg string `form:"arg"`
+}
+
 type SendCaptchaReq struct {
 	PhoneNumber string `form:"phoneNumber"`
 }

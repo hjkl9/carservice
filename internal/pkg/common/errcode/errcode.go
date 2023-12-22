@@ -11,6 +11,12 @@ func New(code int, errCode, msg string) *ErrCode {
 	return &ErrCode{code, errCode, msg, nil}
 }
 
+func (e *ErrCode) Lazy(msg string, details ...string) *ErrCode {
+	e.Msg = msg
+	e.Details = details
+	return e
+}
+
 func (e *ErrCode) Error() string {
 	return e.Msg
 }

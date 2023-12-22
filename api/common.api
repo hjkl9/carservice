@@ -55,6 +55,10 @@ service carservice {
     post /fs/uploadMultipleFiles returns (UploadMultipleFilesRep)
 
     // Websocket
+    @doc(
+        summary: "测试 Websocket [未通过]"
+    )
+    
     @handler WebsocketTest
     get /ws/test (WebsocketTestReq)
 }

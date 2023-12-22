@@ -104,6 +104,30 @@
         ]
       }
     },
+    "/common/ws/test": {
+      "get": {
+        "summary": "测试 Websocket [未通过]",
+        "operationId": "WebsocketTest",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "arg",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "common"
+        ]
+      }
+    },
     "/ping": {
       "get": {
         "summary": "检查服务器状态",
@@ -671,6 +695,9 @@
         "carBrandSeriesId": {
           "$ref": "#/definitions/uint"
         },
+        "partnerStoreId": {
+          "$ref": "#/definitions/uint"
+        },
         "requirements": {
           "type": "string"
         }
@@ -685,6 +712,7 @@
         "carOwnerFullAddress",
         "carBrandId",
         "carBrandSeriesId",
+        "partnerStoreId",
         "requirements"
       ]
     },
@@ -991,6 +1019,18 @@
       "required": [
         "absolutePaths",
         "relativePaths"
+      ]
+    },
+    "WebsocketTestReq": {
+      "type": "object",
+      "properties": {
+        "arg": {
+          "type": "string"
+        }
+      },
+      "title": "WebsocketTestReq",
+      "required": [
+        "arg"
       ]
     },
     "WechatAuthorizationRep": {

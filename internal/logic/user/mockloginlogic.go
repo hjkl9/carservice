@@ -2,7 +2,12 @@ package user
 
 import (
 	"context"
+	"fmt"
+	"time"
 
+	"carservice/internal/data/tables"
+	"carservice/internal/pkg/common/errcode"
+	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -24,7 +29,18 @@ func NewMockLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MockLog
 }
 
 func (l *MockLoginLogic) MockLogin() (resp *types.MockLoginReq, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+	mockUserId := 1
+	var count int
+	query := "SELECT count(1) AS `count` FROM `%s` WHERE `id` = ? LIMIT 1"
+	err = l.svcCtx.DBC.Get(&count, fmt.Sprintf(query, tables.User), mockUserId)
+	if err != nil {
+		return nil, errcode.DatabaseError.SetMsg("查询数据库时发生错误").SetDetails(err.Error())
+	}
+	token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, time.Now().Unix(), 36000, uint(mockUserId))
+	if err != nil {
+		return nil, errcode.DatabaseError.SetMsg("生成 AccessToken 时发生错误").SetDetails(err.Error())
+	}
+	return &types.MockLoginReq{
+		Token: token,
+	}, nil
 }

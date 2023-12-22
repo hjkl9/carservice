@@ -22,7 +22,6 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
-	fmt.Println(c.Log.Mode)
 	// setup logger
 	logc.MustSetup(c.LogConf)
 

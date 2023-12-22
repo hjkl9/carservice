@@ -43,7 +43,7 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 
 	// 创建车主信息
 	query := "INSERT INTO `%s`(`name`, `user_id`, `phone_number`, `multilevel_address`, `full_address`, `longitude`, `latitude`) VALUES(?, ?, ?, ?, ?, ?, ?)"
-	result, err := l.svcCtx.DBC.ExecContext(
+	result, err := tx.ExecContext(
 		l.ctx,
 		fmt.Sprintf(query, tables.CarOwnerInfo),
 		req.CarOwnerName, userId,

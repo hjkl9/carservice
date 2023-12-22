@@ -13,7 +13,9 @@ func New(code int, errCode, msg string) *ErrCode {
 
 func (e *ErrCode) Lazy(msg string, details ...string) *ErrCode {
 	e.Msg = msg
-	e.Details = details
+	if len(details) > 0 {
+		e.Details = details
+	}
 	return e
 }
 

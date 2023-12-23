@@ -2,7 +2,6 @@ package carbrand
 
 import (
 	"context"
-	"fmt"
 
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/svc"
@@ -25,11 +24,10 @@ func NewOptionListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Option
 	}
 }
 
-func (l *OptionListLogic) OptionList() (resp []types.BrandOptionListItem, err error) {
+func (l *OptionListLogic) OptionList() (resp []types.CarBrandOptionListItem, err error) {
 	sql := "SELECT `brand_id` AS `id`, `brand_name` AS `label`, `pinyin` AS `pinyin` FROM `car_brands` WHERE `business_status` = ?"
-	var list []types.BrandOptionListItem
+	var list []types.CarBrandOptionListItem
 	err = l.svcCtx.DBC.Select(&list, sql, "1")
-	fmt.Println(list)
 	if err != nil {
 		return nil, errcode.InternalServerError.SetMsg("查询数据时发生错误").SetDetails(err.Error())
 	}

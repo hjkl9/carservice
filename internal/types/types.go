@@ -76,7 +76,7 @@ type MockLoginReq struct {
 	Token string `json:"token"`
 }
 
-type BrandOptionListItem struct {
+type CarBrandOptionListItem struct {
 	Id     uint   `json:"id"`
 	Label  string `json:"label"`
 	Pinyin string `json:"pinyin"`

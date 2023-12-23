@@ -14,6 +14,7 @@ import (
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
+	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -38,6 +39,7 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 	// 创建事务
 	tx, err := l.svcCtx.DBC.Beginx()
 	if err != nil {
+		logc.Errorf(l.ctx, "创建订单->创建事务时发生错误, err: %s\n", err.Error())
 		return errcode.DatabaseError.SetMsg("创建事务时发生错误").SetDetails(err.Error())
 	}
 
@@ -58,6 +60,7 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 		if err1 := tx.Rollback(); err1 != nil {
 			return errcode.DatabaseError.SetMsg("回滚失败").SetDetails(err1.Error())
 		}
+		logc.Errorf(l.ctx, "创建订单->创建车主信息时发生错误, err: %s\n", err.Error())
 		return errcode.DatabaseError.SetMsg("创建用户车主信息时发生错误").SetDetails(err.Error())
 	}
 	// 新创建的车主信息 ID
@@ -75,6 +78,7 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 		if err1 := tx.Rollback(); err1 != nil {
 			return errcode.DatabaseError.SetMsg("数据库回滚时发生错误").SetDetails(err1.Error())
 		}
+		logc.Errorf(l.ctx, "创建订单->查询车数据时发生错误, err: %s\n", err.Error())
 		return errcode.DatabaseError.SetMsg("数据库查询时发生错误").SetDetails(err.Error())
 	}
 	// 如果不存在
@@ -121,6 +125,7 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 		if err1 := tx.Rollback(); err1 != nil {
 			return errcode.DatabaseError.SetMsg("数据库回滚时发生错误").SetDetails(err1.Error())
 		}
+		logc.Errorf(l.ctx, "创建订单时发生错误, err: %s\n", err.Error())
 		return errcode.DatabaseError.SetMsg("创建订单时发生错误").SetDetails(err.Error())
 	}
 
@@ -130,6 +135,7 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 		if err1 := tx.Rollback(); err1 != nil {
 			return errcode.DatabaseError.SetMsg("数据库回滚时发生错误").SetDetails(err1.Error())
 		}
+		logc.Errorf(l.ctx, "创建订单->创建订单失败, err: %s\n", err.Error())
 		return errcode.InternalServerError.SetMsg("订单创建失败")
 	}
 

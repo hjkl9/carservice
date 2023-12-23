@@ -116,8 +116,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
-				Path:    "/carBrandSeries/brandSeriesOptionList",
-				Handler: carbrandseries.BrandSeriesOptionListHandler(serverCtx),
+				Path:    "/carBrandSeries/optionList",
+				Handler: carbrandseries.OptionListHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/v1"),

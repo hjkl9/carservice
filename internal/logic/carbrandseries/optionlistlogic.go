@@ -10,21 +10,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type BrandSeriesOptionListLogic struct {
+type OptionListLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewBrandSeriesOptionListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *BrandSeriesOptionListLogic {
-	return &BrandSeriesOptionListLogic{
+func NewOptionListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OptionListLogic {
+	return &OptionListLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *BrandSeriesOptionListLogic) BrandSeriesOptionList(req *types.BrandSeriesOptionListReq) (resp []types.BrandSeriesOptionListItem, err error) {
+func (l *OptionListLogic) OptionList(req *types.BrandSeriesOptionListReq) (resp []types.BrandSeriesOptionListItem, err error) {
 	query := "SELECT `series_id` AS `id`, `series_name` AS `label`, '-' AS `pinyin` FROM `car_brand_series` WHERE `brand_id` = ? AND `business_status` = ?"
 	var list []types.BrandSeriesOptionListItem
 	if err = l.svcCtx.DBC.Select(&list, query, req.BrandId, 1); err != nil {

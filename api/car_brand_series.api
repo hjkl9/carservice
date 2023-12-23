@@ -1,17 +1,17 @@
 syntax = "v1"
 
 type (
-    BrandSeriesOptionListItem {
+    CarBrandSeriesOptionListItem {
         Id uint `json:"id"`
         Label string `json:"label"`
         Pinyin string `json:"pinyin"`
     }
-    BrandSeriesOptionListReq {
+    CarBrandSeriesOptionListReq {
         BrandId uint `form:"brandId"`
         // optional
         Page int `form:"page,optional"`
     }
-    BrandSeriesOptionListRep {}
+    CarBrandSeriesOptionListRep {}
 )
 
 @server (
@@ -23,5 +23,5 @@ service carservice {
         summary: "获取品牌下的系列"
     )
     @handler OptionList
-    get /carBrandSeries/optionList returns ([]BrandSeriesOptionListItem)
+    get /carBrandSeries/optionList returns ([]CarBrandSeriesOptionListItem)
 }

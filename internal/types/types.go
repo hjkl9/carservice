@@ -89,18 +89,18 @@ type CarBrandOptionListReq struct {
 type CarBrandOptionListRep struct {
 }
 
-type BrandSeriesOptionListItem struct {
+type CarBrandSeriesOptionListItem struct {
 	Id     uint   `json:"id"`
 	Label  string `json:"label"`
 	Pinyin string `json:"pinyin"`
 }
 
-type BrandSeriesOptionListReq struct {
+type CarBrandSeriesOptionListReq struct {
 	BrandId uint `form:"brandId"`
 	Page    int  `form:"page,optional"`
 }
 
-type BrandSeriesOptionListRep struct {
+type CarBrandSeriesOptionListRep struct {
 }
 
 type CheckEmptyListReq struct {

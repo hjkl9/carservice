@@ -40,16 +40,19 @@ down1:
 
 # todo: should add link for redis.
 # todo: specify the link of mysql and network.
-up2:
+PROJECT_LOGS_LINUX=/root/projects/master/carservice/logs
+linuxup2:
 	git pull
 	docker build . -t ${APP_NAME}
 	docker run --rm -d \
 		--name ${APP_NAME} \
 		--link carservice_mysql:mysql \
 		--net deploy_carservice_admin_network \
+		-v ${PROJECT_LOGS_LINUX}:/app/logs \
 		-p 8888:8888 \
 		${APP_NAME}
-down2:
+linuxdown2:
 	docker stop ${APP_NAME}
 	docker rm ${APP_NAME}
 	docker rmi ${APP_NAME}
+

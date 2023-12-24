@@ -25,7 +25,7 @@ func NewPingDbLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PingDbLogi
 	}
 }
 
-func (l *PingDbLogic) PingDb(req *types.PingDbReq) (resp *types.PingDbRep, err error) {
+func (l *PingDbLogic) PingDb(req *types.ServerPingDbReq) (resp *types.ServerPingDbRep, err error) {
 	err = l.svcCtx.DBC.Ping()
 	if err != nil {
 		return nil, errcode.New(http.StatusInternalServerError, "feature.", err.Error())
@@ -34,5 +34,5 @@ func (l *PingDbLogic) PingDb(req *types.PingDbReq) (resp *types.PingDbRep, err e
 	if err != nil {
 		return nil, errcode.New(http.StatusNotFound, "-", "找不到记录")
 	}
-	return &types.PingDbRep{Result: result}, nil
+	return &types.ServerPingDbRep{Result: result}, nil
 }

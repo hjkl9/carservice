@@ -26,17 +26,17 @@ type (
 	// 	GoVersion string `json:"goVersion"`
 	// }
 
-	PingReq {
+	ServerPingReq {
 		HttpCode int `form:"httpCode, default=200"`
 	}
-	PingRep {
+	ServerPingRep {
 		Result string `json:"result"`
 	}
 
-	PingDbReq {
+	ServerPingDbReq {
 		AsResult string `form:"asResult, default=carservice"`
 	}
-	PingDbRep {
+	ServerPingDbRep {
 		Result string `json:"result"`
 	}
 )
@@ -53,11 +53,11 @@ service carservice {
 		summary: "检查服务器状态"
 	)
 	@handler Ping
-	get /ping (PingReq) returns (PingRep)
+	get /ping (ServerPingReq) returns (ServerPingRep)
 	
 	@doc(
 		summary: "检查数据库在服务器中的状态，已经在中间件中被使用"
 	)
 	@handler PingDb
-	get /pingDb (PingDbReq) returns (PingDbRep)
+	get /pingDb (ServerPingDbReq) returns (ServerPingDbRep)
 }

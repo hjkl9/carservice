@@ -14,7 +14,7 @@ import (
 
 func PingHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.PingReq
+		var req types.ServerPingReq
 		if err := httpx.Parse(r, &req); err != nil {
 			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
 			return

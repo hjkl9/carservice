@@ -178,3 +178,17 @@ type CreateUserOrderReq struct {
 
 type CreateUserOrderRep struct {
 }
+
+type GetUserOrderReq struct {
+	Id uint `path:"id"`
+}
+
+type GetUserOrderRep struct {
+	Id           uint   `json:"id"`
+	OrderNumber  string `json:"orderNumber"`
+	PartnerStore string `json:"partnerStore"`
+	Requirements string `json:"requirements"`
+	OrderStatus  string `json:"orderStatus"`
+	CreatedAt    string `json:"createdAt"`
+	UpdatedAt    string `json:"updatedAt"`
+}

@@ -20,6 +20,20 @@ type (
         Requirements string `json:"requirements"`
     }
     CreateUserOrderRep {}
+
+    // 获取用户订单 //
+    GetUserOrderReq {
+        Id uint `path:"id"`
+    }
+    GetUserOrderRep {
+        Id uint `json:"id"`
+        OrderNumber string `json:"orderNumber"`
+        PartnerStore string `json:"partnerStore"`
+        Requirements string `json:"requirements"`
+        OrderStatus string `json:"orderStatus"`
+        CreatedAt string `json:"createdAt"`
+        UpdatedAt string `json:"updatedAt"`
+    }
 )
 
 @server(
@@ -33,4 +47,10 @@ service carservice {
     )
     @handler CreateUserOrder
     post /userOrder (CreateUserOrderReq)
+
+    @doc(
+        summary: "获取用户订单"
+    )
+    @handler GetUserOrder
+    get /userOrder/:id (GetUserOrderReq) returns (GetUserOrderRep)
 }

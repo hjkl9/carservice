@@ -103,10 +103,7 @@ type CarBrandSeriesOptionListReq struct {
 type CarBrandSeriesOptionListRep struct {
 }
 
-type CheckEmptyListReq struct {
-}
-
-type CheckEmptyListRep struct {
+type CarOwnerInfoCheckEmptyListRep struct {
 	Listable bool `json:"listable"`
 }
 

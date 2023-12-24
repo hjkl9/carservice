@@ -27,14 +27,14 @@ func NewCheckEmptyListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ch
 	}
 }
 
-func (l *CheckEmptyListLogic) CheckEmptyList() (resp *types.CheckEmptyListRep, err error) {
+func (l *CheckEmptyListLogic) CheckEmptyList() (resp *types.CarOwnerInfoCheckEmptyListRep, err error) {
 	userId := jwt.GetUserId(l.ctx)
 	var count int
 	query := "SELECT COUNT(1) AS `count` FROM `%s` WHERE `user_id` = ?"
 	if err = l.svcCtx.DBC.Get(&count, fmt.Sprintf(query, tables.CarOwnerInfo), userId); err != nil {
 		return nil, errcode.InternalServerError.SetMsg("查询数据时发生错误").SetDetails(err.Error())
 	}
-	return &types.CheckEmptyListRep{
+	return &types.CarOwnerInfoCheckEmptyListRep{
 		Listable: count > 0,
 	}, nil
 }

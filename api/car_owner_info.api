@@ -1,8 +1,7 @@
 syntax = "v1"
 
 type (
-    CheckEmptyListReq {}
-    CheckEmptyListRep {
+    CarOwnerInfoCheckEmptyListRep {
         Listable bool `json:"listable"`
     }
 
@@ -65,7 +64,7 @@ service carservice {
         summary: "检查当前用户是否已存在车辆信息列表"
     )
     @handler CheckEmptyList
-    get /carOwnerInfo/checkEmptyList returns (CheckEmptyListRep)
+    get /carOwnerInfo/checkEmptyList returns (CarOwnerInfoCheckEmptyListRep)
 
     @doc(
         summary: "创建用户车主信息"

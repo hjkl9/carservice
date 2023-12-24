@@ -6,12 +6,12 @@ type (
         Label string `json:"label"`
         Pinyin string `json:"pinyin"`
     }
-    CarBrandSeriesOptionListReq {
+    GetCarBrandSeriesOptionListReq {
         BrandId uint `form:"brandId"`
         // optional
         Page int `form:"page,optional"`
     }
-    CarBrandSeriesOptionListRep {}
+    GetCarBrandSeriesOptionListRep {}
 )
 
 @server (
@@ -23,5 +23,5 @@ service carservice {
         summary: "获取品牌下的系列"
     )
     @handler OptionList
-    get /carBrandSeries/optionList returns ([]CarBrandSeriesOptionListItem)
+    get /carBrandSeries/optionList (GetCarBrandSeriesOptionListReq) returns ([]CarBrandSeriesOptionListItem)
 }

@@ -95,12 +95,12 @@ type CarBrandSeriesOptionListItem struct {
 	Pinyin string `json:"pinyin"`
 }
 
-type CarBrandSeriesOptionListReq struct {
+type GetCarBrandSeriesOptionListReq struct {
 	BrandId uint `form:"brandId"`
 	Page    int  `form:"page,optional"`
 }
 
-type CarBrandSeriesOptionListRep struct {
+type GetCarBrandSeriesOptionListRep struct {
 }
 
 type CarOwnerInfoCheckEmptyListRep struct {

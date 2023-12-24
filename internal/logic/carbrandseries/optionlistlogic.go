@@ -24,7 +24,7 @@ func NewOptionListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Option
 	}
 }
 
-func (l *OptionListLogic) OptionList(req *types.CarBrandSeriesOptionListReq) (resp []types.CarBrandSeriesOptionListItem, err error) {
+func (l *OptionListLogic) OptionList(req *types.GetCarBrandSeriesOptionListReq) (resp []types.CarBrandSeriesOptionListItem, err error) {
 	query := "SELECT `series_id` AS `id`, `series_name` AS `label`, '-' AS `pinyin` FROM `car_brand_series` WHERE `brand_id` = ? AND `business_status` = ?"
 	var list []types.CarBrandSeriesOptionListItem
 	if err = l.svcCtx.DBC.Select(&list, query, req.BrandId, 1); err != nil {

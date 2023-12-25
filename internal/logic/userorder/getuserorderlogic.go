@@ -8,6 +8,7 @@ import (
 	"carservice/internal/data/tables"
 	"carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
+	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -40,14 +41,15 @@ type Order struct {
 }
 
 func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *types.GetUserOrderRep, err error) {
+	userId := jwt.GetUserId(l.ctx)
 	// 检查订单是否存在
 	var count int = 0
-	query := "SELECT COUNT(1) AS `count` FROM `%s` WHERE `id` = ? LIMIT 1"
-	if err = l.svcCtx.DBC.Get(&count, fmt.Sprintf(query, tables.UserOrder), req.Id); err != nil {
+	query := "SELECT COUNT(1) AS `count` FROM `%s` WHERE `id` = ? AND `member_id` = ? AND `deleted_at` IS NULL LIMIT 1"
+	if err = l.svcCtx.DBC.Get(&count, fmt.Sprintf(query, tables.UserOrder), req.Id, userId); err != nil {
 		return nil, errcode.DatabaseError.SetDetails(err.Error())
 	}
 	if count == 0 {
-		return nil, errcode.NotFound.SetMsg("该用户订单不存在")
+		return nil, errcode.NotFound.SetMsg("该用户订单不存在或已被删除")
 	}
 	// 通过 ID 查询订单
 	var order Order

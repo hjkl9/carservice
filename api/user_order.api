@@ -50,6 +50,11 @@ type (
         Page int `json:"page,optional"`
     }
     GetUserOrderListRep {}
+
+    // 删除用户订单 //
+    DeleteUserOrderReq {
+        Id uint `path:"id"`
+    }
 )
 
 @server(
@@ -75,4 +80,10 @@ service carservice {
     )
     @handler GetrUserOrderList
     get /userOrder/list (GetUserOrderListReq) returns ([]UserOrderListItem)
+
+    @doc(
+        summary: "删除用户订单"
+    )
+    @handler DeleteUserOrder
+    delete /userOrder/:id (DeleteUserOrderReq)
 }

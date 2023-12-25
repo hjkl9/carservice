@@ -209,3 +209,7 @@ type GetUserOrderListReq struct {
 
 type GetUserOrderListRep struct {
 }
+
+type DeleteUserOrderReq struct {
+	Id uint `path:"id"`
+}

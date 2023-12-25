@@ -177,6 +177,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/userOrder/list",
 				Handler: userorder.GetrUserOrderListHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/userOrder/:id",
+				Handler: userorder.DeleteUserOrderHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
 		rest.WithPrefix("/v1"),

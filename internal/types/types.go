@@ -163,6 +163,16 @@ type DeleteCarOwnerInfoReq struct {
 	Id uint `path:"id"`
 }
 
+type UserOrderListItem struct {
+	Id           uint   `json:"id"`
+	OrderNumber  string `json:"orderNumber"`
+	PartnerStore string `json:"partnerStore"`
+	Requirements string `json:"requirements"`
+	OrderStatus  string `json:"orderStatus"`
+	CreatedAt    string `json:"createdAt"`
+	UpdatedAt    string `json:"updatedAt"`
+}
+
 type CreateUserOrderReq struct {
 	CarOwnerName              string  `json:"carOwnerName"`
 	CarOwnerPhoneNumber       string  `json:"carOwnerPhoneNumber"`
@@ -191,4 +201,11 @@ type GetUserOrderRep struct {
 	OrderStatus  string `json:"orderStatus"`
 	CreatedAt    string `json:"createdAt"`
 	UpdatedAt    string `json:"updatedAt"`
+}
+
+type GetUserOrderListReq struct {
+	Page int `json:"page,optional"`
+}
+
+type GetUserOrderListRep struct {
 }

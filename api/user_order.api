@@ -1,6 +1,16 @@
 syntax = "v1"
 
 type (
+    UserOrderListItem {
+        Id uint `json:"id"`
+        OrderNumber string `json:"orderNumber"`
+        PartnerStore string `json:"partnerStore"`
+        Requirements string `json:"requirements"`
+        OrderStatus string `json:"orderStatus"`
+        CreatedAt string `json:"createdAt"`
+        UpdatedAt string `json:"updatedAt"`
+    }
+    
     // 创建用户订单 //
     CreateUserOrderReq {
         // CarOwner
@@ -34,6 +44,12 @@ type (
         CreatedAt string `json:"createdAt"`
         UpdatedAt string `json:"updatedAt"`
     }
+
+    // 获取用户订单列表 //
+    GetUserOrderListReq {
+        Page int `json:"page,optional"`
+    }
+    GetUserOrderListRep {}
 )
 
 @server(
@@ -53,4 +69,10 @@ service carservice {
     )
     @handler GetUserOrder
     get /userOrder/:id (GetUserOrderReq) returns (GetUserOrderRep)
+
+    @doc(
+        summary: "获取用户订单列表"
+    )
+    @handler GetrUserOrderList
+    get /userOrder/list (GetUserOrderListReq) returns ([]UserOrderListItem)
 }

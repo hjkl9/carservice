@@ -20,6 +20,9 @@ swaggerdown:
 	docker stop $(SWAGGER_CONTAINER_NAME)
 swaggerup:
 	docker run --rm -d -p 8083:8080 --name $(SWAGGER_CONTAINER_NAME) -e "SWAGGER_JSON=/carservice.json" -v $(shell pwd)/carservice.json:/carservice.json  swaggerapi/swagger-ui
+reswagger:
+	docker stop $(SWAGGER_CONTAINER_NAME)
+	docker run --rm -d -p 8083:8080 --name $(SWAGGER_CONTAINER_NAME) -e "SWAGGER_JSON=/carservice.json" -v $(shell pwd)/carservice.json:/carservice.json  swaggerapi/swagger-ui
 
 # deployment related.
 APP_NAME=carservice

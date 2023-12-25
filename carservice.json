@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Carservice",
-    "version": "v0.0.11"
+    "version": "v0.1.01"
   },
   "host": "api.cheyiyi.cn",
   "schemes": [
@@ -136,7 +136,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/PingRep"
+              "$ref": "#/definitions/ServerPingRep"
             }
           }
         },
@@ -163,7 +163,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/PingDbRep"
+              "$ref": "#/definitions/ServerPingDbRep"
             }
           }
         },
@@ -181,15 +181,15 @@
         ]
       }
     },
-    "/v1/carBrand/brandOptionList": {
+    "/v1/carBrand/optionList": {
       "get": {
         "summary": "获取汽车品牌选项列表",
-        "operationId": "BrandOptionList",
+        "operationId": "OptionList",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/[]BrandOptionListItem"
+              "$ref": "#/definitions/[]CarBrandOptionListItem"
             }
           }
         },
@@ -199,18 +199,34 @@
         ]
       }
     },
-    "/v1/carBrandSeries/brandSeriesOptionList": {
+    "/v1/carBrandSeries/optionList": {
       "get": {
         "summary": "获取品牌下的系列",
-        "operationId": "BrandSeriesOptionList",
+        "operationId": "OptionList",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/[]BrandSeriesOptionListItem"
+              "$ref": "#/definitions/[]CarBrandSeriesOptionListItem"
             }
           }
         },
+        "parameters": [
+          {
+            "name": "brandId",
+            "in": "query",
+            "required": true,
+            "type": "invalid",
+            "format": "UNKNOWN"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
         "requestBody": {},
         "tags": [
           "carbrandseries"
@@ -254,7 +270,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/CheckEmptyListRep"
+              "$ref": "#/definitions/CarOwnerInfoCheckEmptyListRep"
             }
           }
         },
@@ -502,10 +518,94 @@
           "userorder"
         ]
       }
+    },
+    "/v1/userOrder/list": {
+      "get": {
+        "summary": "获取用户订单列表",
+        "operationId": "GetrUserOrderList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/[]UserOrderListItem"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "userorder"
+        ]
+      }
+    },
+    "/v1/userOrder/{id}": {
+      "get": {
+        "summary": "获取用户订单",
+        "operationId": "GetUserOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetUserOrderRep"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "userorder"
+        ]
+      },
+      "delete": {
+        "summary": "删除用户订单",
+        "operationId": "DeleteUserOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": " 删除用户订单 ",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteUserOrderReq"
+            }
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "userorder"
+        ]
+      }
     }
   },
   "definitions": {
-    "BrandOptionListItem": {
+    "CarBrandOptionListItem": {
       "type": "object",
       "properties": {
         "id": {
@@ -518,51 +618,11 @@
           "type": "string"
         }
       },
-      "title": "BrandOptionListItem",
+      "title": "CarBrandOptionListItem",
       "required": [
         "id",
         "label",
         "pinyin"
-      ]
-    },
-    "BrandSeriesOptionListItem": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "$ref": "#/definitions/uint"
-        },
-        "label": {
-          "type": "string"
-        },
-        "pinyin": {
-          "type": "string"
-        }
-      },
-      "title": "BrandSeriesOptionListItem",
-      "required": [
-        "id",
-        "label",
-        "pinyin"
-      ]
-    },
-    "BrandSeriesOptionListRep": {
-      "type": "object",
-      "title": "BrandSeriesOptionListRep"
-    },
-    "BrandSeriesOptionListReq": {
-      "type": "object",
-      "properties": {
-        "brandId": {
-          "$ref": "#/definitions/uint"
-        },
-        "page": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "title": "BrandSeriesOptionListReq",
-      "required": [
-        "brandId"
       ]
     },
     "CarBrandOptionListRep": {
@@ -578,6 +638,39 @@
         }
       },
       "title": "CarBrandOptionListReq"
+    },
+    "CarBrandSeriesOptionListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        },
+        "label": {
+          "type": "string"
+        },
+        "pinyin": {
+          "type": "string"
+        }
+      },
+      "title": "CarBrandSeriesOptionListItem",
+      "required": [
+        "id",
+        "label",
+        "pinyin"
+      ]
+    },
+    "CarOwnerInfoCheckEmptyListRep": {
+      "type": "object",
+      "properties": {
+        "listable": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "title": "CarOwnerInfoCheckEmptyListRep",
+      "required": [
+        "listable"
+      ]
     },
     "CarOwnerInfoListItem": {
       "type": "object",
@@ -606,23 +699,6 @@
         "multilevelAddress",
         "fullAddress"
       ]
-    },
-    "CheckEmptyListRep": {
-      "type": "object",
-      "properties": {
-        "listable": {
-          "type": "boolean",
-          "format": "boolean"
-        }
-      },
-      "title": "CheckEmptyListRep",
-      "required": [
-        "listable"
-      ]
-    },
-    "CheckEmptyListReq": {
-      "type": "object",
-      "title": "CheckEmptyListReq"
     },
     "CreateCarOwnerInfoRep": {
       "type": "object",
@@ -728,6 +804,38 @@
         "id"
       ]
     },
+    "DeleteUserOrderReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        }
+      },
+      "title": "DeleteUserOrderReq",
+      "required": [
+        "id"
+      ]
+    },
+    "GetCarBrandSeriesOptionListRep": {
+      "type": "object",
+      "title": "GetCarBrandSeriesOptionListRep"
+    },
+    "GetCarBrandSeriesOptionListReq": {
+      "type": "object",
+      "properties": {
+        "brandId": {
+          "$ref": "#/definitions/uint"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "GetCarBrandSeriesOptionListReq",
+      "required": [
+        "brandId"
+      ]
+    },
     "GetCarOwnerInfoListRep": {
       "type": "object",
       "title": "GetCarOwnerInfoListRep"
@@ -812,6 +920,68 @@
         "phoneNumber"
       ]
     },
+    "GetUserOrderListRep": {
+      "type": "object",
+      "title": "GetUserOrderListRep"
+    },
+    "GetUserOrderListReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "GetUserOrderListReq"
+    },
+    "GetUserOrderRep": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        },
+        "orderNumber": {
+          "type": "string"
+        },
+        "partnerStore": {
+          "type": "string"
+        },
+        "requirements": {
+          "type": "string"
+        },
+        "orderStatus": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      },
+      "title": "GetUserOrderRep",
+      "required": [
+        "id",
+        "orderNumber",
+        "partnerStore",
+        "requirements",
+        "orderStatus",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "GetUserOrderReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        }
+      },
+      "title": "GetUserOrderReq",
+      "required": [
+        "id"
+      ]
+    },
     "GetUserPhoneNumberRep": {
       "type": "object",
       "properties": {
@@ -876,55 +1046,6 @@
         "captcha"
       ]
     },
-    "PingDbRep": {
-      "type": "object",
-      "properties": {
-        "result": {
-          "type": "string"
-        }
-      },
-      "title": "PingDbRep",
-      "required": [
-        "result"
-      ]
-    },
-    "PingDbReq": {
-      "type": "object",
-      "properties": {
-        "asResult": {
-          "type": "string"
-        }
-      },
-      "title": "PingDbReq",
-      "required": [
-        "asResult"
-      ]
-    },
-    "PingRep": {
-      "type": "object",
-      "properties": {
-        "result": {
-          "type": "string"
-        }
-      },
-      "title": "PingRep",
-      "required": [
-        "result"
-      ]
-    },
-    "PingReq": {
-      "type": "object",
-      "properties": {
-        "httpCode": {
-          "type": "integer",
-          "format": "int32"
-        }
-      },
-      "title": "PingReq",
-      "required": [
-        "httpCode"
-      ]
-    },
     "SendCaptchaRep": {
       "type": "object",
       "title": "SendCaptchaRep"
@@ -939,6 +1060,55 @@
       "title": "SendCaptchaReq",
       "required": [
         "phoneNumber"
+      ]
+    },
+    "ServerPingDbRep": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "string"
+        }
+      },
+      "title": "ServerPingDbRep",
+      "required": [
+        "result"
+      ]
+    },
+    "ServerPingDbReq": {
+      "type": "object",
+      "properties": {
+        "asResult": {
+          "type": "string"
+        }
+      },
+      "title": "ServerPingDbReq",
+      "required": [
+        "asResult"
+      ]
+    },
+    "ServerPingRep": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "string"
+        }
+      },
+      "title": "ServerPingRep",
+      "required": [
+        "result"
+      ]
+    },
+    "ServerPingReq": {
+      "type": "object",
+      "properties": {
+        "httpCode": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "ServerPingReq",
+      "required": [
+        "httpCode"
       ]
     },
     "UpdateCarOwnerInfoRep": {
@@ -1019,6 +1189,42 @@
       "required": [
         "absolutePaths",
         "relativePaths"
+      ]
+    },
+    "UserOrderListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        },
+        "orderNumber": {
+          "type": "string"
+        },
+        "partnerStore": {
+          "type": "string"
+        },
+        "requirements": {
+          "type": "string"
+        },
+        "orderStatus": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      },
+      "title": "UserOrderListItem",
+      "required": [
+        "id",
+        "orderNumber",
+        "partnerStore",
+        "requirements",
+        "orderStatus",
+        "createdAt",
+        "updatedAt"
       ]
     },
     "WebsocketTestReq": {

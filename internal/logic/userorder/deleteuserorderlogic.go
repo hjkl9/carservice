@@ -27,8 +27,8 @@ func NewDeleteUserOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 
 // DeleteUserOrder
 // todo: 被删除的条件:
-// - 条件 1 (TODO)
-// - 条件 2 (TODO)
+// - 已取消的订单 (TODO)
+// - 已完成的订单 (TODO)
 func (l *DeleteUserOrderLogic) DeleteUserOrder(req *types.DeleteUserOrderReq) error {
 	// 用户
 	userId := jwt.GetUserId(l.ctx)
@@ -42,8 +42,9 @@ func (l *DeleteUserOrderLogic) DeleteUserOrder(req *types.DeleteUserOrderReq) er
 	if count == 0 {
 		return errcode.NotFound.SetMsg("该用户订单不存在或已被删除")
 	}
-	// todo: 删除的条件
-	// - ...
+	// todo: 被删除的条件:
+	// - 已取消的订单 (TODO)
+	// - 已完成的订单 (TODO)
 
 	// 软删除
 	query = "UPDATE `user_orders` SET `deleted_at` = NOW() WHERE `member_id` = ? AND `id` = ?"

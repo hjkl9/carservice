@@ -36,3 +36,10 @@ WechatConf:
   MiniProgram:
     AppId:
     Secret:
+
+WechatPayConf:
+  PrivateKeyPath: /path/to/your/merchant/apiclient_key.pem
+  AppId:
+  MchId:
+  MchAPIv3Key:
+  MchCertificateSerialNumber:

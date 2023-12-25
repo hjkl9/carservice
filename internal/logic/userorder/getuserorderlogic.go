@@ -2,9 +2,11 @@ package userorder
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"carservice/internal/data/tables"
+	"carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/svc"
 	"carservice/internal/types"
@@ -26,6 +28,17 @@ func NewGetUserOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetU
 	}
 }
 
+type Order struct {
+	Id           uint           `db:"id"`
+	OrderNumber  string         `db:"orderNumber"`
+	PartnerStore sql.NullString `db:"partnerStore"`
+	Comment      string         `db:"comment"`
+	OrderStatus  int            `db:"orderStatus"`
+	CreatedAt    string         `db:"createdAt"`
+	UpdatedAt    string         `db:"updatedAt"`
+	// other fields.
+}
+
 func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *types.GetUserOrderRep, err error) {
 	// 检查订单是否存在
 	var count int = 0
@@ -33,11 +46,31 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 	if err = l.svcCtx.DBC.Get(&count, fmt.Sprintf(query, tables.UserOrder), req.Id); err != nil {
 		return nil, errcode.DatabaseError.SetDetails(err.Error())
 	}
+	if count == 0 {
+		return nil, errcode.NotFound.SetMsg("该用户订单不存在")
+	}
 	// 通过 ID 查询订单
-	query = "SELECT `id` AS `id`, '11111' AS `orderNumber`, `comment` AS `requirements`, `order_status` AS `orderStatus`, `created_at` AS `createdAt`, `updated_at` AS `updatedAt`, `partner_store_id` AS `partnerStore` FROM `%s` WHERE `id` = ? LIMIT 1"
-	var data types.GetUserOrderRep
-	if err = l.svcCtx.DBC.Get(&data, fmt.Sprintf(query, tables.UserOrder), req.Id); err != nil {
+	var order Order
+
+	query = "SELECT `o`.`id` AS `id`, `o`.`order_number` AS `orderNumber`, `ps`.`title` AS `partnerStore`, `o`.`comment` AS `comment`, `o`.`order_status` AS `orderStatus`, `o`.`created_at` AS `createdAt`, `o`.`updated_at` AS `updatedAt` FROM `%s` AS `o` LEFT JOIN `partner_stores` AS `ps` ON `ps`.`id` = `o`.`partner_store_id` WHERE `o`.`id` = ? LIMIT 1"
+	if err = l.svcCtx.DBC.Get(&order, fmt.Sprintf(query, tables.UserOrder), req.Id); err != nil {
 		return nil, errcode.DatabaseError.SetDetails(err.Error())
 	}
-	return &data, nil
+	fmt.Printf("%#v\n", order)
+	return &types.GetUserOrderRep{
+		Id:          order.Id,
+		OrderNumber: order.OrderNumber,
+		PartnerStore: func() string {
+			if !order.PartnerStore.Valid {
+				return "未绑定商家"
+			}
+			return order.PartnerStore.String
+		}(),
+		Requirements: order.Comment,
+		OrderStatus: userorder.OrderStatusDesc(
+			userorder.OrderStatusType(order.OrderStatus),
+		),
+		CreatedAt: order.CreatedAt,
+		UpdatedAt: order.UpdatedAt,
+	}, nil
 }

@@ -1,3 +1,4 @@
+github.com/agiledragon/gomonkey v2.0.2+incompatible/go.mod h1:2NGfXu1a80LLr2cmWXGBDaHEjb1idR6+FVlX5T3D9hw=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/bsm/ginkgo/v2 v2.12.0 h1:Ny8MWAHyOepLGlLKYmXG4IEkioBysk6GpaRTLC8zwWs=
@@ -109,6 +110,7 @@ github.com/stretchr/objx v0.5.0 h1:1zr/of2m5FGMsad5YfcqgdqdWrIhu+EBEJRhR1U7z/c=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
 github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
+github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.808 h1:tOcS95xyLkY8OyquoVpQiH8i0zkkMcttW30Kr4a/oOo=
@@ -119,6 +121,8 @@ github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.808 h1:Jr8Ca60
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.808/go.mod h1:2Trcn2T8jz+4xIgnmKilAG1qSoimXjgET6p/cBFgo1s=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.821 h1:WgWLRtOXmLK/6dJ3WN1jUcAB9SgCvWH8ygJnloAQySA=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.821/go.mod h1:KbHYu4iSTdUEB8AM9aLSoVVMxJu4wbz6J4J+UbuDeEg=
+github.com/wechatpay-apiv3/wechatpay-go v0.2.18 h1:vj5tvSmnEIz3ZsnFNNUzg+3Z46xgNMJbrO4aD4wP15w=
+github.com/wechatpay-apiv3/wechatpay-go v0.2.18/go.mod h1:A254AUBVB6R+EqQFo3yTgeh7HtyqRRtN2w9hQSOrd4Q=
 github.com/zeromicro/go-zero v1.6.0 h1:UwSOR1lGZ2g7L0S07PM8RoneAcubtd5x//EfbuNucQ0=
 github.com/zeromicro/go-zero v1.6.0/go.mod h1:E9GCFPb0SwsTKFBcFr9UynGvXiDMmfc6fI5F15vqvAQ=
 github.com/zeromicro/go-zero v1.6.1 h1:E8fRkMPiYODk8+jUIrxQQIEG+MTgWfXKiH7sjc9l6Vs=

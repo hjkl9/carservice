@@ -86,6 +86,14 @@ type GetUserProfileRep struct {
 	AvatarUrl   string `json:"avatarUrl"`
 }
 
+type UpdateUserProfileReq struct {
+	Username  string `json:"username"`
+	AvatarUrl string `json:"avatarUrl"`
+}
+
+type UpdateUserProfileRep struct {
+}
+
 type CarBrandOptionListItem struct {
 	Id     uint   `json:"id"`
 	Label  string `json:"label"`

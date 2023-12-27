@@ -39,6 +39,22 @@ type (
         PhoneNumber string `json:"phoneNumber"`
         AvatarUrl string `json:"avatarUrl"`
     }
+
+    // todo: 用户绑定手机号码 //
+    // UserBindPhoneNumberReq {
+    // }
+    // UserBindPhoneNumberRep {}
+
+    // todo: 用户解绑手机号码 //
+    // UserUnbindPhoneNumberReq {}
+    // UserUnbindPhoneNumberRep {}
+
+    // 更新用户信息 //
+    UpdateUserProfileReq {
+        Username string `json:"username"`
+        AvatarUrl string `json:"avatarUrl"`
+    }
+    UpdateUserProfileRep {}
 )
 
 @server (
@@ -83,4 +99,10 @@ service carservice {
     )
     @handler GetUserProfile
     get /user/profile returns (GetUserProfileRep)
+
+    @doc(
+        summary: "更新用户信息"
+    )
+    @handler UpdateUserProfile
+    put /user/profile (UpdateUserProfileReq)
 }

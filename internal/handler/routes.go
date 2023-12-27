@@ -101,6 +101,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/user/profile",
 				Handler: user.GetUserProfileHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/user/profile",
+				Handler: user.UpdateUserProfileHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
 		rest.WithPrefix("/v1"),

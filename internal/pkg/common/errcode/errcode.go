@@ -1,5 +1,7 @@
 package errcode
 
+import "fmt"
+
 type ErrCode struct {
 	Code    int
 	ErrCode string
@@ -25,6 +27,11 @@ func (e *ErrCode) Error() string {
 
 func (e *ErrCode) SetMsg(msg string) *ErrCode {
 	e.Msg = msg
+	return e
+}
+
+func (e *ErrCode) SetMsgf(format string, v ...interface{}) *ErrCode {
+	e.Msg = fmt.Sprintf(format, v)
 	return e
 }
 

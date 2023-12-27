@@ -16,7 +16,7 @@ func RegisterGlobalMiddleware(server *rest.Server, serverCtx *svc.ServiceContext
 			err := serverCtx.DBC.Ping()
 			if err != nil {
 				logc.Errorf(r.Context(), "MySQL 连接发生错误或配置不正确, err: %#v\n", err)
-				stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusOK, "-", "MySQL 连接发生错误或配置不正确"))
+				stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusInternalServerError, "-", "MySQL 连接发生错误或配置不正确"))
 				return
 			}
 			next(w, r)

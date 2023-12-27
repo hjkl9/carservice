@@ -96,6 +96,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/user/getUserByPhoneNumber",
 				Handler: user.GetUserByPhoneNumberHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/user/profile",
+				Handler: user.GetUserProfileHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
 		rest.WithPrefix("/v1"),

@@ -30,6 +30,15 @@ type (
     MockLoginReq {
         Token string `json:"token"`
     }
+
+    // 获取用户信息 //
+    GetUserProfileReq {}
+    GetUserProfileRep {
+        Id uint `json:"id"`
+        Username string `json:"username"`
+        PhoneNumber string `json:"phoneNumber"`
+        AvatarUrl string `json:"avatarUrl"`
+    }
 )
 
 @server (
@@ -64,8 +73,14 @@ service carservice {
 )
 service carservice {
     @doc(
-		summary: "通过手机号获取用户信息"
+		summary: "通过手机号获取用户信息 (后端测试用)"
 	)
     @handler GetUserByPhoneNumber
     get /user/getUserByPhoneNumber (GetUserByPhoneNumberReq) returns (GetUserByPhoneNumberRep)
+
+    @doc(
+        summary: "获取用户信息"
+    )
+    @handler GetUserProfile
+    get /user/profile returns (GetUserProfileRep)
 }

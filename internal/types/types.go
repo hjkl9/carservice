@@ -76,6 +76,16 @@ type MockLoginReq struct {
 	Token string `json:"token"`
 }
 
+type GetUserProfileReq struct {
+}
+
+type GetUserProfileRep struct {
+	Id          uint   `json:"id"`
+	Username    string `json:"username"`
+	PhoneNumber string `json:"phoneNumber"`
+	AvatarUrl   string `json:"avatarUrl"`
+}
+
 type CarBrandOptionListItem struct {
 	Id     uint   `json:"id"`
 	Label  string `json:"label"`

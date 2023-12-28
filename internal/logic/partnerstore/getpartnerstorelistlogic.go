@@ -32,9 +32,9 @@ type StoreListItem struct {
 	Id          uint    `db:"id"`
 	Title       string  `db:"title"`
 	FullAddress string  `db:"fullAddress"`
-	Longitude   float64 `db:"longitude"` // 经度
-	Latitude    float64 `db:"latitude"`  // 纬度
-	Distance    float64 `db:"distance"`
+	Longitude   float32 `db:"longitude"` // 经度
+	Latitude    float32 `db:"latitude"`  // 纬度
+	Distance    float32 `db:"distance"`
 }
 
 func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStoreListReq) (resp []types.PartnerStoreListItem, err error) {

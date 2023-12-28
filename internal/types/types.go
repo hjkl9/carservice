@@ -243,13 +243,13 @@ type PartnerStoreListItem struct {
 	Id          uint    `json:"id"`
 	Title       string  `json:"title"`
 	FullAddress string  `json:"fullAddress"`
-	Gap         float64 `json:"gap"`
+	Gap         float32 `json:"gap"`
 	Unit        string  `json:"unit"`
 }
 
 type GetPartnerStoreListReq struct {
 	Address  string  `form:"address"`
-	LimitGap float64 `form:"limitGap,optional"`
+	LimitGap float32 `form:"limitGap,optional"`
 }
 
 type GetPartnerStoreListRep struct {

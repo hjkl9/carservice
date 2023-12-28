@@ -13,7 +13,10 @@ require (
 	github.com/zeromicro/x v0.0.0-20230424055333-01c7fb9548d4
 )
 
-require github.com/wechatpay-apiv3/wechatpay-go v0.2.18 // indirect
+require (
+	github.com/brianvoe/gofakeit/v6 v6.26.3 // indirect
+	github.com/wechatpay-apiv3/wechatpay-go v0.2.18 // indirect
+)
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect

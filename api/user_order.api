@@ -47,7 +47,7 @@ type (
 
     // 获取用户订单列表 //
     GetUserOrderListReq {
-        Page int `json:"page,optional"`
+        Page int `form:"page,optional"`
     }
     GetUserOrderListRep {}
 

@@ -23,7 +23,7 @@ RedisConf:
 
 JwtConf:
   AccessSecret:
-  AccessExipre: 10
+  AccessExpire: 10
 
 SmsConf:
   SecretId:
@@ -44,5 +44,5 @@ WechatPayConf:
   MchAPIv3Key:
   MchCertificateSerialNumber:
 
-AMap:
+AMapConf:
   Key: 

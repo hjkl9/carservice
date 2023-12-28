@@ -50,6 +50,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: common.UploadMultipleFilesHandler(serverCtx),
 			},
 			{
+				Method:  http.MethodPost,
+				Path:    "/fs/uploadImage",
+				Handler: common.UploadImageHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodGet,
 				Path:    "/ws/test",
 				Handler: common.WebsocketTestHandler(serverCtx),

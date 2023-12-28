@@ -31,7 +31,7 @@ func (e *ErrCode) SetMsg(msg string) *ErrCode {
 }
 
 func (e *ErrCode) SetMsgf(format string, v ...interface{}) *ErrCode {
-	e.Msg = fmt.Sprintf(format, v)
+	e.Msg = fmt.Sprintf(format, v...)
 	return e
 }
 

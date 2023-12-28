@@ -23,6 +23,12 @@ type (
         RelativePaths []string `json:"relativePaths"`
     }
 
+    // upload single image. //
+    UploadImageReq {}
+    UploadImageRep {
+        Url string `json:"url"`
+    }
+
     // websocket test
     WebsocketTestReq {
         Arg string `form:"arg"`
@@ -53,6 +59,12 @@ service carservice {
 	)
     @handler UploadMultipleFiles
     post /fs/uploadMultipleFiles returns (UploadMultipleFilesRep)
+
+    @doc(
+        summary: "上传图片"
+    )
+    @handler UploadImage
+    post /fs/uploadImage returns (UploadImageRep)
 
     // Websocket
     @doc(

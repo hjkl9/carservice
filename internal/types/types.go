@@ -35,6 +35,13 @@ type UploadMultipleFilesRep struct {
 	RelativePaths []string `json:"relativePaths"`
 }
 
+type UploadImageReq struct {
+}
+
+type UploadImageRep struct {
+	Url string `json:"url"`
+}
+
 type WebsocketTestReq struct {
 	Arg string `form:"arg"`
 }

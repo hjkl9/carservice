@@ -229,7 +229,7 @@ type GetUserOrderRep struct {
 }
 
 type GetUserOrderListReq struct {
-	Page int `json:"page,optional"`
+	Page int `form:"page,optional"`
 }
 
 type GetUserOrderListRep struct {
@@ -237,4 +237,19 @@ type GetUserOrderListRep struct {
 
 type DeleteUserOrderReq struct {
 	Id uint `path:"id"`
+}
+
+type PartnerStoreListItem struct {
+	Id          uint   `json:"id"`
+	Title       string `json:"title"`
+	FullAddress string `json:"fullAddress"`
+	Gap         uint   `json:"gap"`
+	Unit        string `json:"unit"`
+}
+
+type GetPartnerStoreListReq struct {
+	LimitGap float64 `form:"limitGap,optional"`
+}
+
+type GetPartnerStoreListRep struct {
 }

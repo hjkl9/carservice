@@ -11,6 +11,7 @@ import "car_brand.api"
 import "car_brand_series.api"
 import "car_owner_info.api"
 import "user_order.api"
+import "partner_store.api"
 
 info(
 	title: "Carservice"

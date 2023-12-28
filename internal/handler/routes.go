@@ -8,6 +8,7 @@ import (
 	carbrandseries "carservice/internal/handler/carbrandseries"
 	carownerinfo "carservice/internal/handler/carownerinfo"
 	common "carservice/internal/handler/common"
+	partnerstore "carservice/internal/handler/partnerstore"
 	sms "carservice/internal/handler/sms"
 	user "carservice/internal/handler/user"
 	userorder "carservice/internal/handler/userorder"
@@ -199,6 +200,17 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
+		rest.WithPrefix("/v1"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/partnerStore/list",
+				Handler: partnerstore.GetPartnerStoreListHandler(serverCtx),
+			},
+		},
 		rest.WithPrefix("/v1"),
 	)
 }

@@ -1,0 +1,27 @@
+syntax = "v1"
+
+type (
+    PartnerStoreListItem {
+        Id uint `json:"id"`
+        Title string `json:"title"`
+        FullAddress string `json:"fullAddress"`
+        Gap uint `json:"gap"`
+        Unit string `json:"unit"`
+    }
+    GetPartnerStoreListReq {
+        LimitGap float64 `form:"limitGap,optional"`
+    }
+    GetPartnerStoreListRep {}
+)
+
+@server (
+    group: partnerstore
+    prefix: /v1
+)
+service carservice {
+    @doc(
+        summary: "获取附近的合作门店"
+    )
+    @handler GetPartnerStoreList
+    get /partnerStore/list (GetPartnerStoreListReq) returns ([]PartnerStoreListItem)
+}

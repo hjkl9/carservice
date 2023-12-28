@@ -5,7 +5,7 @@ type (
         Id uint `json:"id"`
         Title string `json:"title"`
         FullAddress string `json:"fullAddress"`
-        Gap uint `json:"gap"`
+        Gap float64 `json:"gap"`
         Unit string `json:"unit"`
     }
     GetPartnerStoreListReq {

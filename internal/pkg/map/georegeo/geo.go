@@ -48,7 +48,6 @@ func NewGeo(cfg config.AMapConf) *Geo {
 
 func (g *Geo) ByAddress(address string) (*Geo, error) {
 	url := "https://restapi.amap.com/v3/geocode/geo?key=%s&address=%s"
-	fmt.Println(fmt.Sprintf(url, g.cfg.Key, address))
 	resp, err := http.Get(fmt.Sprintf(url, g.cfg.Key, address))
 	if err != nil {
 		return g, err

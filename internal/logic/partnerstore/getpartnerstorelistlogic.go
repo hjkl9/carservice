@@ -2,7 +2,6 @@ package partnerstore
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -12,7 +11,6 @@ import (
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
-	gofakeit "github.com/brianvoe/gofakeit/v6"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -36,9 +34,16 @@ type StoreListItem struct {
 	FullAddress string  `db:"fullAddress"`
 	Longitude   float64 `db:"longitude"` // 经度
 	Latitude    float64 `db:"latitude"`  // 纬度
+	Distance    float64 `db:"distance"`
 }
 
 func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStoreListReq) (resp []types.PartnerStoreListItem, err error) {
+	limit := 0
+	if req.LimitGap <= 0 {
+		limit = 15
+	} else {
+		limit = int(req.LimitGap)
+	}
 	// 实例化地理编码
 	geo, err := georegeo.NewGeo(l.svcCtx.Config.AMapConf).ByAddress(req.Address)
 	if err != nil {
@@ -66,43 +71,30 @@ func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStor
 		v, _ := strconv.ParseFloat(locationSlice[1], 64)
 		return v
 	}()
-	fmt.Printf("经纬度: %#v\n", location)
-	// todo: 数据库查询附近的门店
-	// var stores []*StoreListItem
-	// query := "SELECT * FROM `partner_stores` WHERE `longitude` <= ? AND `latitude` <= ?"
-	// stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
-	// if err != nil {
-	// 	return nil, errcode.NewDatabaseErrorx().GetError(err)
-	// }
-	// if err = stmt.SelectContext(l.ctx, &stores, 100.00, 100.00); err != nil {
-	// 	return nil, errcode.NewDatabaseErrorx().GetError(err)
-	// }
+	var stores []*StoreListItem
+	query := "SELECT `id`, `title`, `full_address` AS `fullAddress`, `longitude`, `latitude`, (ST_DISTANCE_SPHERE(POINT(?, ?), POINT(longitude, latitude))) / 1000 AS `distance` FROM `partner_stores` WHERE `status` = ? HAVING `distance` <= ?"
+	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	if err != nil {
+		return nil, errcode.NewDatabaseErrorx().GetError(err)
+	}
+	if err = stmt.SelectContext(l.ctx, &stores, location.Longitude, location.Latitude, 1, limit); err != nil {
+		return nil, errcode.NewDatabaseErrorx().GetError(err)
+	}
 	var interfaceData []types.PartnerStoreListItem
-	// for _, v := range stores {
-	// 	interfaceData = append(interfaceData, types.PartnerStoreListItem{
-	// 		Id:          (*v).Id,
-	// 		Title:       (*v).Title,
-	// 		FullAddress: (*v).FullAddress,
-	// 	})
-	// }
+	for _, v := range stores {
+		interfaceData = append(interfaceData, types.PartnerStoreListItem{
+			Id:          (*v).Id,
+			Title:       (*v).Title,
+			FullAddress: (*v).FullAddress,
+			Gap:         (*v).Distance,
+			Unit:        "千米",
+		})
+	}
 	// ! use fake list data.
-	l.fakeListData(&interfaceData)
+	// l.fakeListData(&interfaceData)
 	return interfaceData, nil
 }
 
 func (l *GetPartnerStoreListLogic) calculateGap(list *[]*StoreListItem) {
 	// todo()
-}
-
-func (l *GetPartnerStoreListLogic) fakeListData(dest *[]types.PartnerStoreListItem) {
-	var i uint = 0
-	for i = 0; i < 15; i++ {
-		(*dest) = append((*dest), types.PartnerStoreListItem{
-			Id:          i + 1,
-			Title:       gofakeit.School(),
-			FullAddress: gofakeit.Address().Street,
-			Gap:         gofakeit.UintRange(0, 5000),
-			Unit:        "米",
-		})
-	}
 }

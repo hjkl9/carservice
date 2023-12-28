@@ -240,11 +240,11 @@ type DeleteUserOrderReq struct {
 }
 
 type PartnerStoreListItem struct {
-	Id          uint   `json:"id"`
-	Title       string `json:"title"`
-	FullAddress string `json:"fullAddress"`
-	Gap         uint   `json:"gap"`
-	Unit        string `json:"unit"`
+	Id          uint    `json:"id"`
+	Title       string  `json:"title"`
+	FullAddress string  `json:"fullAddress"`
+	Gap         float64 `json:"gap"`
+	Unit        string  `json:"unit"`
 }
 
 type GetPartnerStoreListReq struct {

@@ -29,7 +29,10 @@ func (l *OptionListLogic) OptionList() (resp []types.CarBrandOptionListItem, err
 	var list []types.CarBrandOptionListItem
 	// 预处理查询语句
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, sql)
-	stmt.SelectContext(l.ctx, &list, "1")
+	if err != nil {
+		return nil, errcode.InternalServerError.SetMsg("查询数据时发生错误").SetDetails(err.Error())
+	}
+	err = stmt.SelectContext(l.ctx, &list, "1")
 	// err = l.svcCtx.DBC.Select(&list, sql, "1")
 	if err != nil {
 		return nil, errcode.InternalServerError.SetMsg("查询数据时发生错误").SetDetails(err.Error())

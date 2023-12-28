@@ -9,6 +9,7 @@ type (
         Unit string `json:"unit"`
     }
     GetPartnerStoreListReq {
+        Address string `form:"address"`
         LimitGap float64 `form:"limitGap,optional"`
     }
     GetPartnerStoreListRep {}

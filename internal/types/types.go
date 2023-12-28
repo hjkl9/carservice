@@ -248,6 +248,7 @@ type PartnerStoreListItem struct {
 }
 
 type GetPartnerStoreListReq struct {
+	Address  string  `form:"address"`
 	LimitGap float64 `form:"limitGap,optional"`
 }
 

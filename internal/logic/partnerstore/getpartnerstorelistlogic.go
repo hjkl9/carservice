@@ -2,7 +2,13 @@ package partnerstore
 
 import (
 	"context"
+	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
 
+	"carservice/internal/pkg/common/errcode"
+	"carservice/internal/pkg/map/georegeo"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -28,13 +34,40 @@ type StoreListItem struct {
 	Id          uint    `db:"id"`
 	Title       string  `db:"title"`
 	FullAddress string  `db:"fullAddress"`
-	Longitude   float64 `db:"longitude"`
-	Latitude    float64 `db:"latitude"`
+	Longitude   float64 `db:"longitude"` // 经度
+	Latitude    float64 `db:"latitude"`  // 纬度
 }
 
 func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStoreListReq) (resp []types.PartnerStoreListItem, err error) {
-	// req.LimitGap
-
+	// 实例化地理编码
+	geo, err := georegeo.NewGeo(l.svcCtx.Config.AMapConf).ByAddress(req.Address)
+	if err != nil {
+		return nil, errcode.InternalServerError.Lazy("第三方服务获取时发生错误", err.Error())
+	}
+	// 获取第一个
+	geocode, ok := geo.GetFirstGeoCode()
+	if !ok {
+		return nil, errcode.New(http.StatusNoContent, "-", "找不到该地址")
+	}
+	// 分割经纬度
+	var location struct {
+		Longitude float64
+		Latitude  float64
+	}
+	// 解析经纬度 //
+	locationSlice := strings.Split(geocode.Location, ",")
+	// 解析经度
+	location.Longitude = func() float64 {
+		v, _ := strconv.ParseFloat(locationSlice[0], 64)
+		return v
+	}()
+	// 解析纬度
+	location.Latitude = func() float64 {
+		v, _ := strconv.ParseFloat(locationSlice[1], 64)
+		return v
+	}()
+	fmt.Printf("经纬度: %#v\n", location)
+	// todo: 数据库查询附近的门店
 	// var stores []*StoreListItem
 	// query := "SELECT * FROM `partner_stores` WHERE `longitude` <= ? AND `latitude` <= ?"
 	// stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)

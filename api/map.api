@@ -1,0 +1,23 @@
+syntax = "v1"
+
+// Belongs to `common`
+
+type (
+    GetGeoReq {
+        Address string `json:"address"`
+        City string `json:"city,optional"`
+    }
+    GetGeoRep {}
+)
+
+@server(
+    prefix: /common
+    group: "map"
+)
+service carservice {
+    @doc(
+		summary: "地理编码"
+    )
+    @handler GetGeo
+    get /map/geocode/geo (GetGeoReq) returns (GetGeoRep)
+}

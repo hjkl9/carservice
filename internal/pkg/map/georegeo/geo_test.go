@@ -18,8 +18,10 @@ func TestGeoByAddress(t *testing.T) {
 		t.Errorf("failed to search location, err: %s\n", err.Error())
 		return
 	}
-	geoCode := rs.GetFirstGeoCode()
-	t.Logf("GeoCode: %#v\n", geoCode)
+	geoCode, ok := rs.GetFirstGeoCode()
+	if ok {
+		t.Logf("GeoCode: %#v\n", geoCode)
+	}
 
 	// for k, v := range (*rs).Geocodes {
 	// 	t.Logf("-- %d --: mem(%p)%#v\n", k, &v, v)

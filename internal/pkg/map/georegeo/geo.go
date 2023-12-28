@@ -65,6 +65,9 @@ func (g *Geo) ByAddress(address string) (*Geo, error) {
 	return g, nil
 }
 
-func (g *Geo) GetFirstGeoCode() Geocode {
-	return (*g.geocodes)[0]
+func (g *Geo) GetFirstGeoCode() (Geocode, bool) {
+	if len(*(g.geocodes)) > 0 {
+		return (*g.geocodes)[0], true
+	}
+	return Geocode{}, false
 }

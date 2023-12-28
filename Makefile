@@ -47,7 +47,7 @@ PROJECT_LOGS_LINUX=/root/projects/master/carservice/logs
 up2:
 	git pull
 	docker build . -t ${APP_NAME}
-	docker run --rm -d \
+	docker run -d \
 		--name ${APP_NAME} \
 		--link carservice_mysql:mysql \
 		--net deploy_carservice_admin_network \

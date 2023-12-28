@@ -33,6 +33,8 @@ type StoreListItem struct {
 }
 
 func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStoreListReq) (resp []types.PartnerStoreListItem, err error) {
+	// req.LimitGap
+
 	// var stores []*StoreListItem
 	// query := "SELECT * FROM `partner_stores` WHERE `longitude` <= ? AND `latitude` <= ?"
 	// stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)

@@ -14,9 +14,10 @@ type Config struct {
 	MysqlConf MysqlConf
 	RedisConf RedisConf
 
-	JwtConf    JwtConf
-	SmsConf    SmsConf
-	WechatConf WechatConf
+	JwtConf    JwtConf    // 认证配置
+	SmsConf    SmsConf    // 短信相关配置
+	WechatConf WechatConf // 微信相关配置
+	AMapConf   AMapConf   // 高德地图配置
 }
 
 type LogConf struct {
@@ -51,7 +52,7 @@ type RedisConf struct {
 
 type JwtConf struct {
 	AccessSecret string
-	AccessExipre int `json:",optional"`
+	AccessExpire int `json:",optional"`
 }
 
 type SmsConf struct {
@@ -69,4 +70,8 @@ type WechatConf struct {
 type MiniProgram struct {
 	AppId  string
 	Secret string
+}
+
+type AMapConf struct {
+	Key string
 }

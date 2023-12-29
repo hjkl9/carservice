@@ -30,6 +30,7 @@ type GeoResp struct {
 	Count    uint      `json:"count"`    // 返回结果数目 <返回结果的个数>
 	Info     string    `json:"info"`     // 返回状态说明 <当 status 为 0 时，info 会返回具体错误原因，否则返回“OK”。详情可以参阅info状态表 `https://lbs.amap.com/api/webservice/guide/tools/info`>
 	Geocodes []Geocode `json:"geocodes"` // 地理编码信息列表 <结果对象列表>
+	Infocode string    `json:"infocode"`
 }
 
 type Geo struct {
@@ -61,6 +62,11 @@ func (g *Geo) ByAddress(address string) (*Geo, error) {
 	var geoResp GeoResp
 	json.Unmarshal(bodyBytes, &geoResp)
 	g.geocodes = &geoResp.Geocodes
+	fmt.Printf("%#v\n", geoResp)
+	if geoResp.Status == 0 && (geoResp.Infocode >= "3000" && geoResp.Infocode < "4000") {
+		// todo: 返回 map 包自定义的错误类型
+		// todo: return
+	}
 	return g, nil
 }
 

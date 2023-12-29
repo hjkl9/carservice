@@ -2,6 +2,7 @@ package partnerstore
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -52,7 +53,8 @@ func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStor
 	// 获取第一个
 	geocode, ok := geo.GetFirstGeoCode()
 	if !ok {
-		return []types.PartnerStoreListItem{}, errcode.New(http.StatusOK, "-", "找不到该地址")
+		errMsg := fmt.Sprintf("找不到地址 `%s`", req.Address)
+		return []types.PartnerStoreListItem{}, errcode.New(http.StatusOK, "-", errMsg)
 	}
 	// 分割经纬度
 	var location struct {

@@ -64,8 +64,10 @@ func (g *Geo) ByAddress(address string) (*Geo, error) {
 	g.geocodes = &geoResp.Geocodes
 	fmt.Printf("%#v\n", geoResp)
 	if geoResp.Status == 0 && (geoResp.Infocode >= "3000" && geoResp.Infocode < "4000") {
-		// todo: 返回 map 包自定义的错误类型
-		// todo: return
+		return nil, ENGINE_RESPONSE_DATA_ERROR
+	}
+	if geoResp.Infocode != "10000" && geoResp.Infocode[0] != '3' {
+		return nil, MatchError(geoResp.Infocode)
 	}
 	return g, nil
 }

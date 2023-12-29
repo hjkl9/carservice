@@ -46,12 +46,14 @@ func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStor
 	// 实例化地理编码
 	geo, err := georegeo.NewGeo(l.svcCtx.Config.AMapConf).ByAddress(req.Address)
 	if err != nil {
-		return nil, errcode.InternalServerError.Lazy("第三方服务获取时发生错误", err.Error())
+		if serviceErr := err.(*georegeo.AMapError); serviceErr != nil {
+			return nil, errcode.InternalServerError.Lazy(serviceErr.GetCode() + ": " + serviceErr.GetMsg())
+		}
+		return nil, errcode.InternalServerError.Lazy("第三方服务发生错误")
 	}
 	// 获取第一个
 	geocode, ok := geo.GetFirstGeoCode()
 	if !ok {
-		// errMsg := fmt.Sprintf("找不到地址 `%s`", req.Address)
 		return []types.PartnerStoreListItem{}, nil
 	}
 	// 分割经纬度

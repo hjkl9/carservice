@@ -52,7 +52,7 @@ func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStor
 	// 获取第一个
 	geocode, ok := geo.GetFirstGeoCode()
 	if !ok {
-		return nil, errcode.New(http.StatusNoContent, "-", "找不到该地址")
+		return []types.PartnerStoreListItem{}, errcode.New(http.StatusOK, "-", "找不到该地址")
 	}
 	// 分割经纬度
 	var location struct {

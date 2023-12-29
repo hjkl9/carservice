@@ -96,7 +96,3 @@ func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStor
 	// l.fakeListData(&interfaceData)
 	return interfaceData, nil
 }
-
-func (l *GetPartnerStoreListLogic) calculateGap(list *[]*StoreListItem) {
-	// todo()
-}

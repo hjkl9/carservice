@@ -2,6 +2,7 @@ package partnerstore
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -47,9 +48,9 @@ func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStor
 	geo, err := georegeo.NewGeo(l.svcCtx.Config.AMapConf).ByAddress(req.Address)
 	if err != nil {
 		if serviceErr := err.(*georegeo.AMapError); serviceErr != nil {
-			return nil, errcode.InternalServerError.Lazy(serviceErr.GetCode() + ": " + serviceErr.GetMsg())
+			return []types.PartnerStoreListItem{}, errcode.InternalServerError.Lazy(serviceErr.GetCode() + ": " + serviceErr.GetMsg())
 		}
-		return nil, errcode.InternalServerError.Lazy("第三方服务发生错误")
+		return []types.PartnerStoreListItem{}, errcode.InternalServerError.Lazy("第三方服务发生错误")
 	}
 	// 获取第一个
 	geocode, ok := geo.GetFirstGeoCode()
@@ -77,12 +78,12 @@ func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStor
 	query := "SELECT `id`, `title`, `full_address` AS `fullAddress`, `longitude`, `latitude`, (ST_DISTANCE_SPHERE(POINT(?, ?), POINT(longitude, latitude))) / 1000 AS `distance` FROM `partner_stores` WHERE `status` = ? HAVING `distance` <= ?"
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
-		return nil, errcode.NewDatabaseErrorx().GetError(err)
+		return []types.PartnerStoreListItem{}, errcode.NewDatabaseErrorx().GetError(err)
 	}
 	if err = stmt.SelectContext(l.ctx, &stores, location.Longitude, location.Latitude, 1, limit); err != nil {
-		return nil, errcode.NewDatabaseErrorx().GetError(err)
+		return []types.PartnerStoreListItem{}, errcode.NewDatabaseErrorx().GetError(err)
 	}
-	var interfaceData []types.PartnerStoreListItem
+	var interfaceData []types.PartnerStoreListItem = []types.PartnerStoreListItem{}
 	for _, v := range stores {
 		interfaceData = append(interfaceData, types.PartnerStoreListItem{
 			Id:          (*v).Id,
@@ -92,6 +93,8 @@ func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStor
 			Unit:        "千米",
 		})
 	}
+	fmt.Println("here...", interfaceData == nil)
+
 	// ! use fake list data.
 	// l.fakeListData(&interfaceData)
 	return interfaceData, nil

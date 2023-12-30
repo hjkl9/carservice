@@ -28,13 +28,15 @@ func NewGetPartnerStoreListLogic(ctx context.Context, svcCtx *svc.ServiceContext
 	}
 }
 
+// StoreListItem
+// 内存对齐 OK
 type StoreListItem struct {
-	Id          uint    `db:"id"`
-	Title       string  `db:"title"`
-	FullAddress string  `db:"fullAddress"`
-	Longitude   float32 `db:"longitude"` // 经度
-	Latitude    float32 `db:"latitude"`  // 纬度
-	Distance    float32 `db:"distance"`
+	Id          uint    `db:"id"`          // 1
+	Title       string  `db:"title"`       // 1
+	FullAddress string  `db:"fullAddress"` // 1
+	Longitude   float32 `db:"longitude"`   // 4 经度
+	Latitude    float32 `db:"latitude"`    // 4 纬度
+	Distance    float32 `db:"distance"`    // 4
 }
 
 func (l *GetPartnerStoreListLogic) GetPartnerStoreList(req *types.GetPartnerStoreListReq) (resp []types.PartnerStoreListItem, err error) {

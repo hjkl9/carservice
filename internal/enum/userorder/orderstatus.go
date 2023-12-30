@@ -1,5 +1,6 @@
 package userorder
 
+// Should use type of int8.
 type OrderStatusType int
 
 const (

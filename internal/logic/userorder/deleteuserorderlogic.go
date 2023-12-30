@@ -3,6 +3,7 @@ package userorder
 import (
 	"context"
 
+	"carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
@@ -43,18 +44,33 @@ func (l *DeleteUserOrderLogic) DeleteUserOrder(req *types.DeleteUserOrderReq) er
 		return errcode.NotFound.SetMsg("该用户订单不存在或已被删除")
 	}
 	// todo: 被删除的条件:
-	// - 已取消的订单 (TODO)
-	// - 已完成的订单 (TODO)
-
-	// 软删除
-	query = "UPDATE `user_orders` SET `deleted_at` = NOW() WHERE `member_id` = ? AND `id` = ?"
-	rs, err := l.svcCtx.DBC.ExecContext(l.ctx, query, userId, req.Id)
+	var orderStatus int8
+	query = "SELECT `order_status` AS `orderStatus` FROM `user_orders` WHERE `member_id` = ? AND `id` = ? LIMIT 1"
+	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
-		return errcode.NewDatabaseErrorx().DeleteError(err)
+		return errcode.NewDatabaseErrorx().GetError(err)
 	}
-	n, _ := rs.RowsAffected()
-	if n == 0 {
-		return errcode.NewDatabaseErrorx().DeleteError(err)
+	err = stmt.GetContext(l.ctx, &orderStatus, userId, req.Id)
+	if err != nil {
+		return errcode.NewDatabaseErrorx().GetError(err)
 	}
-	return nil
+	// 判断删除条件
+	// 如果符合删除条件
+	// - 已取消的订单
+	// - 已完成的订单
+	if orderStatus == int8(userorder.Cancelled) || orderStatus == int8(userorder.Completed) {
+		// todo: 删除订单
+		// 软删除
+		query = "UPDATE `user_orders` SET `deleted_at` = NOW() WHERE `member_id` = ? AND `id` = ?"
+		rs, err := l.svcCtx.DBC.ExecContext(l.ctx, query, userId, req.Id)
+		if err != nil {
+			return errcode.NewDatabaseErrorx().DeleteError(err)
+		}
+		n, _ := rs.RowsAffected()
+		if n == 0 {
+			return errcode.NewDatabaseErrorx().DeleteError(err)
+		}
+	}
+	// 否则订单还在进行中
+	return errcode.Ok.Lazy("订单还在进行中")
 }

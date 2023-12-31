@@ -27,7 +27,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 }
 
 func NewSqlx(c config.Config) *sqlx.DB {
-	return sqlx.MustOpen(c.MysqlConf.Driver, c.MysqlConf.Source)
+	db := sqlx.MustOpen(c.MysqlConf.Driver, c.MysqlConf.Source)
+	// set connection.
+	return db
 }
 
 func NewRedis(c config.Config) *redis.Client {

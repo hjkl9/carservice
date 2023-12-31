@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"carservice/internal/logic/common"
 	"carservice/internal/pkg/common/errcode"
 	stdresponse "carservice/internal/pkg/httper/response"
 	"carservice/internal/svc"
@@ -16,7 +15,13 @@ import (
 )
 
 // upgrade to websocket connection.
-var upgrader = websocket.Upgrader{}
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 
 func WebsocketTestHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -25,9 +30,10 @@ func WebsocketTestHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
 			return
 		}
-
 		// create websocket connection and handle error.
 		conn, err := upgrader.Upgrade(w, r, nil)
+		remoteAddr := conn.RemoteAddr()
+		logc.Infof(r.Context(), "用户 [%s], ip: [%s] 连接成功\n", "1", remoteAddr.String())
 		if err != nil {
 			stdresponse.Response(w, nil, err)
 			return
@@ -56,8 +62,8 @@ func WebsocketTestHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			}
 		}
 
-		l := common.NewWebsocketTestLogic(r.Context(), svcCtx)
-		err = l.WebsocketTest(&req)
-		stdresponse.Response(w, nil, err)
+		// l := common.NewWebsocketTestLogic(r.Context(), svcCtx)
+		// err = l.WebsocketTest(&req)
+		// stdresponse.Response(w, nil, err)
 	}
 }

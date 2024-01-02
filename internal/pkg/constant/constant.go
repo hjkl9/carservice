@@ -2,6 +2,7 @@ package constant
 
 // Sms related.
 var (
-	SmsCaptchaPrefix = "captcha:"
-	SmsNotifyPrefix  = "notify:"
+	SmsCaptchaPrefix                = "captcha:"
+	SmsBindPhoneNumberCaptchaPrefix = "captcha1:"
+	SmsNotifyPrefix                 = "notify:"
 )

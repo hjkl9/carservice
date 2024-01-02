@@ -71,6 +71,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/common/sms/sendCaptcha",
 				Handler: sms.SendCaptchaHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/common/sms/captcha/bindPhoneNumber",
+				Handler: sms.BindPhoneNumberCaptchaHandler(serverCtx),
+			},
 		},
 	)
 

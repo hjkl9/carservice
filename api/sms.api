@@ -4,7 +4,6 @@ type (
     SendCaptchaReq {
         PhoneNumber string `form:"phoneNumber"`
     }
-
     SendCaptchaRep {}
 )
 
@@ -16,5 +15,18 @@ service carservice {
 		summary: "为手机号登录发送短信验证码通知"
 	)
     @handler SendCaptcha
+    // ? Should be named to `/common/sms/captcha/phoneNumberLogin`
     get /common/sms/sendCaptcha (SendCaptchaReq) returns (SendCaptchaRep)
+}
+
+@server (
+    group: sms
+    jwt: JwtConf
+)
+service carservice {
+    @doc(
+        summary: "为绑定手机号发送短信验证码"
+    )
+    @handler BindPhoneNumberCaptcha
+    get /common/sms/captcha/bindPhoneNumber (SendCaptchaReq)
 }

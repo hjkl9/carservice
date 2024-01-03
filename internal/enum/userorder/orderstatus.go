@@ -43,3 +43,5 @@ func OrderStatusDesc(i OrderStatusType) string {
 		return "未知状态"
 	}
 }
+
+const DefaultAtCreation OrderStatusType = Pending

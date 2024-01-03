@@ -23,3 +23,5 @@ func PaymentMethodDesc(i PaymentMethodType) string {
 		return "未知支付方式"
 	}
 }
+
+const DefaultAtCreation PaymentMethodType = Unknown

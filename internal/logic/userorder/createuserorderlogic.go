@@ -153,66 +153,39 @@ type carOwnerInfoCounter struct {
 	FirstId uint `db:"id"`
 }
 
-type userOrderPayload struct {
+// createUserOrderPayload 创建用户订单数据
+// 内存对齐 OK
+type createUserOrderPayload struct {
 	MemberId         uint    `db:"member_id"`
 	CarBrandId       uint    `db:"car_brand_id"`
 	CarBrandSeriesId uint    `db:"car_brand_series_id"`
 	CarOwnerInfoId   uint    `db:"car_owner_info_id"`
 	PartnerStoreId   uint    `db:"partner_store_id"`
 	OrderNumber      string  `db:"order_number"`
-	OrderStatus      uint8   `db:"order_status"`
 	Comment          string  `db:"comment"`
 	EstAmount        float64 `db:"est_amount"`
 	ActAmount        float64 `db:"act_amount"`
 	PaymentMethod    uint8   `db:"payment_method"`
+	OrderStatus      uint8   `db:"order_status"`
 	// CreatedAt        time.Duration `db:"created_at"`
 	// UpdatedAt        time.Duration `db:"updated_at"`
 }
 
 func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrderReq) error {
 	// User
-	// todo: variable userId to be used.
 	userId := jwt.GetUserId(l.ctx).(uint)
-	// CarOwnerInfo of User.
-	var userCarOwnerInfo = struct {
-		Name              string
-		PhoneNumber       string
-		MultilevelAddress string
-		FullAddress       string
-	}{
-		Name:              req.CarOwnerName,
-		PhoneNumber:       req.CarOwnerPhoneNumber,
-		MultilevelAddress: req.CarOwnerMultilevelAddress,
-		FullAddress:       req.CarOwnerFullAddress,
-	}
-	// todo: variable userCarOwnerInfo to be used.
-	_ = userCarOwnerInfo
 
-	// Car info.
-	var carInfo = struct {
-		BrandId       uint
-		BrandSeriesId uint
-	}{
-		BrandId:       req.CarBrandId,
-		BrandSeriesId: req.CarBrandSeriesId,
+	// check if the PartnerStore already exists.
+	hasPartnerStore, err := l.validatePartnerStore(req.PartnerStoreId)
+	if err != nil {
+		return errcode.NewDatabaseErrorx().GetError(err)
 	}
-	// todo: variable carInfo to be used.
-	_ = carInfo
-
-	// User order.
-	var userOrderInfo = struct {
-		PartnerStoreId uint
-		Requirements   string
-	}{
-		PartnerStoreId: req.PartnerStoreId,
-		Requirements:   req.Requirements,
+	if !hasPartnerStore {
+		return errcode.NotFound.SetMsg("该合作门店不存在")
 	}
-	// todo: variable userOrderInfo to be used.
-	_ = userOrderInfo
 
-	// update or create the info of user owner.
-	// todo: variable carOwnerInfoId to be used.
-	_, err := l.createOrUpdateUserOwnerInfo(userId, req)
+	// update or create the info of UserOwner.
+	carOwnerInfoId, err := l.createOrUpdateUserOwnerInfo(userId, req)
 	if err != nil {
 		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
@@ -224,12 +197,29 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 	if !hasCar {
 		return errcode.NotFound.SetMsg("该车辆不存在")
 	}
-	// todo: create the new UserOrder.
+
+	// create the new user order.
+	createPayload := &createUserOrderPayload{
+		MemberId:         userId,
+		CarBrandId:       req.CarBrandId,
+		CarBrandSeriesId: req.CarBrandSeriesId,
+		CarOwnerInfoId:   *carOwnerInfoId,
+		PartnerStoreId:   req.PartnerStoreId,
+		OrderNumber:      order.GenerateNumber(time.Now()),
+		Comment:          req.Requirements,
+		EstAmount:        0.000000,
+		ActAmount:        0.000000,
+		PaymentMethod:    uint8(payment.DefaultAtCreation),
+		OrderStatus:      uint8(userorder.DefaultAtCreation),
+	}
+	if err = l.createUserOrder(createPayload); err != nil {
+		return errcode.NewDatabaseErrorx().CreateError(err)
+	}
 	return nil
 }
 
 // createOrUpdateUserOwnerInfo 创建或更新用户车主信息
-func (l *CreateUserOrderLogic) createOrUpdateUserOwnerInfo(userId uint, req *types.CreateUserOrderReq) (*int64, error) {
+func (l *CreateUserOrderLogic) createOrUpdateUserOwnerInfo(userId uint, req *types.CreateUserOrderReq) (*uint, error) {
 	// Check if the car owner info was exists.
 	var counter carOwnerInfoCounter
 	query := "SELECT COUNT(1) AS `count`, MIN(`id`) AS `firstId` FROM `car_owner_infos` WHERE `user_id` = ? LIMIT 1"
@@ -252,10 +242,11 @@ func (l *CreateUserOrderLogic) createOrUpdateUserOwnerInfo(userId uint, req *typ
 			return nil, err
 		}
 		newId, err := rs.LastInsertId()
+		newUintId := uint(newId)
 		if err != nil {
 			return nil, err
 		}
-		return &newId, nil
+		return &newUintId, nil
 
 	}
 	// Otherwise update and return id of CarOwnerInfo.
@@ -269,8 +260,8 @@ func (l *CreateUserOrderLogic) createOrUpdateUserOwnerInfo(userId uint, req *typ
 		return nil, err
 	}
 
-	return func() *int64 {
-		id := int64(counter.FirstId)
+	return func() *uint {
+		id := uint(counter.FirstId)
 		return &id
 	}(), nil
 }
@@ -290,6 +281,52 @@ func (l *CreateUserOrderLogic) validateUserCar(carBrand, carBrandSeriesId uint) 
 }
 
 // todo: createUserOrder 创建用户订单
-func (l *CreateUserOrderLogic) createUserOrder(payload *userOrderPayload) error {
+func (l *CreateUserOrderLogic) createUserOrder(payload *createUserOrderPayload) error {
+	query := "INSERT INTO `user_orders`(`member_id`, `car_brand_id`, `car_brand_series_id`, `car_info_id`, `car_owner_info_id`, `partner_store_id`, `order_number`, `order_status`, `comment`, `est_amount`, `act_amount`, `payment_method`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	stmt, err := l.svcCtx.DBC.PrepareContext(l.ctx, query)
+	if err != nil {
+		return err
+	}
+	rs, err := stmt.ExecContext(
+		l.ctx,
+		payload.MemberId,
+		payload.CarBrandId,
+		payload.CarBrandSeriesId,
+		0,
+		payload.CarOwnerInfoId,
+		payload.PartnerStoreId,
+		payload.OrderNumber,
+		payload.OrderStatus,
+		payload.Comment,
+		payload.EstAmount,
+		payload.ActAmount,
+		payload.PaymentMethod,
+		"NOW()",
+		"NOW()",
+	)
+	if err != nil {
+		return err
+	}
+	n, err := rs.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if n != 1 {
+		return err
+	}
+
 	return nil
+}
+
+func (l *CreateUserOrderLogic) validatePartnerStore(partnerStoreId uint) (bool, error) {
+	var count uint8
+	query := "SELECT COUNT(1) AS `count` FROM `partner_stores` WHERE `id` = ? LIMIT 1"
+	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	if err != nil {
+		return false, err
+	}
+	if err = stmt.GetContext(l.ctx, partnerStoreId); err != nil {
+		return false, err
+	}
+	return count == 1, nil
 }

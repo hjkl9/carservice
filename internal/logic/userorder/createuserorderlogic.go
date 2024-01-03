@@ -2,6 +2,7 @@ package userorder
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -150,7 +151,7 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 // Logic related structures. //
 type carOwnerInfoCounter struct {
 	Count   uint `db:"count"`
-	FirstId uint `db:"id"`
+	FirstId uint `db:"firstId"`
 }
 
 // createUserOrderPayload 创建用户订单数据
@@ -173,7 +174,10 @@ type createUserOrderPayload struct {
 
 func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrderReq) error {
 	// User
-	userId := jwt.GetUserId(l.ctx).(uint)
+	userId, err := (jwt.GetUserId(l.ctx)).(json.Number).Int64()
+	if err != nil {
+		return errcode.InternalServerError.Lazy("解析用户 ID 时发生错误", err.Error())
+	}
 
 	// check if the PartnerStore already exists.
 	hasPartnerStore, err := l.validatePartnerStore(req.PartnerStoreId)
@@ -185,7 +189,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 	}
 
 	// update or create the info of UserOwner.
-	carOwnerInfoId, err := l.createOrUpdateUserOwnerInfo(userId, req)
+	carOwnerInfoId, err := l.createOrUpdateUserOwnerInfo(uint(userId), req)
 	if err != nil {
 		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
@@ -200,7 +204,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 
 	// create the new user order.
 	createPayload := &createUserOrderPayload{
-		MemberId:         userId,
+		MemberId:         uint(userId),
 		CarBrandId:       req.CarBrandId,
 		CarBrandSeriesId: req.CarBrandSeriesId,
 		CarOwnerInfoId:   *carOwnerInfoId,
@@ -282,7 +286,7 @@ func (l *CreateUserOrderLogic) validateUserCar(carBrand, carBrandSeriesId uint) 
 
 // todo: createUserOrder 创建用户订单
 func (l *CreateUserOrderLogic) createUserOrder(payload *createUserOrderPayload) error {
-	query := "INSERT INTO `user_orders`(`member_id`, `car_brand_id`, `car_brand_series_id`, `car_info_id`, `car_owner_info_id`, `partner_store_id`, `order_number`, `order_status`, `comment`, `est_amount`, `act_amount`, `payment_method`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	query := "INSERT INTO `user_orders`(`member_id`, `car_brand_id`, `car_brand_series_id`, `car_info_id`, `car_owner_info_id`, `partner_store_id`, `order_number`, `order_status`, `comment`, `est_amount`, `act_amount`, `payment_method`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())"
 	stmt, err := l.svcCtx.DBC.PrepareContext(l.ctx, query)
 	if err != nil {
 		return err
@@ -301,8 +305,6 @@ func (l *CreateUserOrderLogic) createUserOrder(payload *createUserOrderPayload) 
 		payload.EstAmount,
 		payload.ActAmount,
 		payload.PaymentMethod,
-		"NOW()",
-		"NOW()",
 	)
 	if err != nil {
 		return err
@@ -325,7 +327,7 @@ func (l *CreateUserOrderLogic) validatePartnerStore(partnerStoreId uint) (bool, 
 	if err != nil {
 		return false, err
 	}
-	if err = stmt.GetContext(l.ctx, partnerStoreId); err != nil {
+	if err = stmt.GetContext(l.ctx, &count, partnerStoreId); err != nil {
 		return false, err
 	}
 	return count == 1, nil

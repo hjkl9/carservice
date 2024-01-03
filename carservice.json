@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Carservice",
-    "version": "v0.1.01"
+    "version": "v0.0.11"
   },
   "host": "api.cheyiyi.cn",
   "schemes": [
@@ -34,6 +34,24 @@
         ]
       }
     },
+    "/common/fs/uploadImage": {
+      "post": {
+        "summary": "上传图片",
+        "operationId": "UploadImage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/UploadImageRep"
+            }
+          }
+        },
+        "requestBody": {},
+        "tags": [
+          "common"
+        ]
+      }
+    },
     "/common/fs/uploadMultipleFiles": {
       "post": {
         "summary": "上传多个文件 - 未完成",
@@ -49,6 +67,30 @@
         "requestBody": {},
         "tags": [
           "common"
+        ]
+      }
+    },
+    "/common/sms/captcha/bindPhoneNumber": {
+      "get": {
+        "summary": "为绑定手机号发送短信验证码",
+        "operationId": "BindPhoneNumberCaptcha",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "sms"
         ]
       }
     },
@@ -394,9 +436,42 @@
         ]
       }
     },
+    "/v1/partnerStore/list": {
+      "get": {
+        "summary": "获取附近的合作门店",
+        "operationId": "GetPartnerStoreList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/[]PartnerStoreListItem"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "address",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "limitGap",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "partnerstore"
+        ]
+      }
+    },
     "/v1/user/getUserByPhoneNumber": {
       "get": {
-        "summary": "通过手机号获取用户信息",
+        "summary": "通过手机号获取用户信息 (后端测试用)",
         "operationId": "GetUserByPhoneNumber",
         "responses": {
           "200": {
@@ -484,6 +559,49 @@
             "in": "query",
             "required": true,
             "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/v1/user/profile": {
+      "get": {
+        "summary": "获取用户信息",
+        "operationId": "GetUserProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetUserProfileRep"
+            }
+          }
+        },
+        "requestBody": {},
+        "tags": [
+          "user"
+        ]
+      },
+      "put": {
+        "summary": "更新用户信息",
+        "operationId": "UpdateUserProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " todo: 用户绑定手机号码 , UserBindPhoneNumberReq {, }, UserBindPhoneNumberRep {}, todo: 用户解绑手机号码 , UserUnbindPhoneNumberReq {}, UserUnbindPhoneNumberRep {}, 更新用户信息 ",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUserProfileReq"
+            }
           }
         ],
         "requestBody": {},
@@ -892,6 +1010,26 @@
         "id"
       ]
     },
+    "GetPartnerStoreListRep": {
+      "type": "object",
+      "title": "GetPartnerStoreListRep"
+    },
+    "GetPartnerStoreListReq": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "limitGap": {
+          "type": "number",
+          "format": "float"
+        }
+      },
+      "title": "GetPartnerStoreListReq",
+      "required": [
+        "address"
+      ]
+    },
     "GetUserByPhoneNumberRep": {
       "type": "object",
       "properties": {
@@ -1006,6 +1144,34 @@
         "code"
       ]
     },
+    "GetUserProfileRep": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        },
+        "username": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        }
+      },
+      "title": "GetUserProfileRep",
+      "required": [
+        "id",
+        "username",
+        "phoneNumber",
+        "avatarUrl"
+      ]
+    },
+    "GetUserProfileReq": {
+      "type": "object",
+      "title": "GetUserProfileReq"
+    },
     "MockLoginReq": {
       "type": "object",
       "properties": {
@@ -1016,6 +1182,35 @@
       "title": "MockLoginReq",
       "required": [
         "token"
+      ]
+    },
+    "PartnerStoreListItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/uint"
+        },
+        "title": {
+          "type": "string"
+        },
+        "fullAddress": {
+          "type": "string"
+        },
+        "gap": {
+          "type": "number",
+          "format": "float"
+        },
+        "unit": {
+          "type": "string"
+        }
+      },
+      "title": "PartnerStoreListItem",
+      "required": [
+        "id",
+        "title",
+        "fullAddress",
+        "gap",
+        "unit"
       ]
     },
     "PhoneNumberLoginRep": {
@@ -1153,6 +1348,26 @@
         "latitude"
       ]
     },
+    "UpdateUserProfileRep": {
+      "type": "object",
+      "title": "UpdateUserProfileRep"
+    },
+    "UpdateUserProfileReq": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "avatarUrl": {
+          "type": "string"
+        }
+      },
+      "title": "UpdateUserProfileReq",
+      "required": [
+        "username",
+        "avatarUrl"
+      ]
+    },
     "UploadFileRep": {
       "type": "object",
       "properties": {
@@ -1168,6 +1383,22 @@
         "absolutePath",
         "relativePath"
       ]
+    },
+    "UploadImageRep": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      },
+      "title": "UploadImageRep",
+      "required": [
+        "url"
+      ]
+    },
+    "UploadImageReq": {
+      "type": "object",
+      "title": "UploadImageReq"
     },
     "UploadMultipleFilesRep": {
       "type": "object",

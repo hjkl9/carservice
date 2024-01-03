@@ -1,6 +1,6 @@
 package payment
 
-type PaymentMethodType int
+type PaymentMethodType uint8
 
 const (
 	Unknown PaymentMethodType = iota

@@ -146,3 +146,150 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 
 	return nil
 }
+
+// Logic related structures. //
+type carOwnerInfoCounter struct {
+	Count   uint `db:"count"`
+	FirstId uint `db:"id"`
+}
+
+type userOrderPayload struct {
+	MemberId         uint    `db:"member_id"`
+	CarBrandId       uint    `db:"car_brand_id"`
+	CarBrandSeriesId uint    `db:"car_brand_series_id"`
+	CarOwnerInfoId   uint    `db:"car_owner_info_id"`
+	PartnerStoreId   uint    `db:"partner_store_id"`
+	OrderNumber      string  `db:"order_number"`
+	OrderStatus      uint8   `db:"order_status"`
+	Comment          string  `db:"comment"`
+	EstAmount        float64 `db:"est_amount"`
+	ActAmount        float64 `db:"act_amount"`
+	PaymentMethod    uint8   `db:"payment_method"`
+	// CreatedAt        time.Duration `db:"created_at"`
+	// UpdatedAt        time.Duration `db:"updated_at"`
+}
+
+func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrderReq) error {
+	// User
+	// todo: variable userId to be used.
+	userId := jwt.GetUserId(l.ctx).(uint)
+	// CarOwnerInfo of User.
+	var userCarOwnerInfo = struct {
+		Name              string
+		PhoneNumber       string
+		MultilevelAddress string
+		FullAddress       string
+	}{
+		Name:              req.CarOwnerName,
+		PhoneNumber:       req.CarOwnerPhoneNumber,
+		MultilevelAddress: req.CarOwnerMultilevelAddress,
+		FullAddress:       req.CarOwnerFullAddress,
+	}
+	// todo: variable userCarOwnerInfo to be used.
+	_ = userCarOwnerInfo
+
+	// Car info.
+	var carInfo = struct {
+		BrandId       uint
+		BrandSeriesId uint
+	}{
+		BrandId:       req.CarBrandId,
+		BrandSeriesId: req.CarBrandSeriesId,
+	}
+	// todo: variable carInfo to be used.
+	_ = carInfo
+
+	// User order.
+	var userOrderInfo = struct {
+		PartnerStoreId uint
+		Requirements   string
+	}{
+		PartnerStoreId: req.PartnerStoreId,
+		Requirements:   req.Requirements,
+	}
+	// todo: variable userOrderInfo to be used.
+	_ = userOrderInfo
+
+	// update or create the info of user owner.
+	// todo: variable carOwnerInfoId to be used.
+	_, err := l.createOrUpdateUserOwnerInfo(userId, req)
+	if err != nil {
+		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
+	}
+	// prepare and validate CarBrand and CarBrandSeries data.
+	hasCar, err := l.validateUserCar(req.CarBrandId, req.CarBrandSeriesId)
+	if err != nil {
+		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
+	}
+	if !hasCar {
+		return errcode.NotFound.SetMsg("该车辆不存在")
+	}
+	// todo: create the new UserOrder.
+	return nil
+}
+
+// createOrUpdateUserOwnerInfo 创建或更新用户车主信息
+func (l *CreateUserOrderLogic) createOrUpdateUserOwnerInfo(userId uint, req *types.CreateUserOrderReq) (*int64, error) {
+	// Check if the car owner info was exists.
+	var counter carOwnerInfoCounter
+	query := "SELECT COUNT(1) AS `count`, MIN(`id`) AS `firstId` FROM `car_owner_infos` WHERE `user_id` = ? LIMIT 1"
+	stmtx, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	if err = stmtx.GetContext(l.ctx, &counter, userId); err != nil {
+		return nil, err
+	}
+	// If doesn't exist then create a new one.
+	if counter.Count == 0 {
+		query = "INSERT INTO `car_owner_infos`(`user_id`, `name`, `phone_number`, `multilevel_address`, `full_address`, `longitude`, `latitude`) VALUES(?, ?, ?, ?, ?, 0.0000000, 0.000000)"
+		stat, err := l.svcCtx.DBC.PrepareContext(l.ctx, query)
+		if err != nil {
+			return nil, err
+		}
+		rs, err := stat.ExecContext(l.ctx, userId, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultilevelAddress, req.CarOwnerFullAddress)
+		if err != nil {
+			return nil, err
+		}
+		newId, err := rs.LastInsertId()
+		if err != nil {
+			return nil, err
+		}
+		return &newId, nil
+
+	}
+	// Otherwise update and return id of CarOwnerInfo.
+	query = "UPDATE `car_owner_infos` SET `name` = ?, `phone_number` = ?, `multilevel_address` = ?, `full_address` = ? WHERE `user_id` = ? AND `id` = ?"
+	stmt, err := l.svcCtx.DBC.PrepareContext(l.ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	_, err = stmt.ExecContext(l.ctx, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultilevelAddress, req.CarOwnerFullAddress, userId, counter.FirstId)
+	if err != nil {
+		return nil, err
+	}
+
+	return func() *int64 {
+		id := int64(counter.FirstId)
+		return &id
+	}(), nil
+}
+
+// validateUserCar 验证车辆信息
+func (l *CreateUserOrderLogic) validateUserCar(carBrand, carBrandSeriesId uint) (bool, error) {
+	var count uint8
+	query := "SELECT COUNT(1) AS `count` FROM `car_brands` `cb` JOIN `car_brand_series` `cbs` ON `cb`.`brand_id` = `cbs`.`brand_id` WHERE `cbs`.`brand_id` = ? AND `cbs`.`series_id` = ? LIMIT 1;"
+	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	if err != nil {
+		return false, err
+	}
+	if err = stmt.GetContext(l.ctx, &count, carBrand, carBrandSeriesId); err != nil {
+		return false, err
+	}
+	return count == 1, nil
+}
+
+// todo: createUserOrder 创建用户订单
+func (l *CreateUserOrderLogic) createUserOrder(payload *userOrderPayload) error {
+	return nil
+}

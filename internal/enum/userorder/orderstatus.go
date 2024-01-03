@@ -1,7 +1,7 @@
 package userorder
 
 // Should use type of int8.
-type OrderStatusType int
+type OrderStatusType uint8
 
 const (
 	Pending OrderStatusType = iota

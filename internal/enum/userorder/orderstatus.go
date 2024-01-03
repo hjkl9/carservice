@@ -1,10 +1,7 @@
 package userorder
 
-// Should use type of int8.
-type OrderStatusType uint8
-
 const (
-	Pending OrderStatusType = iota
+	Pending uint8 = iota
 	ToBeAcceptedByUser
 	ToBePaid
 	Cancelled
@@ -17,7 +14,7 @@ const (
 )
 
 // OrderStatusDesc 获取字符串订单状态
-func OrderStatusDesc(i OrderStatusType) string {
+func OrderStatusDesc(i uint8) string {
 	switch i {
 	case Pending:
 		return "等待商家接单"
@@ -44,4 +41,4 @@ func OrderStatusDesc(i OrderStatusType) string {
 	}
 }
 
-const DefaultAtCreation OrderStatusType = Pending
+const DefaultAtCreation uint8 = Pending

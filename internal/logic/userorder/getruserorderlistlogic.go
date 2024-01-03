@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"carservice/internal/data/tables"
+	uo_enum "carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
@@ -34,10 +35,9 @@ type OrderListItem struct {
 	OrderNumber  string         `db:"orderNumber" json:"orderNumber"`
 	PartnerStore sql.NullString `db:"partnerStore" json:"partnerStore"`
 	Requirements string         `db:"requirements" json:"requirements"`
-	OrderStatus  string         `db:"orderStatus" json:"orderStatus"`
+	OrderStatus  uint8          `db:"orderStatus" json:"orderStatus"`
 	CreatedAt    string         `db:"createdAt" json:"createdAt"`
 	UpdatedAt    string         `db:"updatedAt" json:"updatedAt"`
-	// other fields.
 }
 
 func (l *GetrUserOrderListLogic) GetrUserOrderList(req *types.GetUserOrderListReq) (resp []types.UserOrderListItem, err error) {
@@ -77,7 +77,7 @@ func (l *GetrUserOrderListLogic) GetrUserOrderList(req *types.GetUserOrderListRe
 				return "未绑定合作门店"
 			}(),
 			Requirements: (*v).Requirements,
-			OrderStatus:  (*v).OrderStatus,
+			OrderStatus:  uo_enum.OrderStatusDesc((*v).OrderStatus),
 			CreatedAt:    (*v).CreatedAt,
 			UpdatedAt:    (*v).UpdatedAt,
 		})

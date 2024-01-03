@@ -284,7 +284,7 @@ func (l *CreateUserOrderLogic) validateUserCar(carBrand, carBrandSeriesId uint) 
 	return count == 1, nil
 }
 
-// todo: createUserOrder 创建用户订单
+// createUserOrder 创建用户订单
 func (l *CreateUserOrderLogic) createUserOrder(payload *createUserOrderPayload) error {
 	query := "INSERT INTO `user_orders`(`member_id`, `car_brand_id`, `car_brand_series_id`, `car_info_id`, `car_owner_info_id`, `partner_store_id`, `order_number`, `order_status`, `comment`, `est_amount`, `act_amount`, `payment_method`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())"
 	stmt, err := l.svcCtx.DBC.PrepareContext(l.ctx, query)

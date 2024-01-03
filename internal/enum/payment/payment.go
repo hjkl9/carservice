@@ -1,15 +1,13 @@
 package payment
 
-type PaymentMethodType uint8
-
 const (
-	Unknown PaymentMethodType = iota
+	Unknown uint8 = iota
 	Alipay
 	WechatPay
 	UnionPay
 )
 
-func PaymentMethodDesc(i PaymentMethodType) string {
+func PaymentMethodDesc(i uint8) string {
 	switch i {
 	case Unknown:
 		return "未知"
@@ -24,4 +22,4 @@ func PaymentMethodDesc(i PaymentMethodType) string {
 	}
 }
 
-const DefaultAtCreation PaymentMethodType = Unknown
+const DefaultAtCreation uint8 = Unknown

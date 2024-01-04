@@ -190,6 +190,7 @@ type DeleteCarOwnerInfoReq struct {
 
 type UserOrderListItem struct {
 	Id           uint   `json:"id"`
+	Deletable    bool   `json:"deletable"`
 	OrderNumber  string `json:"orderNumber"`
 	PartnerStore string `json:"partnerStore"`
 	Requirements string `json:"requirements"`

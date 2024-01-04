@@ -68,6 +68,7 @@ func (l *GetrUserOrderListLogic) GetrUserOrderList(req *types.GetUserOrderListRe
 	for _, v := range orders {
 		data = append(data, types.UserOrderListItem{
 			Id:          (*v).Id,
+			Deletable:   (*v).OrderStatus == uo_enum.Cancelled || (*v).OrderStatus == uo_enum.Completed,
 			OrderNumber: (*v).OrderNumber,
 			PartnerStore: func() string {
 				// 处理如果是 Nil 的字符串

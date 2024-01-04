@@ -78,7 +78,7 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 		CarSeriesName:       order.CarSeriesName,
 		PartnerStore: func() string {
 			if !order.PartnerStore.Valid {
-				return "未绑定商家"
+				return "未绑定合作门店"
 			}
 			return order.PartnerStore.String
 		}(),

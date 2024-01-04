@@ -206,9 +206,10 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 	}
 
 	// update or create the info of UserOwner.
-	carOwnerInfoId, err := l.createOrUpdateUserOwnerInfo(tx, uint(userId), req)
+	// create CarOwnerInfo at the same time.
+	carOwnerInfoId, err := l.createUserOwnerInfo(tx, uint(userId), req)
 	if err != nil {
-		if err1 := tx.Rollback(); err1 != nil {
+		if err1 := tx.Rollback(); err1 != nil { // Rollback
 			return errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
 		}
 		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
@@ -229,13 +230,14 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		OrderStatus:      uint8(userorder.DefaultAtCreation),
 	}
 	if err = l.createUserOrder(tx, createPayload); err != nil {
-		if err1 := tx.Rollback(); err1 != nil {
+		fmt.Printf("Start Rollback.")
+		if err1 := tx.Rollback(); err1 != nil { // Rollback
 			return errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
 		}
 		return errcode.NewDatabaseErrorx().CreateError(err)
 	}
 	if err = tx.Commit(); err != nil {
-		if err1 := tx.Rollback(); err1 != nil {
+		if err1 := tx.Rollback(); err1 != nil { // Rollback
 			return errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
 		}
 		return errcode.DatabaseError.Lazy("数据库提交数据时发生错误", err.Error())
@@ -244,54 +246,52 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 }
 
 // createOrUpdateUserOwnerInfo 创建或更新用户车主信息
-func (l *CreateUserOrderLogic) createOrUpdateUserOwnerInfo(
+func (l *CreateUserOrderLogic) createUserOwnerInfo(
 	tx *sqlx.Tx,
 	userId uint,
 	req *types.CreateUserOrderReq,
 ) (*uint, error) {
+	/// ! Should be deleted. ///
 	// Check if the car owner info was exists.
-	var counter carOwnerInfoCounter
-	query := "SELECT COUNT(1) AS `count`, MIN(`id`) AS `firstId` FROM `car_owner_infos` WHERE `user_id` = ? LIMIT 1"
-	stmtx, err := tx.PreparexContext(l.ctx, query)
-	if err != nil {
-		return nil, err
-	}
-	if err = stmtx.GetContext(l.ctx, &counter, userId); err != nil {
-		return nil, err
-	}
-	// If doesn't exist then create a new one.
-	if counter.Count == 0 {
-		query = "INSERT INTO `car_owner_infos`(`user_id`, `name`, `phone_number`, `multilevel_address`, `full_address`, `longitude`, `latitude`) VALUES(?, ?, ?, ?, ?, 0.0000000, 0.000000)"
-		stat, err := l.svcCtx.DBC.PrepareContext(l.ctx, query)
-		if err != nil {
-			return nil, err
-		}
-		rs, err := stat.ExecContext(l.ctx, userId, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultiLvAddr, req.CarOwnerFullAddress)
-		if err != nil {
-			return nil, err
-		}
-		newId, err := rs.LastInsertId()
-		newUintId := uint(newId)
-		if err != nil {
-			return nil, err
-		}
-		return &newUintId, nil
-	}
-	// Otherwise update and return id of CarOwnerInfo.
-	query = "UPDATE `car_owner_infos` SET `name` = ?, `phone_number` = ?, `multilevel_address` = ?, `full_address` = ? WHERE `user_id` = ? AND `id` = ?"
-	stmt, err := tx.PrepareContext(l.ctx, query)
-	if err != nil {
-		return nil, err
-	}
-	_, err = stmt.ExecContext(l.ctx, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultiLvAddr, req.CarOwnerFullAddress, userId, counter.FirstId)
-	if err != nil {
-		return nil, err
-	}
+	// var counter carOwnerInfoCounter
+	// query := "SELECT COUNT(1) AS `count`, MIN(`id`) AS `firstId` FROM `car_owner_infos` WHERE `user_id` = ? LIMIT 1"
+	// stmtx, err := tx.PreparexContext(l.ctx, query)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// if err = stmtx.GetContext(l.ctx, &counter, userId); err != nil {
+	// 	return nil, err
+	// }
+	// // If doesn't exist then create a new one.
+	// if counter.Count == 0 {
+	// }
+	// // Otherwise update and return id of CarOwnerInfo.
+	// query = "UPDATE `car_owner_infos` SET `name` = ?, `phone_number` = ?, `multilevel_address` = ?, `full_address` = ? WHERE `user_id` = ? AND `id` = ?"
+	// stmt, err := tx.PrepareContext(l.ctx, query)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// _, err = stmt.ExecContext(l.ctx, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultiLvAddr, req.CarOwnerFullAddress, userId, counter.FirstId)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	/// ! Should be deleted. ///
 
-	return func() *uint {
-		id := uint(counter.FirstId)
-		return &id
-	}(), nil
+	query := "INSERT INTO `car_owner_infos`(`user_id`, `name`, `phone_number`, `multilevel_address`, `full_address`, `longitude`, `latitude`) VALUES(?, ?, ?, ?, ?, 0.0000000, 0.000000)"
+	stat, err := tx.PrepareContext(l.ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	rs, err := stat.ExecContext(l.ctx, userId, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultiLvAddr, req.CarOwnerFullAddress)
+	if err != nil {
+		return nil, err
+	}
+	newId, err := rs.LastInsertId()
+	newUintId := uint(newId)
+	if err != nil {
+		return nil, err
+	}
+	return &newUintId, nil
 }
 
 // validateUserCar 验证车辆信息

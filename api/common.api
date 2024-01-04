@@ -69,7 +69,7 @@ service carservice {
 
     // Websocket
     @doc(
-        summary: "测试 Websocket [未通过]"
+        summary: "测试 Websocket [测试通过]"
     )
     
     @handler WebsocketTest

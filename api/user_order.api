@@ -104,7 +104,7 @@ service carservice {
     @doc(
         summary: "获取用户订单列表"
     )
-    @handler GetrUserOrderList
+    @handler GetUserOrderList
     get /userOrder/list (GetUserOrderListReq) returns ([]UserOrderListItem)
 
     @doc(

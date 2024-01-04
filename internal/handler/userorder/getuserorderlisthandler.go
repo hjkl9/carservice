@@ -12,7 +12,7 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func GetrUserOrderListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetUserOrderListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.GetUserOrderListReq
 		if err := httpx.Parse(r, &req); err != nil {
@@ -20,8 +20,8 @@ func GetrUserOrderListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := userorder.NewGetrUserOrderListLogic(r.Context(), svcCtx)
-		resp, err := l.GetrUserOrderList(&req)
+		l := userorder.NewGetUserOrderListLogic(r.Context(), svcCtx)
+		resp, err := l.GetUserOrderList(&req)
 		stdresponse.Response(w, resp, err)
 	}
 }

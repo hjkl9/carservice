@@ -15,14 +15,14 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetrUserOrderListLogic struct {
+type GetUserOrderListLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewGetrUserOrderListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetrUserOrderListLogic {
-	return &GetrUserOrderListLogic{
+func NewGetUserOrderListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUserOrderListLogic {
+	return &GetUserOrderListLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
@@ -40,7 +40,7 @@ type OrderListItem struct {
 	UpdatedAt    string         `db:"updatedAt" json:"updatedAt"`
 }
 
-func (l *GetrUserOrderListLogic) GetrUserOrderList(req *types.GetUserOrderListReq) (resp []types.UserOrderListItem, err error) {
+func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq) (resp []types.UserOrderListItem, err error) {
 	// 用户
 	userId := jwt.GetUserId(l.ctx)
 	// 是否可删除条件函数

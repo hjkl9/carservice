@@ -207,7 +207,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 
 	// update or create the info of UserOwner.
 	// create CarOwnerInfo at the same time.
-	carOwnerInfoId, err := l.createUserOwnerInfo(tx, uint(userId), req)
+	carOwnerInfoId, err := l.createCarOwnerInfo(tx, uint(userId), req)
 	if err != nil {
 		if err1 := tx.Rollback(); err1 != nil { // Rollback
 			return errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
@@ -245,8 +245,9 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 	return nil
 }
 
-// createOrUpdateUserOwnerInfo 创建或更新用户车主信息
-func (l *CreateUserOrderLogic) createUserOwnerInfo(
+// createCarOwnerInfo 创建或更新用户车主信息
+// todo: 删除订单时同时该 CarOwnerInfo 也被删除
+func (l *CreateUserOrderLogic) createCarOwnerInfo(
 	tx *sqlx.Tx,
 	userId uint,
 	req *types.CreateUserOrderReq,

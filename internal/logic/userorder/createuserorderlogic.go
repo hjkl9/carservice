@@ -75,7 +75,7 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 	var count int
 	if err = tx.Get(
 		&count,
-		fmt.Sprintf(query, tables.CarBrand, tables.CarBrandSeries, req.CarBrandId, req.CarBrandSeriesId),
+		fmt.Sprintf(query, tables.CarBrand, tables.CarBrandSeries, req.CarBrandId, req.CarSeriesId),
 	); err != nil {
 		// 回滚
 		if err1 := tx.Rollback(); err1 != nil {
@@ -110,7 +110,7 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 		fmt.Sprintf(query, tables.UserOrder), // 创建语句
 		userId,                               // 用户
 		req.CarBrandId,                       // 汽车品牌
-		req.CarBrandSeriesId,                 // 汽车品牌系列
+		req.CarSeriesId,                      // 汽车品牌系列
 		0,                                    // ! car_info_id 应该删除该字段
 		newCarOwnerInfoId,                    // 用户车主信息
 		req.PartnerStoreId,                   // ! partner_store_id 合作门店 ID
@@ -191,7 +191,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 	}
 
 	// validate CarBrand and CarBrandSeries data.
-	hasCar, err := l.validateUserCar(req.CarBrandId, req.CarBrandSeriesId)
+	hasCar, err := l.validateUserCar(req.CarBrandId, req.CarSeriesId)
 	if err != nil {
 		return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
@@ -219,7 +219,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 	createPayload := &createUserOrderPayload{
 		MemberId:         uint(userId),
 		CarBrandId:       req.CarBrandId,
-		CarBrandSeriesId: req.CarBrandSeriesId,
+		CarBrandSeriesId: req.CarSeriesId,
 		CarOwnerInfoId:   *carOwnerInfoId,
 		PartnerStoreId:   req.PartnerStoreId,
 		OrderNumber:      order.GenerateNumber(time.Now()),

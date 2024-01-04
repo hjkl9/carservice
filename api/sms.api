@@ -8,6 +8,7 @@ type (
 )
 
 @server (
+    swtags: 短信相关
     group: sms
 )
 service carservice {
@@ -20,6 +21,7 @@ service carservice {
 }
 
 @server (
+    swtags: 短信相关
     group: sms
     jwt: JwtConf
 )

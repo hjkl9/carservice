@@ -55,6 +55,7 @@ type (
 )
 
 @server (
+    swtags: 车主信息相关
     group: carownerinfo
     prefix: /v1
     jwt: JwtConf

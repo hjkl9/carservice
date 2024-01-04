@@ -17,6 +17,7 @@ type (
 )
 
 @server (
+    swtags: 汽车品牌相关
     group: carbrand
     prefix: /v1
 )

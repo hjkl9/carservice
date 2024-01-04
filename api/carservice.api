@@ -17,7 +17,7 @@ info(
 	title: "Carservice"
 	author: "hjkl1"
 	email: "nil"
-	version: "v0.0.11"
+	version: "v0.0.25"
 )
 
 type (
@@ -41,7 +41,9 @@ type (
 		Result string `json:"result"`
 	}
 )
-
+@server(
+	swtags: 根
+)
 service carservice {
 	// // todo: should generate code.
 	// @doc(

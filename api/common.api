@@ -36,6 +36,7 @@ type (
 )
 
 @server (
+    swtags: 公共的接口 (与业务无关)
     prefix: /common
     group: common
 )

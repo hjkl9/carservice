@@ -78,6 +78,7 @@ type (
 )
 
 @server(
+    swtags: 用户订单
     group: userorder
     prefix: /v1
     jwt: JwtConf

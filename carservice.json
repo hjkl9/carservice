@@ -30,7 +30,7 @@
         },
         "requestBody": {},
         "tags": [
-          "common"
+          "公共的接口 (与业务无关)"
         ]
       }
     },
@@ -48,7 +48,7 @@
         },
         "requestBody": {},
         "tags": [
-          "common"
+          "公共的接口 (与业务无关)"
         ]
       }
     },
@@ -66,7 +66,7 @@
         },
         "requestBody": {},
         "tags": [
-          "common"
+          "公共的接口 (与业务无关)"
         ]
       }
     },
@@ -90,7 +90,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "sms"
+          "短信相关"
         ]
       }
     },
@@ -116,7 +116,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "sms"
+          "短信相关"
         ]
       }
     },
@@ -142,7 +142,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "common"
+          "公共的接口 (与业务无关)"
         ]
       }
     },
@@ -166,7 +166,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "common"
+          "公共的接口 (与业务无关)"
         ]
       }
     },
@@ -193,7 +193,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "carservice"
+          "根"
         ]
       }
     },
@@ -219,7 +219,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "carservice"
+          "根"
         ]
       }
     },
@@ -237,7 +237,7 @@
         },
         "requestBody": {},
         "tags": [
-          "carbrand"
+          "汽车品牌相关"
         ]
       }
     },
@@ -271,7 +271,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "carbrandseries"
+          "汽车品牌下的车系 (车型) 相关"
         ]
       }
     },
@@ -300,7 +300,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "carownerinfo"
+          "车主信息相关"
         ]
       }
     },
@@ -318,7 +318,7 @@
         },
         "requestBody": {},
         "tags": [
-          "carownerinfo"
+          "车主信息相关"
         ]
       }
     },
@@ -344,7 +344,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "carownerinfo"
+          "车主信息相关"
         ]
       },
       "delete": {
@@ -374,7 +374,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "carownerinfo"
+          "车主信息相关"
         ]
       },
       "put": {
@@ -406,7 +406,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "carownerinfo"
+          "车主信息相关"
         ]
       }
     },
@@ -432,7 +432,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "carownerinfo"
+          "车主信息相关"
         ]
       }
     },
@@ -465,7 +465,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "partnerstore"
+          "合作门店"
         ]
       }
     },
@@ -491,7 +491,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "user"
+          "用户相关"
         ]
       }
     },
@@ -509,7 +509,7 @@
         },
         "requestBody": {},
         "tags": [
-          "user"
+          "认证相关"
         ]
       }
     },
@@ -537,7 +537,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "user"
+          "认证相关"
         ]
       }
     },
@@ -563,7 +563,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "user"
+          "认证相关"
         ]
       }
     },
@@ -581,7 +581,7 @@
         },
         "requestBody": {},
         "tags": [
-          "user"
+          "用户相关"
         ]
       },
       "put": {
@@ -606,7 +606,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "user"
+          "用户相关"
         ]
       }
     },
@@ -633,14 +633,14 @@
         ],
         "requestBody": {},
         "tags": [
-          "userorder"
+          "用户订单"
         ]
       }
     },
     "/v1/userOrder/list": {
       "get": {
         "summary": "获取用户订单列表",
-        "operationId": "GetrUserOrderList",
+        "operationId": "GetUserOrderList",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -660,7 +660,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "userorder"
+          "用户订单"
         ]
       }
     },
@@ -686,7 +686,7 @@
         ],
         "requestBody": {},
         "tags": [
-          "userorder"
+          "用户订单"
         ]
       },
       "delete": {
@@ -717,7 +717,37 @@
         ],
         "requestBody": {},
         "tags": [
-          "userorder"
+          "用户订单"
+        ]
+      },
+      "put": {
+        "summary": "更新用户订单",
+        "operationId": "UpdateUserOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUserOrderReq"
+            }
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "用户订单"
         ]
       }
     }
@@ -877,7 +907,7 @@
           "type": "number",
           "format": "double"
         },
-        "carOwnerMultilevelAddress": {
+        "carOwnerMultiLvAddr": {
           "type": "string"
         },
         "carOwnerFullAddress": {
@@ -902,7 +932,7 @@
         "carOwnerPhoneNumber",
         "carOwnerLongitude",
         "carOwnerLatitude",
-        "carOwnerMultilevelAddress",
+        "carOwnerMultiLvAddr",
         "carOwnerFullAddress",
         "carBrandId",
         "carBrandSeriesId",
@@ -1348,6 +1378,60 @@
         "latitude"
       ]
     },
+    "UpdateUserOrderRep": {
+      "type": "object",
+      "title": "UpdateUserOrderRep"
+    },
+    "UpdateUserOrderReq": {
+      "type": "object",
+      "properties": {
+        "carOwnerName": {
+          "type": "string"
+        },
+        "carOwnerPhoneNumber": {
+          "type": "string"
+        },
+        "carOwnerLongitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "carOwnerLatitude": {
+          "type": "number",
+          "format": "double"
+        },
+        "carOwnerMultLvAddr": {
+          "type": "string"
+        },
+        "carOwnerFullAddress": {
+          "type": "string"
+        },
+        "carBrandId": {
+          "$ref": "#/definitions/uint"
+        },
+        "carBrandSeriesId": {
+          "$ref": "#/definitions/uint"
+        },
+        "partnerStoreId": {
+          "$ref": "#/definitions/uint"
+        },
+        "requirements": {
+          "type": "string"
+        }
+      },
+      "title": "UpdateUserOrderReq",
+      "required": [
+        "carOwnerName",
+        "carOwnerPhoneNumber",
+        "carOwnerLongitude",
+        "carOwnerLatitude",
+        "carOwnerMultLvAddr",
+        "carOwnerFullAddress",
+        "carBrandId",
+        "carBrandSeriesId",
+        "partnerStoreId",
+        "requirements"
+      ]
+    },
     "UpdateUserProfileRep": {
       "type": "object",
       "title": "UpdateUserProfileRep"
@@ -1428,6 +1512,10 @@
         "id": {
           "$ref": "#/definitions/uint"
         },
+        "deletable": {
+          "type": "boolean",
+          "format": "boolean"
+        },
         "orderNumber": {
           "type": "string"
         },
@@ -1450,6 +1538,7 @@
       "title": "UserOrderListItem",
       "required": [
         "id",
+        "deletable",
         "orderNumber",
         "partnerStore",
         "requirements",

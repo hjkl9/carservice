@@ -11,6 +11,7 @@ type (
 )
 
 @server(
+    swtags: 地图 SDK 相关
     prefix: /common
     group: "map"
 )

@@ -15,6 +15,7 @@ type (
 )
 
 @server (
+    swtags: 汽车品牌下的车系 (车型) 相关
     group: carbrandseries
     prefix: /v1
 )

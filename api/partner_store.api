@@ -16,6 +16,7 @@ type (
 )
 
 @server (
+    swtags: 合作门店
     group: partnerstore
     prefix: /v1
 )

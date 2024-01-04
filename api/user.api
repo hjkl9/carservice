@@ -58,6 +58,7 @@ type (
 )
 
 @server (
+    swtags: 认证相关
     group: user
     prefix: /v1
 )
@@ -83,6 +84,7 @@ service carservice {
 
 // Authorization APIs //
 @server (
+    swtags: 用户相关
     group: user
     prefix: /v1
     jwt: JwtConf

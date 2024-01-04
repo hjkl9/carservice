@@ -224,7 +224,7 @@ type UpdateUserOrderReq struct {
 	CarOwnerMultLvAddr  string  `json:"carOwnerMultLvAddr"`
 	CarOwnerFullAddress string  `json:"carOwnerFullAddress"`
 	CarBrandId          uint    `json:"carBrandId"`
-	CarBrandSeriesId    uint    `json:"carBrandSeriesId"`
+	CarSeriesId         uint    `json:"carSeriesId"`
 	PartnerStoreId      uint    `json:"partnerStoreId"`
 	Requirements        string  `json:"requirements"`
 }

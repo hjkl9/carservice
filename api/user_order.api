@@ -45,7 +45,7 @@ type (
         // CarBrand
         CarBrandId uint `json:"carBrandId"`
         // CarBrandSeries
-        CarBrandSeriesId uint `json:"carBrandSeriesId"`
+        CarSeriesId uint `json:"carSeriesId"`
         // PartnerStoreId
         PartnerStoreId uint `json:"partnerStoreId"`
         // Comment

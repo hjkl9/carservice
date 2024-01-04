@@ -43,6 +43,8 @@ type OrderListItem struct {
 func (l *GetrUserOrderListLogic) GetrUserOrderList(req *types.GetUserOrderListReq) (resp []types.UserOrderListItem, err error) {
 	// 用户
 	userId := jwt.GetUserId(l.ctx)
+	// 是否可删除条件函数
+	deletable := func(status uint8) bool { return status == uo_enum.Cancelled || status == uo_enum.Completed }
 	// 待导出数据
 	var orders []*OrderListItem
 	// 查询语句
@@ -68,7 +70,7 @@ func (l *GetrUserOrderListLogic) GetrUserOrderList(req *types.GetUserOrderListRe
 	for _, v := range orders {
 		data = append(data, types.UserOrderListItem{
 			Id:          (*v).Id,
-			Deletable:   (*v).OrderStatus == uo_enum.Cancelled || (*v).OrderStatus == uo_enum.Completed,
+			Deletable:   deletable((*v).OrderStatus),
 			OrderNumber: (*v).OrderNumber,
 			PartnerStore: func() string {
 				// 处理如果是 Nil 的字符串

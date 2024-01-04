@@ -30,13 +30,18 @@ func NewGetUserOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetU
 }
 
 type Order struct {
-	Id           uint           `db:"id"`
-	OrderNumber  string         `db:"orderNumber"`
-	PartnerStore sql.NullString `db:"partnerStore"`
-	Comment      string         `db:"comment"`
-	OrderStatus  uint8          `db:"orderStatus"`
-	CreatedAt    string         `db:"createdAt"`
-	UpdatedAt    string         `db:"updatedAt"`
+	Id                  uint           `db:"id"`
+	OrderNumber         string         `db:"orderNumber"`
+	CarOwnerName        string         `db:"carOwnerName"`
+	CarOwnerMultiLvAddr string         `db:"carOwnerMultiLvAddr"`
+	CarOwnerFullAddress string         `db:"carOwnerFullAddress"`
+	PartnerStore        sql.NullString `db:"partnerStore"`
+	CarBrandName        string         `db:"carBrandName"`
+	CarSeriesName       string         `db:"carSeriesName"`
+	Comment             string         `db:"comment"`
+	OrderStatus         uint8          `db:"orderStatus"`
+	CreatedAt           string         `db:"createdAt"`
+	UpdatedAt           string         `db:"updatedAt"`
 	// other fields.
 }
 
@@ -53,14 +58,19 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 	}
 	// 通过 ID 查询订单
 	var order Order
-	query = "SELECT `o`.`id` AS `id`, `o`.`order_number` AS `orderNumber`, `ps`.`title` AS `partnerStore`, `o`.`comment` AS `comment`, `o`.`order_status` AS `orderStatus`, `o`.`created_at` AS `createdAt`, `o`.`updated_at` AS `updatedAt` FROM `%s` AS `o` LEFT JOIN `partner_stores` AS `ps` ON `ps`.`id` = `o`.`partner_store_id` WHERE `o`.`id` = ? AND `o`.`member_id` = ? LIMIT 1"
-	if err = l.svcCtx.DBC.Get(&order, fmt.Sprintf(query, tables.UserOrder), req.Id, userId); err != nil {
+	query = "SELECT `uo`.`id` AS `id`, `uo`.`order_number` AS `orderNumber`, `coi`.`name` AS `carOwnerName`, `coi`.`multilevel_address` AS `carOwnerMultiLvAddr`, `coi`.`full_address` AS `carOwnerFullAddress` , `ps`.`title` AS `partnerStore`, `uo`.`comment` AS `comment`, `cb`.`brand_name` AS `carBrandName`, `cbs`.`series_name` AS `carSeriesName`, `uo`.`order_status` AS `orderStatus` , `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` `uo` LEFT JOIN `partner_stores` `ps` ON `ps`.`id` = `uo`.`partner_store_id` JOIN `car_owner_infos` `coi` ON `coi`.`id` = `uo`.`car_owner_info_id` JOIN `car_brands` `cb` ON `cb`.`brand_id` = `uo`.`car_brand_id` JOIN `car_brand_series` `cbs` ON `cbs`.`series_id` = `uo`.`car_brand_series_id` WHERE `uo`.`id` = ? AND `uo`.`member_id` = ? LIMIT 1"
+
+	if err = l.svcCtx.DBC.Get(&order, query, req.Id, userId); err != nil {
 		return nil, errcode.DatabaseError.SetDetails(err.Error())
 	}
-	fmt.Printf("%#v\n", order)
 	return &types.GetUserOrderRep{
-		Id:          order.Id,
-		OrderNumber: order.OrderNumber,
+		Id:                  order.Id,
+		OrderNumber:         order.OrderNumber,
+		CarOwnerName:        order.CarOwnerName,
+		CarOwnerMultiLvAddr: order.CarOwnerMultiLvAddr,
+		CarOwnerFullAddress: order.CarOwnerFullAddress,
+		CarBrandName:        order.CarBrandName,
+		CarSeriesName:       order.CarSeriesName,
 		PartnerStore: func() string {
 			if !order.PartnerStore.Valid {
 				return "未绑定商家"

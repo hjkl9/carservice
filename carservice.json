@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Carservice",
-    "version": "v0.0.11"
+    "version": "v0.1.01"
   },
   "host": "api.cheyiyi.cn",
   "schemes": [
@@ -148,7 +148,7 @@
     },
     "/common/ws/test": {
       "get": {
-        "summary": "测试 Websocket [未通过]",
+        "summary": "测试 Websocket [测试通过]",
         "operationId": "WebsocketTest",
         "responses": {
           "200": {

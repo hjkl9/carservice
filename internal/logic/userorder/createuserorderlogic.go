@@ -2,6 +2,7 @@ package userorder
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -15,6 +16,7 @@ import (
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -51,7 +53,7 @@ func (l *CreateUserOrderLogic) CreateUserOrder(req *types.CreateUserOrderReq) er
 		fmt.Sprintf(query, tables.CarOwnerInfo),
 		req.CarOwnerName, userId,
 		req.CarOwnerPhoneNumber,
-		req.CarOwnerMultilevelAddress,
+		req.CarOwnerMultiLvAddr,
 		req.CarOwnerFullAddress,
 		req.CarOwnerLongitude,
 		req.CarOwnerLatitude,
@@ -188,18 +190,28 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		return errcode.NotFound.SetMsg("该合作门店不存在")
 	}
 
-	// update or create the info of UserOwner.
-	carOwnerInfoId, err := l.createOrUpdateUserOwnerInfo(uint(userId), req)
-	if err != nil {
-		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
-	}
-	// prepare and validate CarBrand and CarBrandSeries data.
+	// validate CarBrand and CarBrandSeries data.
 	hasCar, err := l.validateUserCar(req.CarBrandId, req.CarBrandSeriesId)
 	if err != nil {
 		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
 	if !hasCar {
 		return errcode.NotFound.SetMsg("该车辆不存在")
+	}
+
+	// create database transaction
+	tx, err := l.svcCtx.DBC.BeginTxx(l.ctx, &sql.TxOptions{})
+	if err != nil {
+		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
+	}
+
+	// update or create the info of UserOwner.
+	carOwnerInfoId, err := l.createOrUpdateUserOwnerInfo(tx, uint(userId), req)
+	if err != nil {
+		if err1 := tx.Rollback(); err1 != nil {
+			return errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
+		}
+		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
 
 	// create the new user order.
@@ -216,18 +228,31 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		PaymentMethod:    uint8(payment.DefaultAtCreation),
 		OrderStatus:      uint8(userorder.DefaultAtCreation),
 	}
-	if err = l.createUserOrder(createPayload); err != nil {
+	if err = l.createUserOrder(tx, createPayload); err != nil {
+		if err1 := tx.Rollback(); err1 != nil {
+			return errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
+		}
 		return errcode.NewDatabaseErrorx().CreateError(err)
+	}
+	if err = tx.Commit(); err != nil {
+		if err1 := tx.Rollback(); err1 != nil {
+			return errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
+		}
+		return errcode.DatabaseError.Lazy("数据库提交数据时发生错误", err.Error())
 	}
 	return nil
 }
 
 // createOrUpdateUserOwnerInfo 创建或更新用户车主信息
-func (l *CreateUserOrderLogic) createOrUpdateUserOwnerInfo(userId uint, req *types.CreateUserOrderReq) (*uint, error) {
+func (l *CreateUserOrderLogic) createOrUpdateUserOwnerInfo(
+	tx *sqlx.Tx,
+	userId uint,
+	req *types.CreateUserOrderReq,
+) (*uint, error) {
 	// Check if the car owner info was exists.
 	var counter carOwnerInfoCounter
 	query := "SELECT COUNT(1) AS `count`, MIN(`id`) AS `firstId` FROM `car_owner_infos` WHERE `user_id` = ? LIMIT 1"
-	stmtx, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	stmtx, err := tx.PreparexContext(l.ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -241,7 +266,7 @@ func (l *CreateUserOrderLogic) createOrUpdateUserOwnerInfo(userId uint, req *typ
 		if err != nil {
 			return nil, err
 		}
-		rs, err := stat.ExecContext(l.ctx, userId, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultilevelAddress, req.CarOwnerFullAddress)
+		rs, err := stat.ExecContext(l.ctx, userId, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultiLvAddr, req.CarOwnerFullAddress)
 		if err != nil {
 			return nil, err
 		}
@@ -251,15 +276,14 @@ func (l *CreateUserOrderLogic) createOrUpdateUserOwnerInfo(userId uint, req *typ
 			return nil, err
 		}
 		return &newUintId, nil
-
 	}
 	// Otherwise update and return id of CarOwnerInfo.
 	query = "UPDATE `car_owner_infos` SET `name` = ?, `phone_number` = ?, `multilevel_address` = ?, `full_address` = ? WHERE `user_id` = ? AND `id` = ?"
-	stmt, err := l.svcCtx.DBC.PrepareContext(l.ctx, query)
+	stmt, err := tx.PrepareContext(l.ctx, query)
 	if err != nil {
 		return nil, err
 	}
-	_, err = stmt.ExecContext(l.ctx, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultilevelAddress, req.CarOwnerFullAddress, userId, counter.FirstId)
+	_, err = stmt.ExecContext(l.ctx, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultiLvAddr, req.CarOwnerFullAddress, userId, counter.FirstId)
 	if err != nil {
 		return nil, err
 	}
@@ -285,9 +309,9 @@ func (l *CreateUserOrderLogic) validateUserCar(carBrand, carBrandSeriesId uint) 
 }
 
 // createUserOrder 创建用户订单
-func (l *CreateUserOrderLogic) createUserOrder(payload *createUserOrderPayload) error {
+func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *createUserOrderPayload) error {
 	query := "INSERT INTO `user_orders`(`member_id`, `car_brand_id`, `car_brand_series_id`, `car_info_id`, `car_owner_info_id`, `partner_store_id`, `order_number`, `order_status`, `comment`, `est_amount`, `act_amount`, `payment_method`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())"
-	stmt, err := l.svcCtx.DBC.PrepareContext(l.ctx, query)
+	stmt, err := tx.PrepareContext(l.ctx, query)
 	if err != nil {
 		return err
 	}

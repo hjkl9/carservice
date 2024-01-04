@@ -18,7 +18,7 @@ type (
         CarOwnerPhoneNumber string `json:"carOwnerPhoneNumber"`
         CarOwnerLongitude float64 `json:"carOwnerLongitude"`
         CarOwnerLatitude float64 `json:"carOwnerLatitude"`
-        CarOwnerMultilevelAddress string `json:"carOwnerMultilevelAddress"`
+        CarOwnerMultiLvAddr string `json:"carOwnerMultiLvAddr"`
         CarOwnerFullAddress string `json:"carOwnerFullAddress"`
         // CarBrand
         CarBrandId uint `json:"carBrandId"`
@@ -37,7 +37,7 @@ type (
         CarOwnerPhoneNumber string `json:"carOwnerPhoneNumber"`
         CarOwnerLongitude float64 `json:"carOwnerLongitude"`
         CarOwnerLatitude float64 `json:"carOwnerLatitude"`
-        CarOwnerMultilevelAddress string `json:"carOwnerMultilevelAddress"`
+        CarOwnerMultLvAddr string `json:"carOwnerMultLvAddr"`
         CarOwnerFullAddress string `json:"carOwnerFullAddress"`
         // CarBrand
         CarBrandId uint `json:"carBrandId"`

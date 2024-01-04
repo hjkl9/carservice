@@ -199,32 +199,32 @@ type UserOrderListItem struct {
 }
 
 type CreateUserOrderReq struct {
-	CarOwnerName              string  `json:"carOwnerName"`
-	CarOwnerPhoneNumber       string  `json:"carOwnerPhoneNumber"`
-	CarOwnerLongitude         float64 `json:"carOwnerLongitude"`
-	CarOwnerLatitude          float64 `json:"carOwnerLatitude"`
-	CarOwnerMultilevelAddress string  `json:"carOwnerMultilevelAddress"`
-	CarOwnerFullAddress       string  `json:"carOwnerFullAddress"`
-	CarBrandId                uint    `json:"carBrandId"`
-	CarBrandSeriesId          uint    `json:"carBrandSeriesId"`
-	PartnerStoreId            uint    `json:"partnerStoreId"`
-	Requirements              string  `json:"requirements"`
+	CarOwnerName        string  `json:"carOwnerName"`
+	CarOwnerPhoneNumber string  `json:"carOwnerPhoneNumber"`
+	CarOwnerLongitude   float64 `json:"carOwnerLongitude"`
+	CarOwnerLatitude    float64 `json:"carOwnerLatitude"`
+	CarOwnerMultiLvAddr string  `json:"carOwnerMultiLvAddr"`
+	CarOwnerFullAddress string  `json:"carOwnerFullAddress"`
+	CarBrandId          uint    `json:"carBrandId"`
+	CarBrandSeriesId    uint    `json:"carBrandSeriesId"`
+	PartnerStoreId      uint    `json:"partnerStoreId"`
+	Requirements        string  `json:"requirements"`
 }
 
 type CreateUserOrderRep struct {
 }
 
 type UpdateUserOrderReq struct {
-	CarOwnerName              string  `json:"carOwnerName"`
-	CarOwnerPhoneNumber       string  `json:"carOwnerPhoneNumber"`
-	CarOwnerLongitude         float64 `json:"carOwnerLongitude"`
-	CarOwnerLatitude          float64 `json:"carOwnerLatitude"`
-	CarOwnerMultilevelAddress string  `json:"carOwnerMultilevelAddress"`
-	CarOwnerFullAddress       string  `json:"carOwnerFullAddress"`
-	CarBrandId                uint    `json:"carBrandId"`
-	CarBrandSeriesId          uint    `json:"carBrandSeriesId"`
-	PartnerStoreId            uint    `json:"partnerStoreId"`
-	Requirements              string  `json:"requirements"`
+	CarOwnerName        string  `json:"carOwnerName"`
+	CarOwnerPhoneNumber string  `json:"carOwnerPhoneNumber"`
+	CarOwnerLongitude   float64 `json:"carOwnerLongitude"`
+	CarOwnerLatitude    float64 `json:"carOwnerLatitude"`
+	CarOwnerMultLvAddr  string  `json:"carOwnerMultLvAddr"`
+	CarOwnerFullAddress string  `json:"carOwnerFullAddress"`
+	CarBrandId          uint    `json:"carBrandId"`
+	CarBrandSeriesId    uint    `json:"carBrandSeriesId"`
+	PartnerStoreId      uint    `json:"partnerStoreId"`
+	Requirements        string  `json:"requirements"`
 }
 
 type UpdateUserOrderRep struct {

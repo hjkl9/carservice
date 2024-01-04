@@ -31,6 +31,25 @@ type (
     }
     CreateUserOrderRep {}
 
+    UpdateUserOrderReq {
+         // CarOwner
+        CarOwnerName string `json:"carOwnerName"`
+        CarOwnerPhoneNumber string `json:"carOwnerPhoneNumber"`
+        CarOwnerLongitude float64 `json:"carOwnerLongitude"`
+        CarOwnerLatitude float64 `json:"carOwnerLatitude"`
+        CarOwnerMultilevelAddress string `json:"carOwnerMultilevelAddress"`
+        CarOwnerFullAddress string `json:"carOwnerFullAddress"`
+        // CarBrand
+        CarBrandId uint `json:"carBrandId"`
+        // CarBrandSeries
+        CarBrandSeriesId uint `json:"carBrandSeriesId"`
+        // PartnerStoreId
+        PartnerStoreId uint `json:"partnerStoreId"`
+        // Comment
+        Requirements string `json:"requirements"`
+    }
+    UpdateUserOrderRep {}
+
     // 获取用户订单 //
     GetUserOrderReq {
         Id uint `path:"id"`
@@ -69,6 +88,12 @@ service carservice {
     @handler CreateUserOrder
     post /userOrder (CreateUserOrderReq)
 
+    @doc(
+        summary: "更新用户订单"
+    )
+    @handler UpdateUserOrder
+    put /userOrder/:id (UpdateUserOrderReq)
+    
     @doc(
         summary: "获取用户订单"
     )

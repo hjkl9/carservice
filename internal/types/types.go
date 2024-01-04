@@ -214,6 +214,22 @@ type CreateUserOrderReq struct {
 type CreateUserOrderRep struct {
 }
 
+type UpdateUserOrderReq struct {
+	CarOwnerName              string  `json:"carOwnerName"`
+	CarOwnerPhoneNumber       string  `json:"carOwnerPhoneNumber"`
+	CarOwnerLongitude         float64 `json:"carOwnerLongitude"`
+	CarOwnerLatitude          float64 `json:"carOwnerLatitude"`
+	CarOwnerMultilevelAddress string  `json:"carOwnerMultilevelAddress"`
+	CarOwnerFullAddress       string  `json:"carOwnerFullAddress"`
+	CarBrandId                uint    `json:"carBrandId"`
+	CarBrandSeriesId          uint    `json:"carBrandSeriesId"`
+	PartnerStoreId            uint    `json:"partnerStoreId"`
+	Requirements              string  `json:"requirements"`
+}
+
+type UpdateUserOrderRep struct {
+}
+
 type GetUserOrderReq struct {
 	Id uint `path:"id"`
 }

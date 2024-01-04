@@ -71,12 +71,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/common/sms/sendCaptcha",
 				Handler: sms.SendCaptchaHandler(serverCtx),
 			},
+		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
 			{
 				Method:  http.MethodGet,
 				Path:    "/common/sms/captcha/bindPhoneNumber",
 				Handler: sms.BindPhoneNumberCaptchaHandler(serverCtx),
 			},
 		},
+		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
 	)
 
 	server.AddRoutes(
@@ -187,6 +193,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/userOrder",
 				Handler: userorder.CreateUserOrderHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/userOrder/:id",
+				Handler: userorder.UpdateUserOrderHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodGet,

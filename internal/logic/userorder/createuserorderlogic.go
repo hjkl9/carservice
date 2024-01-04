@@ -174,35 +174,35 @@ type createUserOrderPayload struct {
 	// UpdatedAt        time.Duration `db:"updated_at"`
 }
 
-func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrderReq) error {
+func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrderReq) (*types.CreateUserOrderRep, error) {
 	// User
 	userId, err := (jwt.GetUserId(l.ctx)).(json.Number).Int64()
 	if err != nil {
-		return errcode.InternalServerError.Lazy("解析用户 ID 时发生错误", err.Error())
+		return nil, errcode.InternalServerError.Lazy("解析用户 ID 时发生错误", err.Error())
 	}
 
 	// check if the PartnerStore already exists.
 	hasPartnerStore, err := l.validatePartnerStore(req.PartnerStoreId)
 	if err != nil {
-		return errcode.NewDatabaseErrorx().GetError(err)
+		return nil, errcode.NewDatabaseErrorx().GetError(err)
 	}
 	if !hasPartnerStore {
-		return errcode.NotFound.SetMsg("该合作门店不存在")
+		return nil, errcode.NotFound.SetMsg("该合作门店不存在")
 	}
 
 	// validate CarBrand and CarBrandSeries data.
 	hasCar, err := l.validateUserCar(req.CarBrandId, req.CarBrandSeriesId)
 	if err != nil {
-		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
+		return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
 	if !hasCar {
-		return errcode.NotFound.SetMsg("该车辆不存在")
+		return nil, errcode.NotFound.SetMsg("该车辆不存在")
 	}
 
 	// create database transaction
 	tx, err := l.svcCtx.DBC.BeginTxx(l.ctx, &sql.TxOptions{})
 	if err != nil {
-		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
+		return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
 
 	// update or create the info of UserOwner.
@@ -210,9 +210,9 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 	carOwnerInfoId, err := l.createCarOwnerInfo(tx, uint(userId), req)
 	if err != nil {
 		if err1 := tx.Rollback(); err1 != nil { // Rollback
-			return errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
+			return nil, errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
 		}
-		return errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
+		return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
 
 	// create the new user order.
@@ -229,20 +229,23 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		PaymentMethod:    uint8(payment.DefaultAtCreation),
 		OrderStatus:      uint8(userorder.DefaultAtCreation),
 	}
-	if err = l.createUserOrder(tx, createPayload); err != nil {
+	newUserOrderId, err := l.createUserOrder(tx, createPayload)
+	if err != nil {
 		fmt.Printf("Start Rollback.")
 		if err1 := tx.Rollback(); err1 != nil { // Rollback
-			return errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
+			return nil, errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
 		}
-		return errcode.NewDatabaseErrorx().CreateError(err)
+		return nil, errcode.NewDatabaseErrorx().CreateError(err)
 	}
 	if err = tx.Commit(); err != nil {
 		if err1 := tx.Rollback(); err1 != nil { // Rollback
-			return errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
+			return nil, errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
 		}
-		return errcode.DatabaseError.Lazy("数据库提交数据时发生错误", err.Error())
+		return nil, errcode.DatabaseError.Lazy("数据库提交数据时发生错误", err.Error())
 	}
-	return nil
+	return &types.CreateUserOrderRep{
+		NewId: *newUserOrderId,
+	}, nil
 }
 
 // createCarOwnerInfo 创建或更新用户车主信息
@@ -310,11 +313,11 @@ func (l *CreateUserOrderLogic) validateUserCar(carBrand, carBrandSeriesId uint) 
 }
 
 // createUserOrder 创建用户订单
-func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *createUserOrderPayload) error {
+func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *createUserOrderPayload) (*uint, error) {
 	query := "INSERT INTO `user_orders`(`member_id`, `car_brand_id`, `car_brand_series_id`, `car_info_id`, `car_owner_info_id`, `partner_store_id`, `order_number`, `order_status`, `comment`, `est_amount`, `act_amount`, `payment_method`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())"
 	stmt, err := tx.PrepareContext(l.ctx, query)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	rs, err := stmt.ExecContext(
 		l.ctx,
@@ -332,17 +335,15 @@ func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *createUserO
 		payload.PaymentMethod,
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	n, err := rs.RowsAffected()
+	newId, err := rs.LastInsertId()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if n != 1 {
-		return err
-	}
+	newUintId := uint(newId)
 
-	return nil
+	return &newUintId, nil
 }
 
 func (l *CreateUserOrderLogic) validatePartnerStore(partnerStoreId uint) (bool, error) {

@@ -213,6 +213,7 @@ type CreateUserOrderReq struct {
 }
 
 type CreateUserOrderRep struct {
+	NewId uint `json:"newId"`
 }
 
 type UpdateUserOrderReq struct {

@@ -21,7 +21,7 @@ func CreateUserOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := userorder.NewCreateUserOrderLogic(r.Context(), svcCtx)
-		err := l.CreateUserOrderFeature(&req)
-		stdresponse.Response(w, nil, err)
+		resp, err := l.CreateUserOrderFeature(&req)
+		stdresponse.Response(w, resp, err)
 	}
 }

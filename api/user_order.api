@@ -30,7 +30,9 @@ type (
         // Comment
         Requirements string `json:"requirements"`
     }
-    CreateUserOrderRep {}
+    CreateUserOrderRep {
+        NewId uint `json:"newId"`
+    }
 
     UpdateUserOrderReq {
          // CarOwner

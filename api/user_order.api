@@ -29,6 +29,7 @@ type (
         PartnerStoreId uint `json:"partnerStoreId"`
         // Comment
         Requirements string `json:"requirements"`
+        AgreeToTerms uint8 `json:"agreeToTerms"`
     }
     CreateUserOrderRep {
         NewId uint `json:"newId"`

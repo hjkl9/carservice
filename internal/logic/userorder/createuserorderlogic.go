@@ -175,6 +175,11 @@ type createUserOrderPayload struct {
 }
 
 func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrderReq) (*types.CreateUserOrderRep, error) {
+	// 用户是否同意协议
+	if req.AgreeToTerms != 1 {
+		return nil, errcode.StatusForbiddenError.Lazy("用户未阅读或同意协议")
+	}
+
 	// User
 	userId, err := (jwt.GetUserId(l.ctx)).(json.Number).Int64()
 	if err != nil {

@@ -210,6 +210,7 @@ type CreateUserOrderReq struct {
 	CarSeriesId         uint    `json:"carSeriesId"`
 	PartnerStoreId      uint    `json:"partnerStoreId"`
 	Requirements        string  `json:"requirements"`
+	AgreeToTerms        uint8   `json:"agreeToTerms"`
 }
 
 type CreateUserOrderRep struct {

@@ -248,6 +248,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		}
 		return nil, errcode.DatabaseError.Lazy("数据库提交数据时发生错误", err.Error())
 	}
+	// todo: 发送下单成功短信
 	return &types.CreateUserOrderRep{
 		NewId: *newUserOrderId,
 	}, nil
@@ -362,4 +363,17 @@ func (l *CreateUserOrderLogic) validatePartnerStore(partnerStoreId uint) (bool, 
 		return false, err
 	}
 	return count == 1, nil
+}
+
+type SmsPayload struct {
+	CompanyName  string
+	OrderNumber  string
+	PartnerStore string
+	CreatedAt    string
+	// other fields...
+}
+
+func (l *CreateUserOrderLogic) sendSms(sp SmsPayload) error {
+	// todo 发送短信
+	return nil
 }

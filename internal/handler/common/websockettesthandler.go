@@ -56,6 +56,7 @@ func WebsocketTestHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		// add connection.
 		wm.AddConnection(1, conn)
+		wm.SendMsgTo(1, []byte("hello,"+remoteAddr.String()))
 
 		// l := common.NewWebsocketTestLogic(r.Context(), svcCtx)
 		// err = l.WebsocketTest(&req)

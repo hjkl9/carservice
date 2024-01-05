@@ -2,6 +2,7 @@ package ws
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"sync"
 
@@ -53,8 +54,9 @@ func (wm *WebsocketManager) RemoveConnection(id UserID) {
 func (wm *WebsocketManager) SendMsgTo(id UserID, msg []byte) error {
 	wm.mutex.Lock()
 	defer wm.mutex.Unlock()
+	fmt.Printf("%#v\n", wm.connections)
 	conn, ok := wm.connections[id]
-	if ok {
+	if !ok {
 		return ErrSendMsg
 	}
 	if err := conn.WriteMessage(websocket.TextMessage, msg); err != nil {

@@ -1,13 +1,13 @@
 package common
 
 import (
-	"fmt"
 	"net/http"
 
 	"carservice/internal/pkg/common/errcode"
 	stdresponse "carservice/internal/pkg/httper/response"
 	"carservice/internal/svc"
 	"carservice/internal/types"
+	"carservice/internal/ws"
 
 	"github.com/gorilla/websocket"
 	"github.com/zeromicro/go-zero/core/logc"
@@ -23,8 +23,12 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+// global
+var wm = ws.NewWebsocketManager()
+
 func WebsocketTestHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Get user.
 		var req types.WebsocketTestReq
 		if err := httpx.Parse(r, &req); err != nil {
 			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
@@ -32,6 +36,7 @@ func WebsocketTestHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 		// create websocket connection and handle error.
 		conn, err := upgrader.Upgrade(w, r, nil)
+
 		remoteAddr := conn.RemoteAddr()
 		logc.Infof(r.Context(), "用户 [%s], ip: [%s] 连接成功\n", "1", remoteAddr.String())
 		if err != nil {
@@ -39,28 +44,18 @@ func WebsocketTestHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 		defer func() {
+			logc.Info(r.Context(), "someone has disconnect")
 			err := conn.Close()
 			if err != nil {
 				stdresponse.Response(w, nil, err)
 				return
 			}
+			// delete connection.
+			wm.RemoveConnection(1)
 		}()
 
-		for {
-			// read message and handle
-			mt, msg, err := conn.ReadMessage()
-			if err != nil {
-				logc.Errorf(r.Context(), "failed to read message of the current connection, err: %s\n", err.Error())
-				continue
-			}
-			logc.Infof(r.Context(), "get message: %s\n", msg)
-			writeMsg := fmt.Sprintf("server message: %s", string(msg))
-			err = conn.WriteMessage(mt, []byte(writeMsg))
-			if err != nil {
-				logc.Errorf(r.Context(), "failed to write message of the current connection, err: %s\n", err.Error())
-				continue
-			}
-		}
+		// add connection.
+		wm.AddConnection(1, conn)
 
 		// l := common.NewWebsocketTestLogic(r.Context(), svcCtx)
 		// err = l.WebsocketTest(&req)

@@ -28,7 +28,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 func NewSqlx(c config.Config) *sqlx.DB {
 	db := sqlx.MustOpen(c.MysqlConf.Driver, c.MysqlConf.Source)
-	// set connection.
+	// set connection infos.
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(30)
 	return db
 }
 

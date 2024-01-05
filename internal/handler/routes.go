@@ -57,6 +57,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/ws/services",
+				Handler: common.WebsocketServicesHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/ws/test",
 				Handler: common.WebsocketTestHandler(serverCtx),
 			},

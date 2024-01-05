@@ -33,6 +33,15 @@ type (
     WebsocketTestReq {
         Arg string `form:"arg"`
     }
+    WebsocketTestRep {}
+
+    WebsocketServiceListItem {
+        ServiceId uint8 `json:"serviceId"`
+        ServiceDesc string `json:"serviceDesc"`
+    }
+    WebsocketServiceReq {}
+    WebsocketServiceRep {
+    }
 )
 
 @server (
@@ -67,11 +76,16 @@ service carservice {
     @handler UploadImage
     post /fs/uploadImage returns (UploadImageRep)
 
+    @doc(
+        summary: "Websocket 推送服务枚举"
+    )
+    @handler WebsocketServices
+    get /ws/services returns([]WebsocketServiceListItem)
+
     // Websocket
     @doc(
         summary: "测试 Websocket [测试通过]"
     )
-    
     @handler WebsocketTest
     get /ws/test (WebsocketTestReq)
 }

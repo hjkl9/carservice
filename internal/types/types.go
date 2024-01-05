@@ -46,6 +46,20 @@ type WebsocketTestReq struct {
 	Arg string `form:"arg"`
 }
 
+type WebsocketTestRep struct {
+}
+
+type WebsocketServiceListItem struct {
+	ServiceId   uint8  `json:"serviceId"`
+	ServiceDesc string `json:"serviceDesc"`
+}
+
+type WebsocketServiceReq struct {
+}
+
+type WebsocketServiceRep struct {
+}
+
 type SendCaptchaReq struct {
 	PhoneNumber string `form:"phoneNumber"`
 }

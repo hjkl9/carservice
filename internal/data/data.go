@@ -4,6 +4,7 @@ import "github.com/jmoiron/sqlx"
 
 type RepoFactory interface {
 	UserRelated() UserRepo
+	UserOrderRelated() UserOrderRepo
 	PingRelated() PingRepo
 }
 
@@ -21,4 +22,8 @@ func (ds *datastore) UserRelated() UserRepo {
 
 func (ds *datastore) PingRelated() PingRepo {
 	return newPing(ds.dbc)
+}
+
+func (ds *datastore) UserOrderRelated() UserOrderRepo {
+	return newUserOrder(ds.dbc)
 }

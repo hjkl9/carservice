@@ -31,7 +31,7 @@ func WebsocketTestHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		// Get user.
 		var req types.WebsocketTestReq
 		if err := httpx.Parse(r, &req); err != nil {
-			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
+			stdresponse.ResponseWithCtx(r.Context(), w, nil, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
 			return
 		}
 		// create websocket connection and handle error.

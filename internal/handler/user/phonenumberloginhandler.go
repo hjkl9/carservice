@@ -17,17 +17,17 @@ func PhoneNumberLoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.PhoneNumberLoginReq
 		if err := httpx.Parse(r, &req); err != nil {
-			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
+			stdresponse.ResponseWithCtx(r.Context(), w, nil, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
 			return
 		}
 
 		// Customize validation.
 		if !sms.CheckPhoneNumber(req.PhoneNumber) {
-			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "-", "无效的手机号码"))
+			stdresponse.ResponseWithCtx(r.Context(), w, nil, errcode.New(http.StatusBadRequest, "-", "无效的手机号码"))
 			return
 		}
 		if len(req.Captcha) != 6 {
-			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "-", "无效的手机验证码"))
+			stdresponse.ResponseWithCtx(r.Context(), w, nil, errcode.New(http.StatusBadRequest, "-", "无效的手机验证码"))
 			return
 		}
 

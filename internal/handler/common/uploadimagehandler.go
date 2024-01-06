@@ -15,10 +15,10 @@ func UploadImageHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		file, fileHeader, err := r.FormFile("file")
 		if err != nil {
 			if err == http.ErrMissingFile {
-				stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
+				stdresponse.ResponseWithCtx(r.Context(), w, nil, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
 				return
 			}
-			stdresponse.ResponseWithCtx(r.Context(), w, errcode.New(http.StatusAccepted, "feature.", err.Error()))
+			stdresponse.ResponseWithCtx(r.Context(), w, nil, errcode.New(http.StatusAccepted, "feature.", err.Error()))
 			return
 		}
 		defer file.Close()

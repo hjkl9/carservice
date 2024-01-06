@@ -16,7 +16,7 @@ func CreateUserOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.CreateUserOrderReq
 		if err := httpx.Parse(r, &req); err != nil {
-			stdresponse.ResponseWithCtx(r.Context(), w, errcode.InvalidParamsError.Lazy(err.Error()))
+			stdresponse.ResponseWithCtx(r.Context(), w, nil, errcode.InvalidParamsError.Lazy(err.Error()))
 			return
 		}
 

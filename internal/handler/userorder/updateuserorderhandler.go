@@ -17,7 +17,7 @@ func UpdateUserOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		var req types.UpdateUserOrderReq
 		if err := httpx.Parse(r, &req); err != nil {
 			stdresponse.ResponseWithCtx(
-				r.Context(), w,
+				r.Context(), w, nil,
 				errcode.InvalidParamsError.Lazy(err.Error()),
 			)
 			return

@@ -16,12 +16,12 @@ func GetUserOrderListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.GetUserOrderListReq
 		if err := httpx.Parse(r, &req); err != nil {
-			stdresponse.ResponseWithCtx(r.Context(), w, errcode.InvalidParamsError.Lazy(err.Error()))
+			stdresponse.ResponseWithCtx(r.Context(), w, nil, errcode.InvalidParamsError.Lazy(err.Error()))
 			return
 		}
 
 		l := userorder.NewGetUserOrderListLogic(r.Context(), svcCtx)
 		resp, err := l.GetUserOrderList(&req)
-		stdresponse.Response(w, resp, err)
+		stdresponse.ResponseWithCtx(r.Context(), w, resp, err)
 	}
 }

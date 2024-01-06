@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/zeromicro/go-zero/core/trace"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
@@ -15,6 +16,7 @@ type Body struct {
 	Msg      string      `json:"msg"`
 	Details  []string    `json:"details,omitempty"`
 	Data     interface{} `json:"data,omitempty"`
+	TraceId  string      `json:"traceId,omitempty"`
 }
 
 // todo: wrapping duplicate code
@@ -57,13 +59,15 @@ func Response(w http.ResponseWriter, resp interface{}, err error) {
 	httpx.WriteJson(w, body.HttpCode, body)
 }
 
-func ResponseWithCtx(ctx context.Context, w http.ResponseWriter, err error) {
+func ResponseWithCtx(ctx context.Context, w http.ResponseWriter, resp interface{}, err error) {
 	var body Body
 	if err != nil {
 		realErr := err.(*errcode.ErrCode)
 		body = makeErrorBody(realErr)
+		// 通过 ctx 获取 traceId
+		body.TraceId = trace.TraceIDFromContext(ctx)
 	} else {
-		body = makeOkBody(nil)
+		body = makeOkBody(&resp)
 	}
 	body.ErrCode = "todo."
 	httpx.WriteJsonCtx(ctx, w, body.HttpCode, body)

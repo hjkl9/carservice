@@ -12,7 +12,6 @@ import (
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
-	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -49,7 +48,6 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 	query := "SELECT (count(1) > 0) AS `hasList` FROM `user_orders` WHERE `member_id` = ? AND `deleted_at` IS NULL"
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
-		logc.Errorf(l.ctx, "预处理 `%s` \n", "SELECT (count(1) > 0) AS `hasList` FROM `user_orders` WHERE `member_id` = ? AND `deleted_at` IS NULL")
 		return make([]types.UserOrderListItem, 0), errcode.DatabaseError.SetDetails("1", err.Error())
 	}
 	if err = stmt.GetContext(l.ctx, &hasList, userId); err != nil {

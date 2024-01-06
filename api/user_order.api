@@ -22,11 +22,11 @@ type (
         CarOwnerMultiLvAddr string `json:"carOwnerMultiLvAddr"`
         CarOwnerFullAddress string `json:"carOwnerFullAddress"`
         // CarBrand
-        CarBrandId uint `json:"carBrandId"`
+        CarBrandId int64 `json:"carBrandId"`
         // CarBrandSeries
-        CarSeriesId uint `json:"carSeriesId"`
+        CarSeriesId int64 `json:"carSeriesId"`
         // PartnerStoreId
-        PartnerStoreId uint `json:"partnerStoreId"`
+        PartnerStoreId int64 `json:"partnerStoreId,optional"`
         // Comment
         Requirements string `json:"requirements"`
         AgreeToTerms uint8 `json:"agreeToTerms"`

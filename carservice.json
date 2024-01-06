@@ -4,7 +4,7 @@
     "title": "Carservice",
     "version": "v0.1.01"
   },
-  "host": "api.cheyiyi.cn",
+  "host": "127.0.0.1",
   "schemes": [
     "http",
     "https"
@@ -140,6 +140,24 @@
             "type": "string"
           }
         ],
+        "requestBody": {},
+        "tags": [
+          "公共的接口 (与业务无关)"
+        ]
+      }
+    },
+    "/common/ws/services": {
+      "get": {
+        "summary": "Websocket 推送服务枚举",
+        "operationId": "WebsocketServices",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/[]WebsocketServiceListItem"
+            }
+          }
+        },
         "requestBody": {},
         "tags": [
           "公共的接口 (与业务无关)"
@@ -888,7 +906,15 @@
     },
     "CreateUserOrderRep": {
       "type": "object",
-      "title": "CreateUserOrderRep"
+      "properties": {
+        "newId": {
+          "$ref": "#/definitions/uint"
+        }
+      },
+      "title": "CreateUserOrderRep",
+      "required": [
+        "newId"
+      ]
     },
     "CreateUserOrderReq": {
       "type": "object",
@@ -914,16 +940,22 @@
           "type": "string"
         },
         "carBrandId": {
-          "$ref": "#/definitions/uint"
+          "type": "integer",
+          "format": "int64"
         },
-        "carBrandSeriesId": {
-          "$ref": "#/definitions/uint"
+        "carSeriesId": {
+          "type": "integer",
+          "format": "int64"
         },
         "partnerStoreId": {
-          "$ref": "#/definitions/uint"
+          "type": "integer",
+          "format": "int64"
         },
         "requirements": {
           "type": "string"
+        },
+        "agreeToTerms": {
+          "$ref": "#/definitions/uint8"
         }
       },
       "title": "CreateUserOrderReq",
@@ -935,9 +967,9 @@
         "carOwnerMultiLvAddr",
         "carOwnerFullAddress",
         "carBrandId",
-        "carBrandSeriesId",
-        "partnerStoreId",
-        "requirements"
+        "carSeriesId",
+        "requirements",
+        "agreeToTerms"
       ]
     },
     "DeleteCarOwnerInfoReq": {
@@ -1111,7 +1143,25 @@
         "orderNumber": {
           "type": "string"
         },
+        "carOwnerName": {
+          "type": "string"
+        },
+        "carOwnerMultiLvAddr": {
+          "type": "string"
+        },
+        "carOwnerFullAddr": {
+          "type": "string"
+        },
+        "carBrandName": {
+          "type": "string"
+        },
+        "carSeriesName": {
+          "type": "string"
+        },
         "partnerStore": {
+          "type": "string"
+        },
+        "partnerStoreAddr": {
           "type": "string"
         },
         "requirements": {
@@ -1131,7 +1181,13 @@
       "required": [
         "id",
         "orderNumber",
+        "carOwnerName",
+        "carOwnerMultiLvAddr",
+        "carOwnerFullAddr",
+        "carBrandName",
+        "carSeriesName",
         "partnerStore",
+        "partnerStoreAddr",
         "requirements",
         "orderStatus",
         "createdAt",
@@ -1408,7 +1464,7 @@
         "carBrandId": {
           "$ref": "#/definitions/uint"
         },
-        "carBrandSeriesId": {
+        "carSeriesId": {
           "$ref": "#/definitions/uint"
         },
         "partnerStoreId": {
@@ -1427,7 +1483,7 @@
         "carOwnerMultLvAddr",
         "carOwnerFullAddress",
         "carBrandId",
-        "carBrandSeriesId",
+        "carSeriesId",
         "partnerStoreId",
         "requirements"
       ]
@@ -1546,6 +1602,34 @@
         "createdAt",
         "updatedAt"
       ]
+    },
+    "WebsocketServiceListItem": {
+      "type": "object",
+      "properties": {
+        "serviceId": {
+          "$ref": "#/definitions/uint8"
+        },
+        "serviceDesc": {
+          "type": "string"
+        }
+      },
+      "title": "WebsocketServiceListItem",
+      "required": [
+        "serviceId",
+        "serviceDesc"
+      ]
+    },
+    "WebsocketServiceRep": {
+      "type": "object",
+      "title": "WebsocketServiceRep"
+    },
+    "WebsocketServiceReq": {
+      "type": "object",
+      "title": "WebsocketServiceReq"
+    },
+    "WebsocketTestRep": {
+      "type": "object",
+      "title": "WebsocketTestRep"
     },
     "WebsocketTestReq": {
       "type": "object",

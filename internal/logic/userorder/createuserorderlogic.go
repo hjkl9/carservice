@@ -187,13 +187,14 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 	}
 
 	// check if the PartnerStore already exists.
-	hasPartnerStore, err := l.validatePartnerStore(req.PartnerStoreId)
-	if err != nil {
-		return nil, errcode.NewDatabaseErrorx().GetError(err)
-	}
-	if !hasPartnerStore {
-		return nil, errcode.NotFound.SetMsg("该合作门店不存在")
-	}
+	// ! Dont need PartnerStoreId
+	// hasPartnerStore, err := l.validatePartnerStore(req.PartnerStoreId)
+	// if err != nil {
+	// 	return nil, errcode.NewDatabaseErrorx().GetError(err)
+	// }
+	// if !hasPartnerStore {
+	// 	return nil, errcode.NotFound.SetMsg("该合作门店不存在")
+	// }
 
 	// validate CarBrand and CarBrandSeries data.
 	hasCar, err := l.validateUserCar(req.CarBrandId, req.CarSeriesId)
@@ -223,10 +224,10 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 	// create the new user order.
 	createPayload := &createUserOrderPayload{
 		MemberId:         uint(userId),
-		CarBrandId:       req.CarBrandId,
-		CarBrandSeriesId: req.CarSeriesId,
+		CarBrandId:       uint(req.CarBrandId),
+		CarBrandSeriesId: uint(req.CarSeriesId),
 		CarOwnerInfoId:   *carOwnerInfoId,
-		PartnerStoreId:   req.PartnerStoreId,
+		PartnerStoreId:   uint(req.PartnerStoreId),
 		OrderNumber:      order.GenerateNumber(time.Now()),
 		Comment:          req.Requirements,
 		EstAmount:        0.000000,
@@ -305,7 +306,7 @@ func (l *CreateUserOrderLogic) createCarOwnerInfo(
 }
 
 // validateUserCar 验证车辆信息
-func (l *CreateUserOrderLogic) validateUserCar(carBrand, carBrandSeriesId uint) (bool, error) {
+func (l *CreateUserOrderLogic) validateUserCar(carBrand, carBrandSeriesId int64) (bool, error) {
 	var count uint8
 	query := "SELECT COUNT(1) AS `count` FROM `car_brands` `cb` JOIN `car_brand_series` `cbs` ON `cb`.`brand_id` = `cbs`.`brand_id` WHERE `cbs`.`brand_id` = ? AND `cbs`.`series_id` = ? LIMIT 1;"
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)

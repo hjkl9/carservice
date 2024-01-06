@@ -220,9 +220,9 @@ type CreateUserOrderReq struct {
 	CarOwnerLatitude    float64 `json:"carOwnerLatitude"`
 	CarOwnerMultiLvAddr string  `json:"carOwnerMultiLvAddr"`
 	CarOwnerFullAddress string  `json:"carOwnerFullAddress"`
-	CarBrandId          uint    `json:"carBrandId"`
-	CarSeriesId         uint    `json:"carSeriesId"`
-	PartnerStoreId      uint    `json:"partnerStoreId"`
+	CarBrandId          int64   `json:"carBrandId"`
+	CarSeriesId         int64   `json:"carSeriesId"`
+	PartnerStoreId      int64   `json:"partnerStoreId,optional"`
 	Requirements        string  `json:"requirements"`
 	AgreeToTerms        uint8   `json:"agreeToTerms"`
 }

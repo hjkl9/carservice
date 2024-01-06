@@ -163,7 +163,7 @@ type createUserOrderPayload struct {
 	CarBrandId       uint    `db:"car_brand_id"`
 	CarBrandSeriesId uint    `db:"car_brand_series_id"`
 	CarOwnerInfoId   uint    `db:"car_owner_info_id"`
-	PartnerStoreId   uint    `db:"partner_store_id"`
+	PartnerStoreId   uint    `db:"partner_store_id"` // ! deprecated
 	OrderNumber      string  `db:"order_number"`
 	Comment          string  `db:"comment"`
 	EstAmount        float64 `db:"est_amount"`
@@ -188,6 +188,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 
 	// check if the PartnerStore already exists.
 	// ! Dont need PartnerStoreId
+	// ! deprecated
 	// hasPartnerStore, err := l.validatePartnerStore(req.PartnerStoreId)
 	// if err != nil {
 	// 	return nil, errcode.NewDatabaseErrorx().GetError(err)
@@ -227,7 +228,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		CarBrandId:       uint(req.CarBrandId),
 		CarBrandSeriesId: uint(req.CarSeriesId),
 		CarOwnerInfoId:   *carOwnerInfoId,
-		PartnerStoreId:   uint(req.PartnerStoreId),
+		PartnerStoreId:   uint(req.PartnerStoreId), // ! deprecated
 		OrderNumber:      order.GenerateNumber(time.Now()),
 		Comment:          req.Requirements,
 		EstAmount:        0.000000,

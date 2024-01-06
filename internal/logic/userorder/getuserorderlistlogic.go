@@ -12,6 +12,7 @@ import (
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
+	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -45,16 +46,17 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 	userId := jwt.GetUserId(l.ctx)
 	// 先查询是否存在订单
 	var hasList uint8
-	query := "select (count(1) > 0) AS `h` from carservicedb.user_orders where member_id = ? AND `deleted_at` IS NULL;"
+	query := "SELECT (count(1) > 0) AS `hasList` FROM `user_orders` WHERE `member_id` = ? AND `deleted_at` IS NULL"
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
-		return make([]types.UserOrderListItem, 0), errcode.DatabaseError
+		logc.Errorf(l.ctx, "预处理 `%s` \n", "SELECT (count(1) > 0) AS `hasList` FROM `user_orders` WHERE `member_id` = ? AND `deleted_at` IS NULL")
+		return make([]types.UserOrderListItem, 0), errcode.DatabaseError.SetDetails("1", err.Error())
 	}
-	if err = stmt.GetContext(l.ctx, &hasList); err != nil {
-		return make([]types.UserOrderListItem, 0), errcode.DatabaseError
+	if err = stmt.GetContext(l.ctx, &hasList, userId); err != nil {
+		return make([]types.UserOrderListItem, 0), errcode.DatabaseError.SetDetails("2", err.Error())
 	}
 	if hasList == 0 {
-		return make([]types.UserOrderListItem, 0), errcode.DatabaseError
+		return make([]types.UserOrderListItem, 0), errcode.DatabaseError.SetDetails("3", err.Error())
 	}
 	// 是否可删除条件函数
 	deletable := func(status uint8) bool { return status == uo_enum.Cancelled || status == uo_enum.Completed }

@@ -70,7 +70,6 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 	// 查询语句
 	query := "SELECT `uo`.`id`, `uo`.`order_number` AS `orderNumber`, `ps`.`title` AS `partnerStore`, `uo`.`comment` AS `requirements`, `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` AS `uo` LEFT JOIN `partner_stores` AS `ps` ON `uo`.`partner_store_id` = `ps`.`id` WHERE 1=1 " + statusSubQuery + " AND `uo`.`member_id` = ? AND `uo`.`deleted_at` IS NULL"
 	// 开始查询并扫描数据到变量 orders
-	fmt.Printf("sql: `%s`\n", query)
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
 		return nil, errcode.NewDatabaseErrorx().GetError(err)

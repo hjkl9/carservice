@@ -12,16 +12,17 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func CreateUserOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func CancelUserOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.CreateUserOrderReq
+		var req types.CancelUserOrderReq
 		if err := httpx.Parse(r, &req); err != nil {
 			stdresponse.ResponseWithCtx(r.Context(), w, nil, errcode.InvalidParamsError.Lazy(err.Error()))
 			return
 		}
 
-		l := userorder.NewCreateUserOrderLogic(r.Context(), svcCtx)
-		resp, err := l.CreateUserOrderFeature(&req)
-		stdresponse.ResponseWithCtx(r.Context(), w, resp, err)
+		l := userorder.NewCancelUserOrderLogic(r.Context(), svcCtx)
+		err := l.CancelUserOrder(&req)
+		stdresponse.ResponseWithCtx(r.Context(), w, nil, err)
+
 	}
 }

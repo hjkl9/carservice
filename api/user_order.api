@@ -85,6 +85,11 @@ type (
     DeleteUserOrderReq {
         Id uint `path:"id"`
     }
+
+    // 取消订单 //
+    CancelUserOrderReq {
+        Id int64 `path:"id"`
+    }
 )
 
 @server(
@@ -123,4 +128,7 @@ service carservice {
     )
     @handler DeleteUserOrder
     delete /userOrder/:id (DeleteUserOrderReq)
+
+    @handler CancelUserOrder
+    get /userOrder/:id/cancel (CancelUserOrderReq)
 }

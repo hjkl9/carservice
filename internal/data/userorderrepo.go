@@ -8,7 +8,7 @@ import (
 )
 
 type UserOrderRepo interface {
-	GetIfOrderExistsById(ctx context.Context, memberId, orderId uint) (bool, error)
+	GetIfOrderExistsById(ctx context.Context, memberId interface{}, orderId uint) (bool, error)
 	GetOrderById(ctx context.Context, memberId, orderId uint) (*userorder.UserOrder, error)
 	GetIfTheListExists(ctx context.Context, memberId uint) (bool, error)
 	GetOrderList(ctx context.Context, memberId uint) (*[]*userorder.UserOrderListItem, error)
@@ -23,7 +23,7 @@ func newUserOrder(db *sqlx.DB) *userOrder {
 	return &userOrder{db}
 }
 
-func (uo *userOrder) GetIfOrderExistsById(ctx context.Context, memberId, orderId uint) (bool, error) {
+func (uo *userOrder) GetIfOrderExistsById(ctx context.Context, memberId interface{}, orderId uint) (bool, error) {
 	var hasOrder uint8
 	query := "SELECT (COUNT(1) = 1) AS `hasOrder` FROM `user_orders` WHERE `member_id` = ? AND `id` = ? AND `deleted_at` IS NULL LIMIT 1"
 	stmt, err := uo.db.PreparexContext(ctx, query)

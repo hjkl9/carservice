@@ -23,7 +23,7 @@ func OrderStatusDesc(i uint8) string {
 	case ToBePaid:
 		return "等待用户付款" // 待付款
 	case Cancelled:
-		return "用户取消订单" // 已取消
+		return "已取消" // 已取消
 	case Refunded:
 		return "已退款" // 已退款
 	case Paid:
@@ -33,9 +33,9 @@ func OrderStatusDesc(i uint8) string {
 	case InInstallation:
 		return "安装中"
 	case Closed:
-		return "订单已关闭"
+		return "已关闭"
 	case Completed:
-		return "订单完成"
+		return "已完成"
 	default:
 		return "未知状态"
 	}

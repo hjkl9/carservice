@@ -77,7 +77,7 @@ type (
     // 获取用户订单列表 //
     GetUserOrderListReq {
         Page int `form:"page,optional"`
-        Filter int8 `form:"filter,optional"`
+        Status string `form:"status,optional"`
     }
     GetUserOrderListRep {}
 

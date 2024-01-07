@@ -3,10 +3,13 @@ package userorder
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
+	"carservice/internal/enum/userorder"
 	uo_enum "carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
+	"carservice/internal/pkg/conv"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
@@ -40,6 +43,8 @@ type OrderListItem struct {
 }
 
 func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq) (resp []types.UserOrderListItem, err error) {
+	// handler status of order list as string query.
+	statusSubQuery := l.handleStatusSubQuery(req.Status)
 	// 用户
 	userId := jwt.GetUserId(l.ctx)
 	// // 先查询是否存在订单
@@ -63,15 +68,20 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 	// 待导出数据
 	var orders []*OrderListItem
 	// 查询语句
-	query := "SELECT `uo`.`id`, `uo`.`order_number` AS `orderNumber`, `ps`.`title` AS `partnerStore`, `uo`.`comment` AS `requirements`, `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` AS `uo` LEFT JOIN `partner_stores` AS `ps` ON `uo`.`partner_store_id` = `ps`.`id` WHERE `uo`.`member_id` = ? AND `uo`.`deleted_at` IS NULL"
+	query := "SELECT `uo`.`id`, `uo`.`order_number` AS `orderNumber`, `ps`.`title` AS `partnerStore`, `uo`.`comment` AS `requirements`, `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` AS `uo` LEFT JOIN `partner_stores` AS `ps` ON `uo`.`partner_store_id` = `ps`.`id` WHERE 1=1 " + statusSubQuery + " AND `uo`.`member_id` = ? AND `uo`.`deleted_at` IS NULL"
 	// 开始查询并扫描数据到变量 orders
-	if err = l.svcCtx.DBC.SelectContext(
+	fmt.Printf("sql: `%s`\n", query)
+	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	if err != nil {
+		return nil, errcode.NewDatabaseErrorx().GetError(err)
+	}
+	if err = stmt.SelectContext(
 		l.ctx,
 		&orders,
 		// 匹配表名
-		query,
 		userId,
 	); err != nil {
+		fmt.Printf("here err: %s\n", err.Error())
 		// 处理并抛出查询发生的错误
 		return nil, errcode.NewDatabaseErrorx().GetError(err)
 	}
@@ -101,4 +111,41 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 		})
 	}
 	return data, nil
+}
+
+func (l *GetUserOrderListLogic) handleStatusSubQuery(status string) string {
+	if status == "" {
+		return ""
+	}
+	var in string
+	// ? 在编译的时候确定
+	switch status {
+	case "0":
+		// 全部数据
+		return ""
+	case "1":
+		// 待处理和待付款
+		in = conv.ToStringWithSep([]uint8{
+			userorder.Pending,
+			userorder.ToBeAcceptedByUser,
+			userorder.ToBePaid,
+		}, ',')
+	case "2":
+		// 已付款和待安装
+		in = conv.ToStringWithSep([]uint8{
+			userorder.Paid,
+			userorder.PrepareToInstall,
+		}, ',')
+	case "3":
+		// 已完成
+		in = conv.ToStringWithSep([]uint8{
+			userorder.Completed,
+		}, ',')
+	case "4":
+		// 已关闭
+		in = conv.ToStringWithSep([]uint8{
+			userorder.Closed,
+		}, ',')
+	}
+	return fmt.Sprintf("AND `order_status` IN (%s)", in)
 }

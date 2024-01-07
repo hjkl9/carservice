@@ -12,6 +12,7 @@ import (
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
+	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -40,9 +41,11 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 	mp := provider.MiniProgram()
 	code2session, err := mp.Code2session(req.Code)
 	if err != nil {
+		logc.Errorf(l.ctx, "微信获取 Session 时发生错误, RealError: %s\n", err.Error())
 		return nil, errcode.New(http.StatusOK, "-", err.Error())
 	}
 	if code2session.Errcode != 0 {
+		logc.Errorf(l.ctx, "微信获取 Session 时发生错误, RealError: %s\n", err.Error())
 		return nil, errcode.New(http.StatusOK, "-", code2session.Errmsg)
 	}
 	openid := code2session.Openid
@@ -61,6 +64,7 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 		// make token
 		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, uint(userId))
 		if err != nil {
+			logc.Errorf(l.ctx, "生成已存在用户的 Token 时发生错误, RealError: %s\n", err.Error())
 			return nil, errcode.InternalServerError.SetMsg("生成 token 时出现错误")
 		}
 		return &types.WechatAuthorizationRep{
@@ -81,6 +85,7 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 		// default unbound phone number.
 		result, err := l.svcCtx.DBC.Exec(query, newUsername, "")
 		if err != nil {
+			logc.Errorf(l.ctx, "创建 Member 时发生错误, RealError: %s\n", err.Error())
 			return nil, errcode.InternalServerError.SetMsg("创建数据时发生错误")
 		}
 		newUserId, _ = result.LastInsertId()
@@ -90,11 +95,13 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 		// don't save appid/unionid/access_token.
 		_, err = l.svcCtx.DBC.Exec(query, newUserId, "", openid, unionid, sessionKey, "")
 		if err != nil {
+			logc.Errorf(l.ctx, "创建 MemberBind 时发生错误, RealError: %s\n", err.Error())
 			return nil, errcode.InternalServerError.SetMsg("创建数据时发生错误")
 		}
 		// make jwt token.
 		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, uint(newUserId))
 		if err != nil {
+			logc.Errorf(l.ctx, "创建新用户的 Token 时发生错误, RealError: %s\n", err.Error())
 			return nil, errcode.InternalServerError.SetMsg("生成 token 时出现错误")
 		}
 		return &types.WechatAuthorizationRep{

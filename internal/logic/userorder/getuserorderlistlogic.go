@@ -3,9 +3,8 @@ package userorder
 import (
 	"context"
 	"database/sql"
-	"fmt"
+	"time"
 
-	"carservice/internal/data/tables"
 	uo_enum "carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/jwt"
@@ -36,8 +35,8 @@ type OrderListItem struct {
 	PartnerStore sql.NullString `db:"partnerStore" json:"partnerStore"`
 	Requirements string         `db:"requirements" json:"requirements"`
 	OrderStatus  uint8          `db:"orderStatus" json:"orderStatus"`
-	CreatedAt    string         `db:"createdAt" json:"createdAt"`
-	UpdatedAt    string         `db:"updatedAt" json:"updatedAt"`
+	CreatedAt    time.Time      `db:"createdAt" json:"createdAt"`
+	UpdatedAt    time.Time      `db:"updatedAt" json:"updatedAt"`
 }
 
 func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq) (resp []types.UserOrderListItem, err error) {
@@ -64,13 +63,13 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 	// 待导出数据
 	var orders []*OrderListItem
 	// 查询语句
-	query := "SELECT `uo`.`id`, `uo`.`order_number` AS `orderNumber`, `ps`.`title` AS `partnerStore`, `uo`.`comment` AS `requirements`, `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `%s` AS `uo` LEFT JOIN `%s` AS `ps` ON `uo`.`partner_store_id` = `ps`.`id` WHERE `uo`.`member_id` = ? AND `uo`.`deleted_at` IS NULL"
+	query := "SELECT `uo`.`id`, `uo`.`order_number` AS `orderNumber`, `ps`.`title` AS `partnerStore`, `uo`.`comment` AS `requirements`, `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` AS `uo` LEFT JOIN `partner_stores` AS `ps` ON `uo`.`partner_store_id` = `ps`.`id` WHERE `uo`.`member_id` = ? AND `uo`.`deleted_at` IS NULL"
 	// 开始查询并扫描数据到变量 orders
 	if err = l.svcCtx.DBC.SelectContext(
 		l.ctx,
 		&orders,
 		// 匹配表名
-		fmt.Sprintf(query, tables.UserOrder, tables.PartnerStore),
+		query,
 		userId,
 	); err != nil {
 		// 处理并抛出查询发生的错误
@@ -97,8 +96,8 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 			}(),
 			Requirements: (*v).Requirements,
 			OrderStatus:  uo_enum.OrderStatusDesc((*v).OrderStatus),
-			CreatedAt:    (*v).CreatedAt,
-			UpdatedAt:    (*v).UpdatedAt,
+			CreatedAt:    (*v).CreatedAt.Format("2006-01-02 15:04:05"),
+			UpdatedAt:    (*v).UpdatedAt.Format("2006-01-02 15:04:05"),
 		})
 	}
 	return data, nil

@@ -72,5 +72,5 @@ func (l *DeleteUserOrderLogic) DeleteUserOrder(req *types.DeleteUserOrderReq) er
 		}
 	}
 	// 否则订单还在进行中
-	return errcode.Ok.Lazy("订单还在进行中")
+	return errcode.StatusForbiddenError.Lazy("订单还在进行中")
 }

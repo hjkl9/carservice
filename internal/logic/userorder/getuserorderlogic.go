@@ -36,7 +36,7 @@ type Order struct {
 	CarOwnerMultiLvAddr string         `db:"carOwnerMultiLvAddr"`
 	CarOwnerFullAddress string         `db:"carOwnerFullAddress"`
 	PartnerStore        sql.NullString `db:"partnerStore"`
-	PartnerStoreAddress string         `db:"partnerStoreAddress"`
+	PartnerStoreAddress sql.NullString `db:"partnerStoreAddress"`
 	CarBrandName        string         `db:"carBrandName"`
 	CarSeriesName       string         `db:"carSeriesName"`
 	Comment             string         `db:"comment"`
@@ -82,10 +82,15 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 			}
 			return order.PartnerStore.String
 		}(),
-		PartnerStoreAddr: order.PartnerStoreAddress,
-		Requirements:     order.Comment,
-		OrderStatus:      userorder.OrderStatusDesc(order.OrderStatus),
-		CreatedAt:        order.CreatedAt,
-		UpdatedAt:        order.UpdatedAt,
+		PartnerStoreAddr: func() string {
+			if !order.PartnerStoreAddress.Valid {
+				return "未绑定合作门店"
+			}
+			return order.PartnerStoreAddress.String
+		}(),
+		Requirements: order.Comment,
+		OrderStatus:  userorder.OrderStatusDesc(order.OrderStatus),
+		CreatedAt:    order.CreatedAt,
+		UpdatedAt:    order.UpdatedAt,
 	}, nil
 }

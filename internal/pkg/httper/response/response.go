@@ -15,7 +15,7 @@ type Body struct {
 	ErrCode  string      `json:"errCode"`
 	Msg      string      `json:"msg"`
 	Details  []string    `json:"details,omitempty"`
-	Data     interface{} `json:"data,omitempty"`
+	Data     interface{} `json:"data"`
 	TraceId  string      `json:"traceId,omitempty"`
 }
 

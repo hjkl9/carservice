@@ -17,15 +17,15 @@ const (
 func OrderStatusDesc(i uint8) string {
 	switch i {
 	case Pending:
-		return "等待商家接单"
+		return "等待商家接单" // 待处理
 	case ToBeAcceptedByUser:
-		return "等待用户接受报价"
+		return "等待用户接受报价" // 待处理
 	case ToBePaid:
-		return "等待用户付款"
+		return "等待用户付款" // 待付款
 	case Cancelled:
-		return "用户取消订单"
+		return "用户取消订单" // 已取消
 	case Refunded:
-		return "已退款"
+		return "已退款" // 已退款
 	case Paid:
 		return "已付款"
 	case PrepareToInstall:

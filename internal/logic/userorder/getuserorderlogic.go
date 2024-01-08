@@ -4,10 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"carservice/internal/data/tables"
 	"carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
+	"carservice/internal/pkg/format/timex"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
@@ -41,8 +43,8 @@ type Order struct {
 	CarSeriesName       string         `db:"carSeriesName"`
 	Comment             string         `db:"comment"`
 	OrderStatus         uint8          `db:"orderStatus"`
-	CreatedAt           string         `db:"createdAt"`
-	UpdatedAt           string         `db:"updatedAt"`
+	CreatedAt           time.Time      `db:"createdAt"`
+	UpdatedAt           time.Time      `db:"updatedAt"`
 	// other fields.
 }
 
@@ -59,7 +61,7 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 	}
 	// 通过 ID 查询订单
 	var order Order
-	query = "SELECT `uo`.`id` AS `id`, `uo`.`order_number` AS `orderNumber`, `coi`.`name` AS `carOwnerName`, `coi`.`multilevel_address` AS `carOwnerMultiLvAddr`, `coi`.`full_address` AS `carOwnerFullAddress` , `ps`.`title` AS `partnerStore`, `ps`.`full_address` AS `partnerStoreAddress`, `uo`.`comment` AS `comment`, `cb`.`brand_name` AS `carBrandName`, `cbs`.`series_name` AS `carSeriesName` , `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` `uo` LEFT JOIN `partner_stores` `ps` ON `ps`.`id` = `uo`.`partner_store_id` JOIN `car_owner_infos` `coi` ON `coi`.`id` = `uo`.`car_owner_info_id` JOIN `car_brands` `cb` ON `cb`.`brand_id` = `uo`.`car_brand_id` JOIN `car_brand_series` `cbs` ON `cbs`.`series_id` = `uo`.`car_brand_series_id` WHERE `uo`.`id` = ? AND `uo`.`member_id` = ? LIMIT 1"
+	query = "SELECT `uo`.`id` AS `id`, `uo`.`order_number` AS `orderNumber`, `coi`.`name` AS `carOwnerName`, `coi`.`multilevel_address` AS `carOwnerMultiLvAddr`, `coi`.`full_address` AS `carOwnerFullAddress` , `ps`.`title` AS `partnerStore`, `ps`.`full_address` AS `partnerStoreAddress`, `uo`.`comment` AS `comment`, `cb`.`brand_name` AS `carBrandName`, `cbs`.`series_name` AS `carSeriesName` , `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` `uo` LEFT JOIN `partner_stores` `ps` ON `ps`.`id` = `uo`.`partner_store_id` JOIN `car_owner_infos` `coi` ON `coi`.`user_order_id` = `uo`.`id` JOIN `car_brands` `cb` ON `cb`.`brand_id` = `uo`.`car_brand_id` JOIN `car_brand_series` `cbs` ON `cbs`.`series_id` = `uo`.`car_brand_series_id` WHERE `uo`.`id` = ? AND `uo`.`member_id` = ? LIMIT 1"
 
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
@@ -90,7 +92,7 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 		}(),
 		Requirements: order.Comment,
 		OrderStatus:  userorder.OrderStatusDesc(order.OrderStatus),
-		CreatedAt:    order.CreatedAt,
-		UpdatedAt:    order.UpdatedAt,
+		CreatedAt:    timex.StdFormat1(order.CreatedAt),
+		UpdatedAt:    timex.StdFormat1(order.UpdatedAt),
 	}, nil
 }

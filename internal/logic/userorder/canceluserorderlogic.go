@@ -44,6 +44,7 @@ func (l *CancelUserOrderLogic) CancelUserOrder(req *types.CancelUserOrderReq) er
 	// userorder.Pending
 	// userorder.ToBeAcceptedByUser
 
+	// CheckIfOrderCanBeCanceled
 	// 检查是否满足取消订单的条件
 	var cancellable uint8
 	query := "SELECT (COUNT(1) = 1) AS `cancellable` FROM `user_orders` WHERE 1 = 1 AND `order_status` IN (?, ?, ?) AND `id` = ? AND `member_id` = ? LIMIT 1"
@@ -54,7 +55,7 @@ func (l *CancelUserOrderLogic) CancelUserOrder(req *types.CancelUserOrderReq) er
 	}
 	if err = stmt.GetContext(
 		l.ctx,
-
+		&cancellable,
 		userorder.ToBePaid,
 		userorder.Pending,
 		userorder.ToBeAcceptedByUser,
@@ -65,8 +66,19 @@ func (l *CancelUserOrderLogic) CancelUserOrder(req *types.CancelUserOrderReq) er
 		return errcode.NewDatabaseErrorx().GetError(err)
 	}
 	if cancellable != 1 {
-		return errcode.StatusForbiddenError.SetMsg("该订单无法取消")
+		return errcode.StatusForbiddenError.SetMsg("该订单无法被取消")
 	}
-	// todo: 取消订单
+	// 更新订单状态
+	query = "UPDATE `user_orders` SET `order_status` = ?, `updated_at` = NOW() WHERE `id` = ? AND `member_id` = ?"
+	stmt, err = l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	if err != nil {
+		logc.Error(l.ctx, "预处理更新状态的 SQL 语句时发生错误")
+		return errcode.NewDatabaseErrorx().UpdateError(err)
+	}
+	_, err = stmt.ExecContext(l.ctx, userorder.Cancelled, req.Id, userId)
+	if err != nil {
+		logc.Error(l.ctx, "执行更新状态的 SQL 语句时发生错误")
+		return errcode.NewDatabaseErrorx().UpdateError(err)
+	}
 	return nil
 }

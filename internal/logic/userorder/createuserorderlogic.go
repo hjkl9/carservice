@@ -174,6 +174,8 @@ type createUserOrderPayload struct {
 	// UpdatedAt        time.Duration `db:"updated_at"`
 }
 
+// CreateUserOrderFeature 创建用户订单
+// FIXME 创建订单 > 创建车主信息 >
 func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrderReq) (*types.CreateUserOrderRep, error) {
 	// 用户是否同意协议
 	if req.AgreeToTerms != 1 {

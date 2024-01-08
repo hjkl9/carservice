@@ -7,6 +7,8 @@ import (
 
 	"carservice/internal/config"
 	"carservice/internal/handler"
+	"carservice/internal/pkg/common/errcode"
+	stdresponse "carservice/internal/pkg/httper/response"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 
@@ -27,7 +29,18 @@ func main() {
 
 	server := rest.MustNewServer(
 		c.RestConf,
+		// todo: 需要处理未认证的原因
 		rest.WithUnauthorizedCallback(jwt.UnauthorizedCallback()),
+		rest.WithNotFoundHandler(func() http.Handler {
+			// todo: 封装到自定义的 NotFound Handler 文件
+			return func() http.Handler {
+				return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					stdresponse.Response(w, nil, errcode.NotFound)
+				})
+			}()
+		}()),
+		// todo
+		// rest.WithNotAllowedHandler(),
 	)
 	defer server.Stop()
 

@@ -30,6 +30,12 @@ func GetJwtToken(secretKey string, iat, seconds int64, userId uint) (string, err
 
 func UnauthorizedCallback() handler.UnauthorizedCallback {
 	return func(w http.ResponseWriter, r *http.Request, err error) {
-		stdresponse.Response(w, nil, errcode.UnauthorizedError.SetMsg(err.Error()))
+		// todo: handle Unauthorized.
+		stdresponse.Response(w, nil, errcode.UnauthorizedError.SetMsg("未登录"))
+	}
+}
+
+func UnsignedCallback() handler.UnsignedCallback {
+	return func(w http.ResponseWriter, r *http.Request, next http.Handler, strict bool, code int) {
 	}
 }

@@ -268,8 +268,10 @@ type GetUserOrderRep struct {
 }
 
 type GetUserOrderListReq struct {
-	Page   int    `form:"page,optional"`
-	Status string `form:"status,optional"`
+	Page      int    `form:"page,optional"`
+	Status    string `form:"status,optional"`
+	DateStart string `form:"dateStart,optional"`
+	DateEnd   string `form:"dateEnd,optional"`
 }
 
 type GetUserOrderListRep struct {

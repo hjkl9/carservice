@@ -78,6 +78,8 @@ type (
     GetUserOrderListReq {
         Page int `form:"page,optional"`
         Status string `form:"status,optional"`
+        DateStart string `form:"dateStart,optional"`
+        DateEnd string `form:"dateEnd,optional"`
     }
     GetUserOrderListRep {}
 

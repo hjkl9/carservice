@@ -43,7 +43,7 @@ func RequestPayment() error {
 		native.PrepayRequest{
 			Appid:       core.String(appId), // From config.
 			Mchid:       core.String(mchID), // From config.
-			Description: core.String("车一一有限公司-装车订单"),
+			Description: core.String("车一一有限公司 - 装车订单"),
 			OutTradeNo:  core.String("1217752501201407033233368018"),
 			Attach:      core.String("自定义数据说明"),
 			NotifyUrl:   core.String("https://www.weixin.qq.com/wxpay/pay.php"),

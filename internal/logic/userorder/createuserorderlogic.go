@@ -159,17 +159,17 @@ type carOwnerInfoCounter struct {
 // createUserOrderPayload 创建用户订单数据
 // 内存对齐 OK
 type createUserOrderPayload struct {
-	MemberId         uint    `db:"member_id"`
-	CarBrandId       uint    `db:"car_brand_id"`
-	CarBrandSeriesId uint    `db:"car_brand_series_id"`
-	CarOwnerInfoId   uint    `db:"car_owner_info_id"`
-	PartnerStoreId   uint    `db:"partner_store_id"` // ! deprecated
-	OrderNumber      string  `db:"order_number"`
-	Comment          string  `db:"comment"`
-	EstAmount        float64 `db:"est_amount"`
-	ActAmount        float64 `db:"act_amount"`
-	PaymentMethod    uint8   `db:"payment_method"`
-	OrderStatus      uint8   `db:"order_status"`
+	MemberId         uint `db:"member_id"`
+	CarBrandId       uint `db:"car_brand_id"`
+	CarBrandSeriesId uint `db:"car_brand_series_id"`
+	// CarOwnerInfoId   uint    `db:"car_owner_info_id"` // ! deprecated
+	PartnerStoreId uint    `db:"partner_store_id"` // ! deprecated
+	OrderNumber    string  `db:"order_number"`
+	Comment        string  `db:"comment"`
+	EstAmount      float64 `db:"est_amount"`
+	ActAmount      float64 `db:"act_amount"`
+	PaymentMethod  uint8   `db:"payment_method"`
+	OrderStatus    uint8   `db:"order_status"`
 	// CreatedAt        time.Duration `db:"created_at"`
 	// UpdatedAt        time.Duration `db:"updated_at"`
 }
@@ -188,17 +188,6 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		return nil, errcode.InternalServerError.Lazy("解析用户 ID 时发生错误", err.Error())
 	}
 
-	// check if the PartnerStore already exists.
-	// ! Dont need PartnerStoreId
-	// ! deprecated
-	// hasPartnerStore, err := l.validatePartnerStore(req.PartnerStoreId)
-	// if err != nil {
-	// 	return nil, errcode.NewDatabaseErrorx().GetError(err)
-	// }
-	// if !hasPartnerStore {
-	// 	return nil, errcode.NotFound.SetMsg("该合作门店不存在")
-	// }
-
 	// validate CarBrand and CarBrandSeries data.
 	hasCar, err := l.validateUserCar(req.CarBrandId, req.CarSeriesId)
 	if err != nil {
@@ -214,29 +203,19 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
 
-	// update or create the info of UserOwner.
-	// create CarOwnerInfo at the same time.
-	carOwnerInfoId, err := l.createCarOwnerInfo(tx, uint(userId), req)
-	if err != nil {
-		if err1 := tx.Rollback(); err1 != nil { // Rollback
-			return nil, errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
-		}
-		return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
-	}
-
 	// create the new user order.
 	createPayload := &createUserOrderPayload{
 		MemberId:         uint(userId),
 		CarBrandId:       uint(req.CarBrandId),
 		CarBrandSeriesId: uint(req.CarSeriesId),
-		CarOwnerInfoId:   *carOwnerInfoId,
-		PartnerStoreId:   uint(req.PartnerStoreId), // ! deprecated
 		OrderNumber:      order.GenerateNumber(time.Now()),
 		Comment:          req.Requirements,
 		EstAmount:        0.000000,
 		ActAmount:        0.000000,
 		PaymentMethod:    uint8(payment.DefaultAtCreation),
 		OrderStatus:      uint8(userorder.DefaultAtCreation),
+		// CarOwnerInfoId:   *carOwnerInfoId, // ! deprecated
+		PartnerStoreId: uint(req.PartnerStoreId), // ! deprecated
 	}
 	newUserOrderId, err := l.createUserOrder(tx, createPayload)
 	if err != nil {
@@ -246,6 +225,17 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		}
 		return nil, errcode.NewDatabaseErrorx().CreateError(err)
 	}
+
+	// update or create the info of UserOwner.
+	// create CarOwnerInfo at the same time.
+	_, err = l.createCarOwnerInfo(tx, uint(userId), *newUserOrderId, req)
+	if err != nil {
+		if err1 := tx.Rollback(); err1 != nil { // Rollback
+			return nil, errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
+		}
+		return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
+	}
+
 	if err = tx.Commit(); err != nil {
 		if err1 := tx.Rollback(); err1 != nil { // Rollback
 			return nil, errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
@@ -262,41 +252,16 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 // todo: 删除订单时同时该 CarOwnerInfo 也被删除
 func (l *CreateUserOrderLogic) createCarOwnerInfo(
 	tx *sqlx.Tx,
-	userId uint,
+	userId,
+	userOrderId uint,
 	req *types.CreateUserOrderReq,
 ) (*uint, error) {
-	/// ! Should be deleted. ///
-	// Check if the car owner info was exists.
-	// var counter carOwnerInfoCounter
-	// query := "SELECT COUNT(1) AS `count`, MIN(`id`) AS `firstId` FROM `car_owner_infos` WHERE `user_id` = ? LIMIT 1"
-	// stmtx, err := tx.PreparexContext(l.ctx, query)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// if err = stmtx.GetContext(l.ctx, &counter, userId); err != nil {
-	// 	return nil, err
-	// }
-	// // If doesn't exist then create a new one.
-	// if counter.Count == 0 {
-	// }
-	// // Otherwise update and return id of CarOwnerInfo.
-	// query = "UPDATE `car_owner_infos` SET `name` = ?, `phone_number` = ?, `multilevel_address` = ?, `full_address` = ? WHERE `user_id` = ? AND `id` = ?"
-	// stmt, err := tx.PrepareContext(l.ctx, query)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// _, err = stmt.ExecContext(l.ctx, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultiLvAddr, req.CarOwnerFullAddress, userId, counter.FirstId)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	/// ! Should be deleted. ///
-
-	query := "INSERT INTO `car_owner_infos`(`user_id`, `name`, `phone_number`, `multilevel_address`, `full_address`, `longitude`, `latitude`) VALUES(?, ?, ?, ?, ?, 0.0000000, 0.000000)"
+	query := "INSERT INTO `car_owner_infos`(`user_id`, `user_order_id`, `name`, `phone_number`, `multilevel_address`, `full_address`, `longitude`, `latitude`) VALUES(?, ?, ?, ?, ?, ?, 0.0000000, 0.000000)"
 	stat, err := tx.PrepareContext(l.ctx, query)
 	if err != nil {
 		return nil, err
 	}
-	rs, err := stat.ExecContext(l.ctx, userId, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultiLvAddr, req.CarOwnerFullAddress)
+	rs, err := stat.ExecContext(l.ctx, userId, userOrderId, req.CarOwnerName, req.CarOwnerPhoneNumber, req.CarOwnerMultiLvAddr, req.CarOwnerFullAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -324,7 +289,7 @@ func (l *CreateUserOrderLogic) validateUserCar(carBrand, carBrandSeriesId int64)
 
 // createUserOrder 创建用户订单
 func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *createUserOrderPayload) (*uint, error) {
-	query := "INSERT INTO `user_orders`(`member_id`, `car_brand_id`, `car_brand_series_id`, `car_info_id`, `car_owner_info_id`, `partner_store_id`, `order_number`, `order_status`, `comment`, `est_amount`, `act_amount`, `payment_method`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())"
+	query := "INSERT INTO `user_orders`(`member_id`, `car_brand_id`, `car_brand_series_id`, `car_info_id`, `partner_store_id`, `order_number`, `order_status`, `comment`, `est_amount`, `act_amount`, `payment_method`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())"
 	stmt, err := tx.PrepareContext(l.ctx, query)
 	if err != nil {
 		return nil, err
@@ -335,7 +300,7 @@ func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *createUserO
 		payload.CarBrandId,
 		payload.CarBrandSeriesId,
 		0,
-		payload.CarOwnerInfoId,
+		// payload.CarOwnerInfoId, // ! deprecated
 		payload.PartnerStoreId,
 		payload.OrderNumber,
 		payload.OrderStatus,
@@ -354,19 +319,6 @@ func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *createUserO
 	newUintId := uint(newId)
 
 	return &newUintId, nil
-}
-
-func (l *CreateUserOrderLogic) validatePartnerStore(partnerStoreId uint) (bool, error) {
-	var count uint8
-	query := "SELECT COUNT(1) AS `count` FROM `partner_stores` WHERE `id` = ? LIMIT 1"
-	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
-	if err != nil {
-		return false, err
-	}
-	if err = stmt.GetContext(l.ctx, &count, partnerStoreId); err != nil {
-		return false, err
-	}
-	return count == 1, nil
 }
 
 type SmsPayload struct {

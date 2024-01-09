@@ -60,7 +60,7 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 		logc.Errorf(l.ctx, "查询订单获取数据发生错误, err: %s\n", err.Error())
 		return []types.UserOrderListItem{}, errcode.DatabaseGetErr
 	}
-	if hasList != 0 {
+	if hasList == 0 {
 		return []types.UserOrderListItem{}, nil
 	}
 	// 是否可删除条件函数

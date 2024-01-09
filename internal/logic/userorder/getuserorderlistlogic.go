@@ -14,6 +14,7 @@ import (
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
+	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -47,30 +48,29 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 	statusSubQuery := l.handleStatusSubQuery(req.Status)
 	// 用户
 	userId := jwt.GetUserId(l.ctx)
-	// // 先查询是否存在订单
-	// var hasList uint8
-	// query := "SELECT (count(1) > 0) AS `hasList` FROM `user_orders` WHERE `member_id` = ? AND `deleted_at` IS NULL"
-	// stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
-	// if err != nil {
-	// 	logc.Errorf(l.ctx, "查询订单列表语句预处理发生错误, err: %s\n", err.Error())
-	// 	return make([]types.UserOrderListItem, 0), errcode.DatabaseError.SetDetails(err.Error())
-	// }
-	// if err = stmt.GetContext(l.ctx, &hasList, userId); err != nil {
-	// 	logc.Errorf(l.ctx, "查询订单获取数据发生错误, err: %s\n", err.Error())
-	// 	return make([]types.UserOrderListItem, 0), errcode.DatabaseError.SetDetails(err.Error())
-	// }
-	// if hasList == 0 {
-	// 	logc.Errorf(l.ctx, "订单列表是空的, err: %s\n", err.Error())
-	// 	return make([]types.UserOrderListItem, 0), errcode.DatabaseError.SetDetails(err.Error())
-	// }
+	// 先查询是否存在订单
+	var hasList uint8
+	query := "SELECT (count(1) > 0) AS `hasList` FROM `user_orders` WHERE `member_id` = ? AND `deleted_at` IS NULL"
+	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	if err != nil {
+		logc.Errorf(l.ctx, "查询订单列表语句预处理发生错误, err: %s\n", err.Error())
+		return []types.UserOrderListItem{}, errcode.DatabasePrepareErr
+	}
+	if err = stmt.GetContext(l.ctx, &hasList, userId); err != nil {
+		logc.Errorf(l.ctx, "查询订单获取数据发生错误, err: %s\n", err.Error())
+		return []types.UserOrderListItem{}, errcode.DatabaseGetErr
+	}
+	if hasList != 0 {
+		return []types.UserOrderListItem{}, nil
+	}
 	// 是否可删除条件函数
 	deletable := func(status uint8) bool { return status == uo_enum.Cancelled || status == uo_enum.Completed }
 	// 待导出数据
 	var orders []*OrderListItem
 	// 查询语句
-	query := "SELECT `uo`.`id`, `uo`.`order_number` AS `orderNumber`, `ps`.`title` AS `partnerStore`, `uo`.`comment` AS `requirements`, `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` AS `uo` LEFT JOIN `partner_stores` AS `ps` ON `uo`.`partner_store_id` = `ps`.`id` WHERE 1=1 " + statusSubQuery + " AND `uo`.`member_id` = ? AND `uo`.`deleted_at` IS NULL"
+	query = "SELECT `uo`.`id`, `uo`.`order_number` AS `orderNumber`, `ps`.`title` AS `partnerStore`, `uo`.`comment` AS `requirements`, `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` AS `uo` LEFT JOIN `partner_stores` AS `ps` ON `uo`.`partner_store_id` = `ps`.`id` WHERE 1=1 " + statusSubQuery + " AND `uo`.`member_id` = ? AND `uo`.`deleted_at` IS NULL"
 	// 开始查询并扫描数据到变量 orders
-	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	stmt, err = l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
 		return nil, errcode.DatabasePrepareErr
 	}

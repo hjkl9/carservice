@@ -29,7 +29,7 @@ var (
 
 // New version //
 
-var OK = api.NewApiCode(http.StatusOK, ("0"), "欧克")
+var OK = api.OK
 
 // System errors
 var (

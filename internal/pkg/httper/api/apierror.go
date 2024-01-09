@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"net/http"
 )
 
 type ApiCoder interface {
@@ -21,10 +22,8 @@ type apiCode struct {
 	details  []string
 }
 
-var e error = NewApiCode(400, "no", "")
-
 // NewApiCode is create a error code entity.
-func NewApiCode(httpCode int16, code, msg string) ApiCoder {
+func NewApiCode(httpCode int16, code, msg string) *apiCode {
 	details := []string{}
 	return &apiCode{httpCode, code, msg, details}
 }
@@ -58,6 +57,5 @@ func (ac *apiCode) Error() string {
 	return fmt.Sprintf("[%s] - %s", ac.Code(), ac.Message())
 }
 
-func ParseApiError(err error) ApiCoder {
-	return err.(*apiCode)
-}
+// Default error code.
+var OK = NewApiCode(http.StatusOK, "0", "欧克")

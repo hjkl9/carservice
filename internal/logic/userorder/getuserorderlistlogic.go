@@ -72,7 +72,7 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 	// 开始查询并扫描数据到变量 orders
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
-		return nil, errcode.NewDatabaseErrorx().GetError(err)
+		return nil, errcode.DatabasePrepareErr
 	}
 	if err = stmt.SelectContext(
 		l.ctx,
@@ -82,7 +82,7 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 	); err != nil {
 		fmt.Printf("here err: %s\n", err.Error())
 		// 处理并抛出查询发生的错误
-		return nil, errcode.NewDatabaseErrorx().GetError(err)
+		return nil, errcode.DatabaseGetErr
 	}
 	// 面向客户端的数据切片 data
 	var data []types.UserOrderListItem

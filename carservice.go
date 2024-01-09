@@ -32,7 +32,6 @@ func main() {
 		rest.WithUnauthorizedCallback(jwt.UnauthorizedCallback()),
 		rest.WithNotAllowedHandler(httperr.NotAllowedHandler()),
 		rest.WithNotFoundHandler(httperr.NotFoundHandler()),
-		// todo
 	)
 	defer server.Stop()
 

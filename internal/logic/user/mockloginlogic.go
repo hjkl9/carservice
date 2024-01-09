@@ -29,7 +29,7 @@ func NewMockLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MockLog
 }
 
 func (l *MockLoginLogic) MockLogin() (resp *types.MockLoginReq, err error) {
-	mockUserId := 1
+	mockUserId := 21
 	var count int
 	query := "SELECT count(1) AS `count` FROM `%s` WHERE `id` = ? LIMIT 1"
 	err = l.svcCtx.DBC.Get(&count, fmt.Sprintf(query, tables.User), mockUserId)

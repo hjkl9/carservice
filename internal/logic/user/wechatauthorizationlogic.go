@@ -53,8 +53,8 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 	unionid := code2session.Unionid
 	sessionKey := code2session.SessionKey
 	// check if openid of user exists in the member table.
-	query := "SELECT 1 AS `exist` FROM `member_binds` WHERE `open_id` = ?"
-	var exist int
+	query := "SELECT (COUNT(1) = 1) AS `exist` FROM `member_binds` WHERE `open_id` = ? LIMIT 1"
+	var exist int8
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
 		logc.Error(l.ctx, "预处理查询用户 open_id 是否存在语句时发生错误, err:"+err.Error())

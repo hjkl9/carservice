@@ -140,7 +140,7 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 			return nil, errcode.NewDatabaseErrorx().SetMsg("预处理创建用户授权表语句时发生错误")
 		}
 
-		_, err = stmtx.ExecContext(l.ctx, query, newUserId, "", openid, unionid, sessionKey, "")
+		_, err = stmtx.ExecContext(l.ctx, newUserId, "", openid, unionid, sessionKey, "")
 		if err != nil {
 			if rberr := txx.Rollback(); rberr != nil {
 				return nil, errcode.NewDatabaseErrorx().SetMsg("数据库回滚时发生错误")

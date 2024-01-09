@@ -53,8 +53,8 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 	unionid := code2session.Unionid
 	sessionKey := code2session.SessionKey
 	// check if openid of user exists in the member table.
-	query := "SELECT (COUNT(1) = 1) AS `exist` FROM `member_binds` WHERE `open_id` = ? LIMIT 1"
 	var exist int8
+	query := "SELECT (COUNT(1) = 1) AS `exist` FROM `member_binds` WHERE `open_id` = ? LIMIT 1"
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
 		logc.Error(l.ctx, "预处理查询用户 open_id 是否存在语句时发生错误, err:"+err.Error())
@@ -68,9 +68,13 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 	nowString := time.Now().Unix()
 	if exist == 1 {
 		// get user id and make jwt token.
-		query = "SELECT m.id AS userId FROM members AS m JOIN member_binds AS mb ON mb.user_id = m.id WHERE mb.open_id = ? LIMIT 1"
-		var userId int
-		l.svcCtx.DBC.Get(&userId, query, openid)
+		query = "SELECT `m`.`id` AS `userId` FROM `members` AS `m` JOIN `member_binds` AS `mb` ON `mb`.`user_id` = `m`.`id` WHERE `mb`.`open_id` = ? LIMIT 1"
+		var userId uint
+		stmtx, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+		if err != nil {
+			return nil, errcode.NewDatabaseErrorx().SetMsg("预处理查询登录用户的 open_id 语句时发生错误, err:" + err.Error())
+		}
+		stmtx.GetContext(l.ctx, &userId, openid)
 		// make token
 		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, uint(userId))
 		if err != nil {

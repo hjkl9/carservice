@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"database/sql"
 	"net/http"
 	"time"
 
@@ -54,7 +55,16 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 	// check if openid of user exists in the member table.
 	query := "SELECT 1 AS `exist` FROM `member_binds` WHERE `open_id` = ?"
 	var exist int
-	l.svcCtx.DBC.Get(&exist, query, openid)
+	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	if err != nil {
+		logc.Error(l.ctx, "预处理查询用户 open_id 是否存在语句时发生错误, err:"+err.Error())
+		return nil, errcode.NewDatabaseErrorx().GetError(err)
+	}
+	if err = stmt.GetContext(l.ctx, &exist, openid); err != nil {
+		logc.Error(l.ctx, "查询用户 open_id 是否存在语句时发生错误, err:"+err.Error())
+		return nil, errcode.NewDatabaseErrorx().GetError(err)
+	}
+	// get now time
 	nowString := time.Now().Unix()
 	if exist == 1 {
 		// get user id and make jwt token.
@@ -71,6 +81,7 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 			Token: token,
 		}, nil
 	} else {
+		// create a new user.
 		// get max increment id.
 		var maxIncrementId uint
 		query := "SELECT MAX(`id`) AS `maxIncrementId` FROM `members` LIMIT 1"
@@ -78,13 +89,32 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 		if maxIncrementId == 0 {
 			maxIncrementId = 1
 		}
+		// begin transecation.
+		txx, err := l.svcCtx.DBC.BeginTxx(l.ctx, &sql.TxOptions{})
+		if err != nil {
+			if rberr := txx.Rollback(); rberr != nil {
+				return nil, errcode.NewDatabaseErrorx().SetMsg("数据库回滚时发生错误")
+			}
+			return nil, errcode.NewDatabaseErrorx().SetMsg("创建数据库预处理时发生错误")
+		}
 		// create a new user.
 		query = "INSERT INTO `members`(`username`, `phone_number`) VALUES(?, ?)"
 		var newUserId int64
-		var newUsername = "新用户 " + username.GenerateHexById(maxIncrementId)
+		var newUsername = "新用户 " + username.GenerateHexById(maxIncrementId+1)
 		// default unbound phone number.
-		result, err := l.svcCtx.DBC.Exec(query, newUsername, "")
+		stmtx, err := txx.PreparexContext(l.ctx, query)
 		if err != nil {
+			if rberr := txx.Rollback(); rberr != nil {
+				return nil, errcode.NewDatabaseErrorx().SetMsg("数据库回滚时发生错误")
+			}
+			logc.Error(l.ctx, "预处理创建用户语句时发生错误, err:"+err.Error())
+			return nil, errcode.NewDatabaseErrorx().GetError(err)
+		}
+		result, err := stmtx.ExecContext(l.ctx, newUsername, "")
+		if err != nil {
+			if rberr := txx.Rollback(); rberr != nil {
+				return nil, errcode.NewDatabaseErrorx().SetMsg("数据库回滚时发生错误")
+			}
 			logc.Errorf(l.ctx, "创建 Member 时发生错误, RealError: %s\n", err.Error())
 			return nil, errcode.InternalServerError.SetMsg("创建数据时发生错误")
 		}
@@ -93,10 +123,28 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 		query = "INSERT INTO `member_binds`(`user_id`, `app_id`, `open_id`, `union_id`, `session_key`, `access_token`) VALUES(?, ?, ?, ?, ?, ?)"
 		// _, err = l.svcCtx.DBC.Exec(query, newUserId, l.svcCtx.Config.WechatConf.MiniProgram.AppId, openid, unionid, sessionKey, "none")
 		// don't save appid/unionid/access_token.
-		_, err = l.svcCtx.DBC.Exec(query, newUserId, "", openid, unionid, sessionKey, "")
+		stmtx, err = txx.PreparexContext(l.ctx, query)
 		if err != nil {
-			logc.Errorf(l.ctx, "创建 MemberBind 时发生错误, RealError: %s\n", err.Error())
-			return nil, errcode.InternalServerError.SetMsg("创建数据时发生错误")
+			if rberr := txx.Rollback(); rberr != nil {
+				return nil, errcode.NewDatabaseErrorx().SetMsg("数据库回滚时发生错误")
+			}
+			logc.Error(l.ctx, "预处理创建用户授权表语句时发生错误, err:"+err.Error())
+			return nil, errcode.NewDatabaseErrorx().SetMsg("预处理创建用户授权表语句时发生错误")
+		}
+
+		_, err = stmtx.ExecContext(l.ctx, query, newUserId, "", openid, unionid, sessionKey, "")
+		if err != nil {
+			if rberr := txx.Rollback(); rberr != nil {
+				return nil, errcode.NewDatabaseErrorx().SetMsg("数据库回滚时发生错误")
+			}
+			logc.Errorf(l.ctx, "执行创建用户授权表时发生错误, RealError: %s\n", err.Error())
+			return nil, errcode.NewDatabaseErrorx().CreateError(err)
+		}
+		if err = txx.Commit(); err != nil {
+			if rberr := txx.Rollback(); rberr != nil {
+				return nil, errcode.NewDatabaseErrorx().SetMsg("数据库回滚时发生错误")
+			}
+			return nil, errcode.NewDatabaseErrorx().SetMsg("数据库提交时发生错误")
 		}
 		// make jwt token.
 		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, uint(newUserId))

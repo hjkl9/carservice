@@ -13,6 +13,7 @@ type ApiCoder interface {
 	Details() []string
 }
 
+// apiCode is used to API error code.
 type apiCode struct {
 	httpCode int16
 	code     string
@@ -20,41 +21,50 @@ type apiCode struct {
 	details  []string
 }
 
+// NewApiCode is create a error code entity.
 func NewApiCode(httpCode int16, code, msg string) ApiCoder {
 	details := []string{}
 	return &apiCode{httpCode, code, msg, details}
 }
 
+// HttpCode returns http status code.
 func (ac *apiCode) HttpCode() int16 {
 	return ac.httpCode
 }
 
+// Code returns error code.
 func (ac *apiCode) Code() string {
 	return ac.code
 }
 
+// Message returns error message.
 func (ac *apiCode) Message() string {
 	return ac.msg
 }
 
+// WithDetails could put more error details of type of string in response data.
 func (ac *apiCode) WithDetails(dts ...string) {
 	ac.details = append(ac.details, dts...)
 }
 
+// Details returns error details of type of string.
 func (ac *apiCode) Details() []string {
 	return ac.details
 }
 
+// apiError implements error of Go standard.
 type apiError struct {
 	coder ApiCoder
 }
 
+// NewApiCode is create a error entity.
 func NewApiError(coder ApiCoder, cause ...error) error {
 	return &apiError{
 		coder,
 	}
 }
 
+// Error have implemented error rule.
 func (ae *apiError) Error() string {
 	return fmt.Sprintf("[%s] - %s", ae.coder.Code(), ae.coder.Message())
 }

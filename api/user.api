@@ -28,6 +28,9 @@ type (
     }
 
     MockLoginReq {
+        UserId int64 `json:"userId,optional"`
+    }
+    MockLoginRep {
         Token string `json:"token"`
     }
 
@@ -67,7 +70,7 @@ service carservice {
         summary: "模拟登录获取 AccessToken"
     )
     @handler MockLogin
-    get /user/login/mock returns (MockLoginReq)
+    get /user/login/mock (MockLoginReq) returns (MockLoginRep)
     
     @doc(
 		summary: "手机短信登录"

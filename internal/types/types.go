@@ -94,6 +94,10 @@ type WechatAuthorizationRep struct {
 }
 
 type MockLoginReq struct {
+	UserId int64 `json:"userId,optional"`
+}
+
+type MockLoginRep struct {
 	Token string `json:"token"`
 }
 

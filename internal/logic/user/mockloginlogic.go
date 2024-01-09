@@ -28,8 +28,13 @@ func NewMockLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MockLog
 	}
 }
 
-func (l *MockLoginLogic) MockLogin() (resp *types.MockLoginReq, err error) {
-	mockUserId := 21
+func (l *MockLoginLogic) MockLogin(req *types.MockLoginReq) (resp *types.MockLoginRep, err error) {
+	mockUserId := func() uint {
+		if req.UserId > 0 {
+			return uint(req.UserId)
+		}
+		return 1
+	}()
 	var count int
 	query := "SELECT count(1) AS `count` FROM `%s` WHERE `id` = ? LIMIT 1"
 	err = l.svcCtx.DBC.Get(&count, fmt.Sprintf(query, tables.User), mockUserId)
@@ -40,7 +45,7 @@ func (l *MockLoginLogic) MockLogin() (resp *types.MockLoginReq, err error) {
 	if err != nil {
 		return nil, errcode.DatabaseError.SetMsg("生成 AccessToken 时发生错误").SetDetails(err.Error())
 	}
-	return &types.MockLoginReq{
+	return &types.MockLoginRep{
 		Token: token,
 	}, nil
 }

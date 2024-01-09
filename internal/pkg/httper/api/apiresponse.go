@@ -18,7 +18,7 @@ type ApiResponse struct {
 }
 
 func ResponseWithCtx(ctx context.Context, w http.ResponseWriter, data interface{}, err error) {
-	ac := ParseApiCoder(err)
+	ac := ParseApiError(err)
 	// It's not OK.
 	if ac.Code() != OK.Code() {
 		body := ApiResponse{
@@ -39,25 +39,8 @@ func ResponseWithCtx(ctx context.Context, w http.ResponseWriter, data interface{
 		Data:     data,
 	}
 	httpx.WriteJsonCtx(ctx, w, int(ac.HttpCode()), body)
+}
 
-	// if typ.Coder().Code() != OK.Code() {
-	// 	body := ApiResponse{
-	// 		HttpCode: int(typ.Coder().HttpCode()),
-	// 		ErrCode:  typ.Coder().Code(),
-	// 		Msg:      typ.Coder().Message(),
-	// 		Data:     nil,
-	// 		TraceId:  trace.TraceIDFromContext(ctx),
-	// 	}
-	// 	httpx.WriteJsonCtx(ctx, w, int(typ.Coder().HttpCode()), body)
-	// 	return
-	// }
-	// // It's OK
-	// body := ApiResponse{
-	// 	HttpCode: int(typ.Coder().HttpCode()),
-	// 	ErrCode:  typ.Coder().Code(),
-	// 	Msg:      typ.Coder().Message(),
-	// 	Data:     data,
-	// }
-	// httpx.WriteJsonCtx(ctx, w, int(typ.Coder().HttpCode()), body)
-	// return
+func ResponseListWithCtx(ctx context.Context, w http.ResponseWriter, data interface{}, err error) {
+	// todo
 }

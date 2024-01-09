@@ -72,9 +72,13 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 		var userId uint
 		stmtx, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 		if err != nil {
+			logc.Error(l.ctx, "预处理查询登录用户的 open_id 语句时发生错误, err:"+err.Error())
 			return nil, errcode.NewDatabaseErrorx().SetMsg("预处理查询登录用户的 open_id 语句时发生错误, err:" + err.Error())
 		}
-		stmtx.GetContext(l.ctx, &userId, openid)
+		if err = stmtx.GetContext(l.ctx, &userId, openid); err != nil {
+			logc.Error(l.ctx, "查询登录用户的 open_id 语句时发生错误, err:"+err.Error())
+			return nil, errcode.NewDatabaseErrorx().GetError(err)
+		}
 		// make token
 		token, err := jwt.GetJwtToken(l.svcCtx.Config.JwtConf.AccessSecret, nowString, 36000, uint(userId))
 		if err != nil {

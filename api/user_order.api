@@ -146,5 +146,5 @@ service carservice {
         summary: "确认订单"
     )
     @handler ConfirmUserOrder
-    get /userOrder/:id/comfirm (ConfirmUserOrderReq)
+    get /userOrder/:id/confirm (ConfirmUserOrderReq)
 }

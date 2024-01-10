@@ -226,7 +226,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/userOrder/:id/comfirm",
+				Path:    "/userOrder/:id/confirm",
 				Handler: userorder.ConfirmUserOrderHandler(serverCtx),
 			},
 		},

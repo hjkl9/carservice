@@ -4,7 +4,7 @@
     "title": "Carservice",
     "version": "v0.1.01"
   },
-  "host": "127.0.0.1",
+  "host": "api.cheyiyi.cn",
   "schemes": [
     "http",
     "https"
@@ -521,10 +521,19 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/MockLoginReq"
+              "$ref": "#/definitions/MockLoginRep"
             }
           }
         },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
         "requestBody": {},
         "tags": [
           "认证相关"
@@ -674,6 +683,24 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "dateStart",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "dateEnd",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "requestBody": {},
@@ -768,9 +795,70 @@
           "用户订单"
         ]
       }
+    },
+    "/v1/userOrder/{id}/cancel": {
+      "get": {
+        "summary": "取消订单",
+        "operationId": "CancelUserOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "用户订单"
+        ]
+      }
+    },
+    "/v1/userOrder/{id}/confirm": {
+      "get": {
+        "summary": "确认订单",
+        "operationId": "ConfirmUserOrder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {}
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "用户订单"
+        ]
+      }
     }
   },
   "definitions": {
+    "CancelUserOrderReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "CancelUserOrderReq",
+      "required": [
+        "id"
+      ]
+    },
     "CarBrandOptionListItem": {
       "type": "object",
       "properties": {
@@ -864,6 +952,19 @@
         "phoneNumber",
         "multilevelAddress",
         "fullAddress"
+      ]
+    },
+    "ConfirmUserOrderReq": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "ConfirmUserOrderReq",
+      "required": [
+        "id"
       ]
     },
     "CreateCarOwnerInfoRep": {
@@ -1130,6 +1231,15 @@
         "page": {
           "type": "integer",
           "format": "int32"
+        },
+        "status": {
+          "type": "string"
+        },
+        "dateStart": {
+          "type": "string"
+        },
+        "dateEnd": {
+          "type": "string"
         }
       },
       "title": "GetUserOrderListReq"
@@ -1258,17 +1368,27 @@
       "type": "object",
       "title": "GetUserProfileReq"
     },
-    "MockLoginReq": {
+    "MockLoginRep": {
       "type": "object",
       "properties": {
         "token": {
           "type": "string"
         }
       },
-      "title": "MockLoginReq",
+      "title": "MockLoginRep",
       "required": [
         "token"
       ]
+    },
+    "MockLoginReq": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "MockLoginReq"
     },
     "PartnerStoreListItem": {
       "type": "object",

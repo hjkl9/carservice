@@ -2,7 +2,7 @@ package userorder
 
 const (
 	Pending uint8 = iota
-	ToBeAcceptedByUser
+	ToBeConfirmed
 	ToBePaid
 	Cancelled
 	Refunded
@@ -18,8 +18,8 @@ func OrderStatusDesc(i uint8) string {
 	switch i {
 	case Pending:
 		return "等待商家接单" // 待处理
-	case ToBeAcceptedByUser:
-		return "等待用户接受报价" // 待处理
+	case ToBeConfirmed:
+		return "等待用户确认订单" // 待处理
 	case ToBePaid:
 		return "等待用户付款" // 待付款
 	case Cancelled:

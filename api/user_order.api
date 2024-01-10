@@ -93,8 +93,8 @@ type (
         Id int64 `path:"id"`
     }
 
-    // 同意订单报价 //
-    AcceptUserOrderReq {
+    // 确认订单 //
+    ConfirmUserOrderReq {
         Id int64 `path:"id"`
     }
 )
@@ -145,6 +145,6 @@ service carservice {
     @doc(
         summary: "同意订单报价"
     )
-    @handler AcceptUserOrder
-    get /userOrder/:id/accept (AcceptUserOrderReq)
+    @handler ConfirmUserOrder
+    get /userOrder/:id/comfirm (ConfirmUserOrderReq)
 }

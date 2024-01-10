@@ -126,7 +126,7 @@ func (l *GetUserOrderListLogic) handleStatusSubQuery(status string) string {
 		// 待处理和待付款
 		in = conv.ToStringWithSep([]uint8{
 			userorder.Pending,
-			userorder.ToBeAcceptedByUser,
+			userorder.ToBeConfirmed,
 			userorder.ToBePaid,
 		}, ',')
 	case "2":

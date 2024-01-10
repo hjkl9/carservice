@@ -47,10 +47,11 @@ var (
 	DatabaseDeleteErr    = api.NewApiCode(http.StatusInternalServerError, ("10011"), "数据库删除数据时发生错误")
 	DatabaseUpdateErr    = api.NewApiCode(http.StatusInternalServerError, ("10012"), "数据库更新数据时发生错误")
 	DatabaseGetErr       = api.NewApiCode(http.StatusInternalServerError, ("10013"), "数据库获取数据时发生错误")
-	DatabasePrepareErr   = api.NewApiCode(http.StatusInternalServerError, ("10014"), "数据库预处理语句时发生错误")
+	DatabasePrepareErr   = api.NewApiCode(http.StatusInternalServerError, ("10014"), "数据库预处理时发生错误")
 	DatabaseTrasationErr = api.NewApiCode(http.StatusInternalServerError, ("10015"), "数据库创建事务时发生错误")
 	DatabaseRollbackErr  = api.NewApiCode(http.StatusInternalServerError, ("10016"), "数据库回滚事务时发生错误")
 	DatabaseCommitErr    = api.NewApiCode(http.StatusInternalServerError, ("10017"), "数据库提交事务时发生错误")
+	DatabaseExecuteErr   = api.NewApiCode(http.StatusInternalServerError, ("10018"), "数据库操作执行时发生错误")
 )
 
 // Each service errors //

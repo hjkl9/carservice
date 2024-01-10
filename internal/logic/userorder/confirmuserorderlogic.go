@@ -13,21 +13,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AcceptUserOrderLogic struct {
+type ConfirmUserOrderLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewAcceptUserOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AcceptUserOrderLogic {
-	return &AcceptUserOrderLogic{
+func NewConfirmUserOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ConfirmUserOrderLogic {
+	return &ConfirmUserOrderLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *AcceptUserOrderLogic) AcceptUserOrder(req *types.AcceptUserOrderReq) error {
+func (l *ConfirmUserOrderLogic) ConfirmUserOrder(req *types.AcceptUserOrderReq) error {
 	userId := jwt.GetUserId(l.ctx)
 
 	hasOrder, err := l.svcCtx.Repo.
@@ -52,6 +52,7 @@ func (l *AcceptUserOrderLogic) AcceptUserOrder(req *types.AcceptUserOrderReq) er
 	if err = stmt.GetContext(l.ctx, &orderStatus, req.Id); err != nil {
 		return errcode.DatabaseGetErr
 	}
+	// FIXME: 当前任务是同意订单报价
 	// 是否符合更改状态
 	if orderStatus == userorder.Cancelled {
 		return errcode.OrderCannotBeCancelledErr.SetMessage("该用户订单已经被取消")
@@ -59,7 +60,7 @@ func (l *AcceptUserOrderLogic) AcceptUserOrder(req *types.AcceptUserOrderReq) er
 	var cancellabe = func() bool {
 		switch orderStatus {
 		case userorder.Pending:
-		case userorder.ToBeAcceptedByUser:
+		case userorder.ToBeConfirmed:
 		case userorder.ToBePaid:
 			return true
 		default:

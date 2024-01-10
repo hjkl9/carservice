@@ -85,7 +85,9 @@ func (l *ConfirmAndPayUserOrderLogic) ConfirmAndPayUserOrder(req *types.ConfirmA
 		Amount:      int64(order.Amount),
 		OpenId:      order.OpenId,
 	}
-	payment.JsApiOrder(payment.PaymentConfig{ /* TODO */ }, payload)
+	if err = payment.JsApiOrder(payment.PaymentConfig{ /* TODO */ }, payload); err != nil {
+		return errcode.OrderConfirmAndPayErr.WithDetails(err.Error())
+	}
 
 	// 确认订单到待安装
 	query = "UPDATE `user_orders` SET `order_status` = ? WHERE `id` = ?"

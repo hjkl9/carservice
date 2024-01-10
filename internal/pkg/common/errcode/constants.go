@@ -74,4 +74,5 @@ var (
 	DuplicateConfirmedOrderErr = api.NewApiCode(http.StatusBadRequest, "20403", "该用户订单已经重复确认")
 	OrderUncomfirmedQuote      = api.NewApiCode(http.StatusBadRequest, "20404", "商家未接单")
 	ConfirmedOrderErr          = api.NewApiCode(http.StatusBadRequest, "20405", "")
+	OrderConfirmAndPayErr      = api.NewApiCode(http.StatusInternalServerError, "20406", "处理确认订单和支付发生错误")
 )

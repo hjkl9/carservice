@@ -9,7 +9,7 @@ import (
 
 type UserOrderRepo interface {
 	GetIfOrderExistsById(ctx context.Context, memberId interface{}, orderId uint) (bool, error)
-	GetOrderById(ctx context.Context, memberId, orderId uint) (*userorder.UserOrder, error)
+	GetOrderById(ctx context.Context, memberId interface{}, orderId uint) (*userorder.UserOrder, error)
 	GetIfTheListExists(ctx context.Context, memberId uint) (bool, error)
 	GetOrderList(ctx context.Context, memberId uint) (*[]*userorder.UserOrderListItem, error)
 	SoftDeleteOrderById(ctx context.Context, memberId, orderId uint) error
@@ -36,7 +36,7 @@ func (uo *userOrder) GetIfOrderExistsById(ctx context.Context, memberId interfac
 	return hasOrder == 1, nil
 }
 
-func (uo *userOrder) GetOrderById(ctx context.Context, memberId, orderId uint) (*userorder.UserOrder, error) {
+func (uo *userOrder) GetOrderById(ctx context.Context, memberId interface{}, orderId uint) (*userorder.UserOrder, error) {
 	var order userorder.UserOrder
 	query := "SELECT `uo`.`id` AS `id`, `uo`.`order_number` AS `orderNumber`, `coi`.`name` AS `carOwnerName`, `coi`.`multilevel_address` AS `carOwnerMultiLvAddr`, `coi`.`full_address` AS `carOwnerFullAddress` , `ps`.`title` AS `partnerStore`, `ps`.`full_address` AS `partnerStoreAddress`, `uo`.`comment` AS `comment`, `cb`.`brand_name` AS `carBrandName`, `cbs`.`series_name` AS `carSeriesName` , `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` `uo` LEFT JOIN `partner_stores` `ps` ON `ps`.`id` = `uo`.`partner_store_id` JOIN `car_owner_infos` `coi` ON `coi`.`id` = `uo`.`car_owner_info_id` JOIN `car_brands` `cb` ON `cb`.`brand_id` = `uo`.`car_brand_id` JOIN `car_brand_series` `cbs` ON `cbs`.`series_id` = `uo`.`car_brand_series_id` WHERE `uo`.`id` = ? AND `uo`.`member_id` = ? LIMIT 1"
 	stmt, err := uo.db.PreparexContext(ctx, query)

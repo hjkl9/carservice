@@ -289,6 +289,10 @@ type CancelUserOrderReq struct {
 	Id int64 `path:"id"`
 }
 
+type AcceptUserOrderReq struct {
+	Id int64 `path:"id"`
+}
+
 type PartnerStoreListItem struct {
 	Id          uint    `json:"id"`
 	Title       string  `json:"title"`

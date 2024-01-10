@@ -92,6 +92,11 @@ type (
     CancelUserOrderReq {
         Id int64 `path:"id"`
     }
+
+    // 同意订单报价 //
+    AcceptUserOrderReq {
+        Id int64 `path:"id"`
+    }
 )
 
 @server(
@@ -131,6 +136,15 @@ service carservice {
     @handler DeleteUserOrder
     delete /userOrder/:id (DeleteUserOrderReq)
 
+    @doc(
+        summary: "取消订单"
+    )
     @handler CancelUserOrder
     get /userOrder/:id/cancel (CancelUserOrderReq)
+
+    @doc(
+        summary: "同意订单报价"
+    )
+    @handler AcceptUserOrder
+    get /userOrder/:id/accept (AcceptUserOrderReq)
 }

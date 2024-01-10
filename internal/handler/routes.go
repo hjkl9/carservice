@@ -224,6 +224,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/userOrder/:id/cancel",
 				Handler: userorder.CancelUserOrderHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/userOrder/:id/accept",
+				Handler: userorder.AcceptUserOrderHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
 		rest.WithPrefix("/v1"),

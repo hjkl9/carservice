@@ -65,3 +65,9 @@ var (
 	InvalidWechatCodeErr  = api.NewApiCode(http.StatusBadRequest, ("20007"), "无效的 jscode")
 	UserInvalidTokenErr   = api.NewApiCode(http.StatusUnauthorized, ("20008"), "无效的 Token")
 )
+
+// User order service
+var (
+	OrderNotFoundErr          = api.NewApiCode(http.StatusNotFound, ("20401"), "该用户订单不存在")
+	OrderCannotBeCancelledErr = api.NewApiCode(http.StatusBadRequest, ("20402"), "该用户订单无法被取消")
+)

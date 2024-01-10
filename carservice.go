@@ -28,7 +28,6 @@ func main() {
 
 	server := rest.MustNewServer(
 		c.RestConf,
-		// todo: 需要处理未认证的原因
 		rest.WithUnauthorizedCallback(jwt.UnauthorizedCallback()),
 		rest.WithNotAllowedHandler(httperr.NotAllowedHandler()),
 		rest.WithNotFoundHandler(httperr.NotFoundHandler()),

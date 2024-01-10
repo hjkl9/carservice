@@ -17,6 +17,29 @@ type ApiResponse struct {
 	TraceId  string      `json:"traceId,omitempty"`
 }
 
+func Response(w http.ResponseWriter, data interface{}, err error) {
+	// It's not OK.
+	if err != nil {
+		ac := err.(*apiCode)
+		body := ApiResponse{
+			HttpCode: int(ac.HttpCode()),
+			ErrCode:  ac.Code(),
+			Msg:      ac.Message(),
+			Data:     nil,
+		}
+		httpx.WriteJson(w, int(ac.HttpCode()), body)
+		return
+	}
+	// It's OK
+	body := ApiResponse{
+		HttpCode: int(OK.HttpCode()),
+		ErrCode:  OK.Code(),
+		Msg:      OK.Message(),
+		Data:     data,
+	}
+	httpx.WriteJson(w, int(OK.HttpCode()), body)
+}
+
 func ResponseWithCtx(ctx context.Context, w http.ResponseWriter, data interface{}, err error) {
 	// It's not OK.
 	if err != nil {

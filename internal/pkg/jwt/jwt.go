@@ -1,13 +1,19 @@
 package jwt
 
 import (
+	"errors"
 	"net/http"
 
 	"carservice/internal/pkg/common/errcode"
-	stdresponse "carservice/internal/pkg/httper/response"
+	"carservice/internal/pkg/httper/api"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/zeromicro/go-zero/rest/handler"
+)
+
+var (
+	errInvalidToken = errors.New("invalid auth token")
+	errNoClaims     = errors.New("no auth params")
 )
 
 type UserPayload struct {
@@ -30,8 +36,21 @@ func GetJwtToken(secretKey string, iat, seconds int64, userId uint) (string, err
 
 func UnauthorizedCallback() handler.UnauthorizedCallback {
 	return func(w http.ResponseWriter, r *http.Request, err error) {
-		// todo: handle Unauthorized.
-		stdresponse.Response(w, nil, errcode.UnauthorizedError.SetMsg("未登录"))
+		var msg string
+		if e, ok := err.(*jwt.ValidationError); ok {
+			if e.Is(jwt.ErrTokenSignatureInvalid) {
+				api.Response(w, nil, errcode.UserInvalidTokenErr)
+				return
+			} else if e.Is(jwt.ErrTokenExpired) {
+				api.Response(w, nil, errcode.UserTokenExpiredErr)
+				return
+			} else {
+				msg = "其他错误"
+				api.Response(w, nil, errcode.UnauthorizedError.SetMsg(msg))
+				return
+			}
+		}
+		api.Response(w, nil, errcode.UserUnauthorizedErr.SetMessage("其他错误"))
 	}
 }
 

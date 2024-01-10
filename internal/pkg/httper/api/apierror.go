@@ -38,14 +38,20 @@ func (ac *apiCode) Code() string {
 	return "E" + ac.code
 }
 
+func (ac *apiCode) SetMessage(m string) *apiCode {
+	ac.msg = m
+	return ac
+}
+
 // Message returns error message.
 func (ac *apiCode) Message() string {
 	return ac.msg
 }
 
 // WithDetails could put more error details of type of string in response data.
-func (ac *apiCode) WithDetails(dts ...string) {
+func (ac *apiCode) WithDetails(dts ...string) *apiCode {
 	ac.details = append(ac.details, dts...)
+	return ac
 }
 
 // Details returns error details of type of string.

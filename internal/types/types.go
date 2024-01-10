@@ -289,7 +289,7 @@ type CancelUserOrderReq struct {
 	Id int64 `path:"id"`
 }
 
-type AcceptUserOrderReq struct {
+type ConfirmUserOrderReq struct {
 	Id int64 `path:"id"`
 }
 

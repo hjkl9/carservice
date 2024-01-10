@@ -27,7 +27,10 @@ func NewConfirmUserOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *ConfirmUserOrderLogic) ConfirmUserOrder(req *types.AcceptUserOrderReq) error {
+// ConfirmUserOrder
+//
+// 用户确认订单
+func (l *ConfirmUserOrderLogic) ConfirmUserOrder(req *types.ConfirmUserOrderReq) error {
 	userId := jwt.GetUserId(l.ctx)
 
 	hasOrder, err := l.svcCtx.Repo.
@@ -52,34 +55,20 @@ func (l *ConfirmUserOrderLogic) ConfirmUserOrder(req *types.AcceptUserOrderReq) 
 	if err = stmt.GetContext(l.ctx, &orderStatus, req.Id); err != nil {
 		return errcode.DatabaseGetErr
 	}
-	// FIXME: 当前任务是同意订单报价
+
 	// 是否符合更改状态
-	if orderStatus == userorder.Cancelled {
-		return errcode.OrderCannotBeCancelledErr.SetMessage("该用户订单已经被取消")
-	}
-	var cancellabe = func() bool {
-		switch orderStatus {
-		case userorder.Pending:
-		case userorder.ToBeConfirmed:
-		case userorder.ToBePaid:
-			return true
-		default:
-			return false
-		}
-		return false
-	}()
-	if !cancellabe {
-		return errcode.OrderCannotBeCancelledErr.SetMessage("该用户订单不满足取消条件")
+	if orderStatus == userorder.ToBePaid {
+		return errcode.DuplicateConfirmedOrderErr
 	}
 
-	// 取消订单
+	// 确认订单到待支付状态
 	query = "UPDATE `user_orders` SET `order_status` = ? WHERE `id` = ?"
 	stmt, err = l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
 		logc.Errorf(l.ctx, "预处理更改订单状态时发生错误, err: %s\n", err.Error())
 		return errcode.DatabasePrepareErr
 	}
-	rs, err := stmt.ExecContext(l.ctx, userorder.Cancelled, req.Id)
+	rs, err := stmt.ExecContext(l.ctx, userorder.ToBePaid, req.Id)
 	if err != nil {
 		logc.Errorf(l.ctx, "更改订单状态时发生错误 1, err: %s\n", err.Error())
 		return errcode.DatabaseUpdateErr

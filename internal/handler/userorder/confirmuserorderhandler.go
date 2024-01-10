@@ -13,7 +13,7 @@ import (
 
 func ConfirmUserOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.AcceptUserOrderReq
+		var req types.ConfirmUserOrderReq
 		if err := httpx.Parse(r, &req); err != nil {
 			api.ResponseWithCtx(r.Context(), w, nil, err)
 			return

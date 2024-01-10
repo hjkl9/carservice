@@ -72,4 +72,6 @@ var (
 	OrderNotFoundErr           = api.NewApiCode(http.StatusNotFound, ("20401"), "该用户订单不存在")
 	OrderCannotBeCancelledErr  = api.NewApiCode(http.StatusBadRequest, ("20402"), "该用户订单无法被取消")
 	DuplicateConfirmedOrderErr = api.NewApiCode(http.StatusBadRequest, "20403", "该用户订单已经重复确认")
+	OrderUncomfirmedQuote      = api.NewApiCode(http.StatusBadRequest, "20404", "商家未接单")
+	ConfirmedOrderErr          = api.NewApiCode(http.StatusBadRequest, "20405", "")
 )

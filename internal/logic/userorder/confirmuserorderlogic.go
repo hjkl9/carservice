@@ -60,6 +60,9 @@ func (l *ConfirmUserOrderLogic) ConfirmUserOrder(req *types.ConfirmUserOrderReq)
 	if orderStatus == userorder.ToBePaid {
 		return errcode.DuplicateConfirmedOrderErr
 	}
+	if orderStatus != userorder.ToBeConfirmed {
+		return errcode.ConfirmedOrderErr.SetMessage("不符合确认用户订单的条件")
+	}
 
 	// 确认订单到待支付状态
 	query = "UPDATE `user_orders` SET `order_status` = ? WHERE `id` = ?"

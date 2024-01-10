@@ -820,10 +820,10 @@
         ]
       }
     },
-    "/v1/userOrder/{id}/confirm": {
+    "/v1/userOrder/{id}/confirmAndPay": {
       "get": {
-        "summary": "确认订单",
-        "operationId": "ConfirmUserOrder",
+        "summary": "订单确认并支付",
+        "operationId": "ConfirmAndPayUserOrder",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -954,7 +954,7 @@
         "fullAddress"
       ]
     },
-    "ConfirmUserOrderReq": {
+    "ConfirmAndPayUserOrderReq": {
       "type": "object",
       "properties": {
         "id": {
@@ -962,7 +962,7 @@
           "format": "int64"
         }
       },
-      "title": "ConfirmUserOrderReq",
+      "title": "ConfirmAndPayUserOrderReq",
       "required": [
         "id"
       ]

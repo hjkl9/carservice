@@ -62,4 +62,5 @@ var (
 	UserTokenExpiredErr   = api.NewApiCode(http.StatusUnauthorized, ("20004"), "登录过期")
 	WechatCode2SessionErr = api.NewApiCode(http.StatusOK, ("20005"), "TODO")
 	GenTokenErr           = api.NewApiCode(http.StatusInternalServerError, ("20006"), "生成 Token 时发生错误")
+	InvalidWechatCodeErr  = api.NewApiCode(http.StatusBadRequest, ("20007"), "无效的 jscode")
 )

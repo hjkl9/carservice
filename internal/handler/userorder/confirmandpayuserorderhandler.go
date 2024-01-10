@@ -11,16 +11,16 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func ConfirmUserOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func ConfirmAndPayUserOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.ConfirmUserOrderReq
+		var req types.ConfirmAndPayUserOrderReq
 		if err := httpx.Parse(r, &req); err != nil {
 			api.ResponseWithCtx(r.Context(), w, nil, err)
 			return
 		}
 
-		l := userorder.NewConfirmUserOrderLogic(r.Context(), svcCtx)
-		err := l.ConfirmUserOrder(&req)
+		l := userorder.NewConfirmAndPayUserOrderLogic(r.Context(), svcCtx)
+		err := l.ConfirmAndPayUserOrder(&req)
 		api.ResponseWithCtx(r.Context(), w, nil, err)
 	}
 }

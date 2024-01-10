@@ -56,9 +56,9 @@ func (l *CancelUserOrderLogic) CancelUserOrder(req *types.CancelUserOrderReq) er
 	if err = stmt.GetContext(
 		l.ctx,
 		&cancellable,
-		userorder.ToBePaid,
+		userorder.ToBeConfirmedAndPay,
 		userorder.Pending,
-		userorder.ToBeConfirmed,
+		userorder.ToBeConfirmedAndPay,
 		req.Id,
 		userId,
 	); err != nil {

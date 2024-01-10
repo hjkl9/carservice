@@ -226,8 +226,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/userOrder/:id/confirm",
-				Handler: userorder.ConfirmUserOrderHandler(serverCtx),
+				Path:    "/userOrder/:id/confirmAndPay",
+				Handler: userorder.ConfirmAndPayUserOrderHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),

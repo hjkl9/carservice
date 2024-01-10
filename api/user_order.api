@@ -94,7 +94,7 @@ type (
     }
 
     // 确认订单 //
-    ConfirmUserOrderReq {
+    ConfirmAndPayUserOrderReq {
         Id int64 `path:"id"`
     }
 )
@@ -143,8 +143,8 @@ service carservice {
     get /userOrder/:id/cancel (CancelUserOrderReq)
 
     @doc(
-        summary: "确认订单"
+        summary: "订单确认并支付"
     )
-    @handler ConfirmUserOrder
-    get /userOrder/:id/confirm (ConfirmUserOrderReq)
+    @handler ConfirmAndPayUserOrder
+    get /userOrder/:id/confirmAndPay (ConfirmAndPayUserOrderReq)
 }

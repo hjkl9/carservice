@@ -143,7 +143,7 @@ service carservice {
     get /userOrder/:id/cancel (CancelUserOrderReq)
 
     @doc(
-        summary: "同意订单报价"
+        summary: "确认订单"
     )
     @handler ConfirmUserOrder
     get /userOrder/:id/comfirm (ConfirmUserOrderReq)

@@ -1,8 +1,13 @@
 package payment
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
+	"io"
 	"log"
+	"net/http"
 
 	"github.com/wechatpay-apiv3/wechatpay-go/core"
 	"github.com/wechatpay-apiv3/wechatpay-go/core/option"
@@ -92,10 +97,42 @@ func UnifiedOrder(cfg PaymentConfig, payload PaymentPayload) error {
 	return nil
 }
 
+func PrepayOrder(cfg PaymentConfig, payload PaymentPayload) error {
+	var (
+		mchID               string = cfg.MchId
+		mchCertSerialNumber string = cfg.MchCertSerialNumber
+		mchAPIv3Key         string = cfg.MchApiV3Key
+	)
+
+	// 使用 utils 提供的函数从本地文件中加载商户私钥，商户私钥会用来生成请求的签名
+	// Given path or string.
+	mchPrivateKey, err := utils.LoadPrivateKeyWithPath("/path/to/merchant/apiclient_key.pem")
+	if err != nil {
+		return err
+	}
+	// mchPrivateKey, err := utils.LoadPrivateKey("YOUR_STRING_PRIVATE_KEY")
+
+	ctx := context.Background()
+
+	opts := []core.ClientOption{
+		option.WithWechatPayAutoAuthCipher(mchID, mchCertSerialNumber, mchPrivateKey, mchAPIv3Key),
+	}
+	client, err := core.NewClient(ctx, opts...)
+	if err != nil {
+		log.Fatalf("new wechat pay client err: %s", err)
+		return err
+	}
+
+	_ = client
+
+	// TODO
+
+	return nil
+}
+
 // UnifiedOrder0110 统一下单
-func JsApiOrder(cfg PaymentConfig, payload PaymentPayload) error {
+func JsApiPreOrder(cfg PaymentConfig, payload PaymentPayload) error {
 	var apiurl = "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi"
-	_ = apiurl
 
 	var data struct {
 		AppId       string `json:"appid"`        // 应用 ID
@@ -113,7 +150,50 @@ func JsApiOrder(cfg PaymentConfig, payload PaymentPayload) error {
 		} `json:"payer"` // 支付者
 	}
 
-	_ = data
+	// config
+	data.AppId = cfg.Appid
+	data.MchId = cfg.MchId
+	// payload
+	data.Description = payload.Description
+	data.OutTradeNo = payload.OutTradeNo
+	data.Attach = payload.Attach
+	data.NotifyUrl = payload.NotifyUrl
+	data.Amount.Total = payload.Amount
+	data.Amount.Currency = "CNY"
+	data.Payer.OpenId = payload.OpenId
+
+	ctx := context.Background()
+
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, apiurl, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return err
+	}
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Accept", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+
+	// if response.StatusCode != http.StatusOK {
+	// 	return errors.New("response status is not ok," + response.Status)
+	// }
+
+	rs, _ := io.ReadAll(response.Body)
+	fmt.Println(string(rs))
+	// reader.
+
+	// decoder := json.NewDecoder(response.Body)
+	// if err = decoder.Decode(struct{}{}); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

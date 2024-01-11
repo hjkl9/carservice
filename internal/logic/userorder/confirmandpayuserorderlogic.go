@@ -81,7 +81,7 @@ func (l *ConfirmAndPayUserOrderLogic) ConfirmAndPayUserOrder(req *types.ConfirmA
 		Amount:      int64(order.Amount),
 		OpenId:      order.OpenId,
 	}
-	if err = payment.JsApiOrder(pcfg, payload); err != nil {
+	if err = payment.JsApiPreOrder(pcfg, payload); err != nil {
 		return errcode.OrderConfirmAndPayErr.WithDetails(err.Error())
 	}
 

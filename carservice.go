@@ -34,7 +34,6 @@ func main() {
 	)
 	defer server.Stop()
 
-	fmt.Printf("%#v\n", c.WechatPayMerchantConf)
 	ctx := svc.NewServiceContext(c)
 	// register global middlewares.
 	handler.RegisterGlobalMiddleware(server, ctx)

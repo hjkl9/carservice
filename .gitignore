@@ -2,3 +2,6 @@ etc/carservice.yaml
 deploy/.env
 
 logs/*
+
+# 不提交微信商户私钥
+private/payment/merchant/*.pem

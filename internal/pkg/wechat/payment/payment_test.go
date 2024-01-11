@@ -22,7 +22,7 @@ func TestPayment(t *testing.T) {
 	// 	t.Fatalf("payment failed, err: %s\n", err.Error())
 	// }
 
-	err := payment.PrepayOrder(c, p)
+	_, err := payment.PrepayOrder(c, p)
 	if err != nil {
 		t.Fatalf("prepay order failed, err: %s\n", err.Error())
 	}

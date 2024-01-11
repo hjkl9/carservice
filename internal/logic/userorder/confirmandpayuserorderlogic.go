@@ -81,9 +81,12 @@ func (l *ConfirmAndPayUserOrderLogic) ConfirmAndPayUserOrder(req *types.ConfirmA
 		Amount:      int64(order.Amount),
 		OpenId:      order.OpenId,
 	}
-	if err = payment.JsApiPreOrder(pcfg, payload); err != nil {
-		return errcode.OrderConfirmAndPayErr.WithDetails(err.Error())
+	payWithRequest, err := payment.PrepayOrder(pcfg, payload)
+	if err != nil {
+		return errcode.OrderPrepayErr.WithDetails(err.Error())
 	}
+	// copy to api response data.
+	_ = payWithRequest
 
 	// 确认订单到待安装
 	query = "UPDATE `user_orders` SET `order_status` = ? WHERE `id` = ?"

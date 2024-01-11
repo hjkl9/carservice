@@ -125,7 +125,37 @@ func PrepayOrder(cfg PaymentConfig, payload PaymentPayload) error {
 
 	_ = client
 
-	// TODO
+	svc := jsapi.JsapiApiService{
+		Client: client,
+	}
+
+	resp, result, err := svc.PrepayWithRequestPayment(ctx, jsapi.PrepayRequest{
+		// Configuration relation.
+		Appid: core.String(cfg.Appid),
+		Mchid: core.String(cfg.MchId),
+		// Payload relation.
+		Description: core.String(payload.Description),
+		OutTradeNo:  core.String(payload.OutTradeNo),
+		Attach:      core.String(payload.Attach),
+		NotifyUrl:   core.String(payload.NotifyUrl),
+		Amount: &jsapi.Amount{
+			Total:    core.Int64(payload.Amount),
+			Currency: core.String("CNY"),
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	// 检查预支付返回的 HTTP 状态码
+	if result.Response.StatusCode != http.StatusOK {
+		fmt.Printf("请求无效, HTTP Status: %d\n", result.Response.StatusCode)
+	}
+
+	// 返回调起预支付的 PrepayID 等等
+	_ = resp.PaySign  // 支付签名
+	_ = resp.PrepayId // 预支付 ID
+	_ = resp.NonceStr // 随机字符串 (非密码)
 
 	return nil
 }

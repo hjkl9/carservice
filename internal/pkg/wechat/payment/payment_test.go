@@ -17,7 +17,12 @@ func TestPayment(t *testing.T) {
 		Amount:      1,
 		OpenId:      "oLBnj5KngUW1T_Es3wTlynHwi-4g", // Mock openid.
 	}
-	if err := payment.JsApiPreOrder(c, p); err != nil {
-		t.Fatalf("payment failed, err: %s\n", err.Error())
+	// if err := payment.JsApiPreOrder(c, p); err != nil {
+	// 	t.Fatalf("payment failed, err: %s\n", err.Error())
+	// }
+
+	err := payment.PrepayOrder(c, p)
+	if err != nil {
+		t.Fatalf("prepay order failed, err: %s\n", err.Error())
 	}
 }

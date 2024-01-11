@@ -106,7 +106,7 @@ func PrepayOrder(cfg PaymentConfig, payload PaymentPayload) error {
 
 	// 使用 utils 提供的函数从本地文件中加载商户私钥，商户私钥会用来生成请求的签名
 	// Given path or string.
-	mchPrivateKey, err := utils.LoadPrivateKeyWithPath("/path/to/merchant/apiclient_key.pem")
+	mchPrivateKey, err := utils.LoadPrivateKeyWithPath(cfg.PrivateKeyPath)
 	if err != nil {
 		return err
 	}

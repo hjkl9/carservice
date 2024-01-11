@@ -37,12 +37,12 @@ WechatConf:
     AppId:
     Secret:
 
-WechatPayConf:
-  PrivateKeyPath: /path/to/your/merchant/apiclient_key.pem
-  AppId:
-  MchId:
-  MchAPIv3Key:
-  MchCertificateSerialNumber:
-
 AMapConf:
   Key: 
+
+WechatPayMerchantConf:
+  AppId: "TBD AppId"
+  MchId: "TBD MchId"
+  MchCertSerialNumber: "TBD MCS Number"
+  MchApiV3Key: "TBD MchApiV3Key"
+  PvtKeyPath: "/private/payment/merchant" # 系统绝对路径

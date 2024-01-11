@@ -7,7 +7,8 @@ import (
 
 func TestPayment(t *testing.T) {
 	c := payment.PaymentConfig{
-		MchId: "1900006891",
+		MchId:          "1900006891",
+		PrivateKeyPath: "P:\\payment\\apiclient_key.pem",
 	}
 	p := payment.PaymentPayload{
 		Description: "红内裤",

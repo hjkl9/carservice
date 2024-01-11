@@ -14,10 +14,11 @@ type Config struct {
 	MysqlConf MysqlConf
 	RedisConf RedisConf
 
-	JwtConf    JwtConf    // 认证配置
-	SmsConf    SmsConf    // 短信相关配置
-	WechatConf WechatConf // 微信相关配置
-	AMapConf   AMapConf   // 高德地图配置
+	JwtConf               JwtConf    // 认证配置
+	SmsConf               SmsConf    // 短信相关配置
+	WechatConf            WechatConf // 微信相关配置
+	AMapConf              AMapConf   // 高德地图配置
+	WechatPayMerchantConf WechatPayMerchantConf
 }
 
 type LogConf struct {
@@ -74,4 +75,12 @@ type MiniProgram struct {
 
 type AMapConf struct {
 	Key string
+}
+
+type WechatPayMerchantConf struct {
+	AppId               string `json:"AppId,optional"`
+	MchId               string
+	MchCertSerialNumber string
+	MchApiV3Key         string
+	PvtKeyPath          string `json:",default=private/payment/merchant"`
 }

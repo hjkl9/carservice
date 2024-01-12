@@ -289,8 +289,12 @@ type CancelUserOrderReq struct {
 	Id int64 `path:"id"`
 }
 
-type ConfirmAndPayUserOrderReq struct {
+type PaymentOrderReq struct {
 	Id int64 `path:"id"`
+}
+
+type PaymentOrderRep struct {
+	PrepayId string `json:"prepayId"`
 }
 
 type PartnerStoreListItem struct {

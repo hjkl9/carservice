@@ -11,16 +11,17 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func ConfirmAndPayUserOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// PaymentOrderHandler 处理订单支付
+func PaymentOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.ConfirmAndPayUserOrderReq
+		var req types.PaymentOrderReq
 		if err := httpx.Parse(r, &req); err != nil {
 			api.ResponseWithCtx(r.Context(), w, nil, err)
 			return
 		}
 
-		l := userorder.NewConfirmAndPayUserOrderLogic(r.Context(), svcCtx)
-		err := l.ConfirmAndPayUserOrder(&req)
-		api.ResponseWithCtx(r.Context(), w, nil, err)
+		l := userorder.NewPaymentOrderLogic(r.Context(), svcCtx)
+		resp, err := l.PaymentOrder(&req)
+		api.ResponseWithCtx(r.Context(), w, resp, err)
 	}
 }

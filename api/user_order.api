@@ -94,8 +94,11 @@ type (
     }
 
     // 确认订单 //
-    ConfirmAndPayUserOrderReq {
+    PaymentOrderReq {
         Id int64 `path:"id"`
+    }
+    PaymentOrderRep {
+        PrepayId string `json:"prepayId"`
     }
 )
 
@@ -145,6 +148,6 @@ service carservice {
     @doc(
         summary: "订单确认并支付"
     )
-    @handler ConfirmAndPayUserOrder
-    get /userOrder/:id/confirmAndPay (ConfirmAndPayUserOrderReq)
+    @handler PaymentOrder
+    get /userOrder/:id/pay (PaymentOrderReq) returns ()
 }

@@ -47,7 +47,7 @@ func (l *CancelUserOrderLogic) CancelUserOrder(req *types.CancelUserOrderReq) er
 	// CheckIfOrderCanBeCanceled
 	// 检查是否满足取消订单的条件
 	var cancellable uint8
-	query := "SELECT (COUNT(1) = 1) AS `cancellable` FROM `user_orders` WHERE 1 = 1 AND `order_status` IN (?, ?, ?) AND `id` = ? AND `member_id` = ? LIMIT 1"
+	query := "SELECT (COUNT(1) = 1) AS `cancellable` FROM `user_orders` WHERE 1 = 1 AND `order_status` IN (?, ?) AND `id` = ? AND `member_id` = ? LIMIT 1"
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
 		logc.Error(l.ctx, "预处理查询是否满足取消订单时发生错误")
@@ -56,9 +56,8 @@ func (l *CancelUserOrderLogic) CancelUserOrder(req *types.CancelUserOrderReq) er
 	if err = stmt.GetContext(
 		l.ctx,
 		&cancellable,
-		userorder.ToBeConfirmedAndPay,
 		userorder.Pending,
-		userorder.ToBeConfirmedAndPay,
+		userorder.AwaitingPayment,
 		req.Id,
 		userId,
 	); err != nil {

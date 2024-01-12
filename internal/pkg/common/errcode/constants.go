@@ -52,6 +52,12 @@ var (
 	DatabaseRollbackErr  = api.NewApiCode(http.StatusInternalServerError, ("10016"), "数据库回滚事务时发生错误")
 	DatabaseCommitErr    = api.NewApiCode(http.StatusInternalServerError, ("10017"), "数据库提交事务时发生错误")
 	DatabaseExecuteErr   = api.NewApiCode(http.StatusInternalServerError, ("10018"), "数据库操作执行时发生错误")
+	// Redis errors
+	RedisGetErr = api.NewApiCode(http.StatusInternalServerError, ("10019"), "缓存读取时发生错误")
+	RedisSetErr = api.NewApiCode(http.StatusInternalServerError, ("10019"), "缓存写入时发生错误")
+	// JSON Marshal errors
+	JSONMarshalErr   = api.NewApiCode(http.StatusInternalServerError, ("10020"), "JSON 序列化时发生错误")
+	JSONUnmarshalErr = api.NewApiCode(http.StatusInternalServerError, ("10021"), "JSON 反序列化时发生错误")
 )
 
 // Each service errors //

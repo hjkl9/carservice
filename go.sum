@@ -123,6 +123,8 @@ github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.808 h1:Jr8Ca60
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.808/go.mod h1:2Trcn2T8jz+4xIgnmKilAG1qSoimXjgET6p/cBFgo1s=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.821 h1:WgWLRtOXmLK/6dJ3WN1jUcAB9SgCvWH8ygJnloAQySA=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/sms v1.0.821/go.mod h1:KbHYu4iSTdUEB8AM9aLSoVVMxJu4wbz6J4J+UbuDeEg=
+github.com/valyala/fastjson v1.6.4 h1:uAUNq9Z6ymTgGhcm0UynUAB6tlbakBrz6CQFax3BXVQ=
+github.com/valyala/fastjson v1.6.4/go.mod h1:CLCAqky6SMuOcxStkYQvblddUtoRxhYMGLrsQns1aXY=
 github.com/wechatpay-apiv3/wechatpay-go v0.2.18 h1:vj5tvSmnEIz3ZsnFNNUzg+3Z46xgNMJbrO4aD4wP15w=
 github.com/wechatpay-apiv3/wechatpay-go v0.2.18/go.mod h1:A254AUBVB6R+EqQFo3yTgeh7HtyqRRtN2w9hQSOrd4Q=
 github.com/zeromicro/go-zero v1.6.0 h1:UwSOR1lGZ2g7L0S07PM8RoneAcubtd5x//EfbuNucQ0=

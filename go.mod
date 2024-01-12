@@ -15,6 +15,7 @@ require (
 
 require (
 	github.com/brianvoe/gofakeit/v6 v6.26.3 // indirect
+	github.com/valyala/fastjson v1.6.4 // indirect
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.18 // indirect
 )
 

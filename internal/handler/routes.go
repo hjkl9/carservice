@@ -195,6 +195,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodGet,
+				Path:    "/userOrder/statusList",
+				Handler: userorder.UserOrderStatusListHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodPost,
 				Path:    "/userOrder",
 				Handler: userorder.CreateUserOrderHandler(serverCtx),

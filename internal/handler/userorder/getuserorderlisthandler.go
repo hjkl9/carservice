@@ -21,8 +21,6 @@ func GetUserOrderListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := userorder.NewGetUserOrderListLogic(r.Context(), svcCtx)
 		resp, err := l.GetUserOrderList(&req)
-		_ = err
 		api.ResponseWithCtx(r.Context(), w, resp, err)
-		// stdresponse.ResponseWithCtx(r.Context(), w, resp, err)
 	}
 }

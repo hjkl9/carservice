@@ -32,4 +32,25 @@ func OrderStatusDesc(i uint8) string {
 	}
 }
 
+type OrderStatus struct {
+	Status string `json:"status"`
+	Label  string `json:"label"`
+	GoTag  string `json:"goTag"`
+}
+
+func NewOrderStatus(status, label, goTag string) *OrderStatus {
+	return &OrderStatus{status, label, goTag}
+}
+
+func ClientTabList() (uint8, [6]*OrderStatus) {
+	return 6, [6]*OrderStatus{
+		NewOrderStatus("1", "待处理", "Pending"),
+		NewOrderStatus("2", "待支付", "AwaitingPayment"),
+		NewOrderStatus("3", "待安装", "AwaitingInstallation"),
+		NewOrderStatus("4", "已完成", "Completed"),
+		NewOrderStatus("5", "已取消", "Cancelled"),
+		NewOrderStatus("6", "已退款", "Refunded"),
+	}
+}
+
 const DefaultAtCreation uint8 = Pending

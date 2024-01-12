@@ -126,7 +126,7 @@ func (l *GetUserOrderListLogic) handleStatusSubQuery(status string) string {
 		in = statusStr(userorder.Pending)
 	case "2": // 待付款
 		in = statusStr(userorder.AwaitingPayment)
-	case "3": // 待分配与安装
+	case "3": // 待安装
 		in = statusStr(userorder.AwaitingAssignInstaller, userorder.AwaitingInstallation)
 	case "4": // 已完成
 		in = statusStr(userorder.Completed)

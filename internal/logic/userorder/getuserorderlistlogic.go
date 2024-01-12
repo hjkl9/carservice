@@ -122,17 +122,17 @@ func (l *GetUserOrderListLogic) handleStatusSubQuery(status string) string {
 	var in string = ""
 	// ? 在编译的时候确定
 	switch status {
-	case "1": // 待处理
+	case "0": // 待处理
 		in = statusStr(userorder.Pending)
-	case "2": // 待付款
+	case "1": // 待付款
 		in = statusStr(userorder.AwaitingPayment)
-	case "3": // 待安装
+	case "2": // 待安装
 		in = statusStr(userorder.AwaitingAssignInstaller, userorder.AwaitingInstallation)
-	case "4": // 已完成
+	case "3": // 已完成
 		in = statusStr(userorder.Completed)
-	case "5": // 已取消
+	case "4": // 已取消
 		in = statusStr(userorder.Cancelled)
-	case "6": // 退款
+	case "5": // 退款
 		in = statusStr(userorder.Refunded)
 	}
 	return fmt.Sprintf("AND `order_status` IN (%s)", in)

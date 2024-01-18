@@ -3,10 +3,15 @@ package svc
 import (
 	"carservice/internal/config"
 	"carservice/internal/data"
+	"sync"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/redis/go-redis/v9"
+)
+
+var (
+	dbonce sync.Once
 )
 
 type ServiceContext struct {
@@ -17,7 +22,12 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	dbc := NewSqlx(c)
+	// db is singleton
+	var dbc *sqlx.DB
+	dbonce.Do(func() {
+		dbc = NewSqlx(c)
+	})
+
 	return &ServiceContext{
 		Config: c,
 		Repo:   data.NewDatastore(dbc), // todo: testing

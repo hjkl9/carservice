@@ -195,6 +195,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodGet,
+				Path:    "/userOrder/statusList",
+				Handler: userorder.UserOrderStatusListHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodPost,
 				Path:    "/userOrder",
 				Handler: userorder.CreateUserOrderHandler(serverCtx),
@@ -226,8 +231,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
-				Path:    "/userOrder/:id/confirmAndPay",
-				Handler: userorder.ConfirmAndPayUserOrderHandler(serverCtx),
+				Path:    "/userOrder/:id/pay",
+				Handler: userorder.PaymentOrderHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),

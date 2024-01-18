@@ -116,34 +116,24 @@ func (l *GetUserOrderListLogic) handleStatusSubQuery(status string) string {
 	if status == "" {
 		return ""
 	}
-	var in string
+	var statusStr = func(statusSet ...uint8) string {
+		return conv.ToStringWithSep(',', statusSet...)
+	}
+	var in string = ""
 	// ? 在编译的时候确定
 	switch status {
-	case "0":
-		// 全部数据
-		return ""
-	case "1":
-		// 待处理和待确认和付款
-		in = conv.ToStringWithSep([]uint8{
-			userorder.Pending,
-			userorder.ToBeConfirmedAndPay,
-		}, ',')
-	case "2":
-		// 已付款和待安装
-		in = conv.ToStringWithSep([]uint8{
-			userorder.Paid,
-			userorder.PrepareToInstall,
-		}, ',')
-	case "3":
-		// 已完成
-		in = conv.ToStringWithSep([]uint8{
-			userorder.Completed,
-		}, ',')
-	case "4":
-		// 已关闭
-		in = conv.ToStringWithSep([]uint8{
-			userorder.Closed,
-		}, ',')
+	case "0": // 待处理
+		in = statusStr(userorder.Pending)
+	case "1": // 待付款
+		in = statusStr(userorder.AwaitingPayment)
+	case "2": // 待安装
+		in = statusStr(userorder.AwaitingAssignInstaller, userorder.AwaitingInstallation)
+	case "3": // 已完成
+		in = statusStr(userorder.Completed)
+	case "4": // 已取消
+		in = statusStr(userorder.Cancelled)
+	case "5": // 退款
+		in = statusStr(userorder.Refunded)
 	}
 	return fmt.Sprintf("AND `order_status` IN (%s)", in)
 }

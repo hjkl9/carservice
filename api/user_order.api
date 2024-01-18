@@ -1,6 +1,12 @@
 syntax = "v1"
 
 type (
+    UserOrderStatusListItem {
+        Status string `json:"status"`
+        Label string `json:"label"`
+        GoTag string `json:"goTag"`
+    }
+
     UserOrderListItem {
         Id uint `json:"id"`
         Deletable bool `json:"deletable"`
@@ -94,8 +100,11 @@ type (
     }
 
     // 确认订单 //
-    ConfirmAndPayUserOrderReq {
+    PaymentOrderReq {
         Id int64 `path:"id"`
+    }
+    PaymentOrderRep {
+        PrepayId string `json:"prepayId"`
     }
 )
 
@@ -106,6 +115,12 @@ type (
     jwt: JwtConf
 )
 service carservice {
+    @doc(
+        summary: "订单状态列表"
+    )
+    @handler UserOrderStatusList
+    get /userOrder/statusList returns ([]UserOrderStatusListItem)
+
     @doc(
         summary: "创建用户订单"
     )
@@ -145,6 +160,6 @@ service carservice {
     @doc(
         summary: "订单确认并支付"
     )
-    @handler ConfirmAndPayUserOrder
-    get /userOrder/:id/confirmAndPay (ConfirmAndPayUserOrderReq)
+    @handler PaymentOrder
+    get /userOrder/:id/pay (PaymentOrderReq) returns ()
 }

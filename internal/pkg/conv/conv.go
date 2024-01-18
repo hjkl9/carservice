@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func ToStringWithSep(d []uint8, sep byte) string {
+func ToStringWithSep(sep byte, d ...uint8) string {
 	l := len(d)
 	var builder strings.Builder
 	// 1,2,3,4,5

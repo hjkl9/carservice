@@ -206,6 +206,12 @@ type DeleteCarOwnerInfoReq struct {
 	Id uint `path:"id"`
 }
 
+type UserOrderStatusListItem struct {
+	Status string `json:"status"`
+	Label  string `json:"label"`
+	GoTag  string `json:"goTag"`
+}
+
 type UserOrderListItem struct {
 	Id           uint   `json:"id"`
 	Deletable    bool   `json:"deletable"`
@@ -289,8 +295,12 @@ type CancelUserOrderReq struct {
 	Id int64 `path:"id"`
 }
 
-type ConfirmAndPayUserOrderReq struct {
+type PaymentOrderReq struct {
 	Id int64 `path:"id"`
+}
+
+type PaymentOrderRep struct {
+	PrepayId string `json:"prepayId"`
 }
 
 type PartnerStoreListItem struct {

@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	bulletin "carservice/internal/handler/bulletin"
 	carbrand "carservice/internal/handler/carbrand"
 	carbrandseries "carservice/internal/handler/carbrandseries"
 	carownerinfo "carservice/internal/handler/carownerinfo"
@@ -248,5 +249,15 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/v1"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/bulletin/list",
+				Handler: bulletin.BulletinListHandler(serverCtx),
+			},
+		},
 	)
 }

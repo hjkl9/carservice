@@ -83,3 +83,8 @@ var (
 	OrderConfirmAndPayErr      = api.NewApiCode(http.StatusInternalServerError, "20406", "处理确认订单和支付发生错误")
 	OrderPrepayErr             = api.NewApiCode(http.StatusInternalServerError, "20407", "订单预支付时发生错误")
 )
+
+// Bulletin service
+var (
+	BulletinLimitTooLarge = api.NewApiCode(http.StatusBadRequest, "20501", "limit 超出范围")
+)

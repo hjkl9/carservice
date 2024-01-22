@@ -318,3 +318,12 @@ type GetPartnerStoreListReq struct {
 
 type GetPartnerStoreListRep struct {
 }
+
+type BulletinListItem struct {
+	Id    uint   `json:"id"`
+	Title string `json:"title"`
+}
+
+type GetBulletinListReq struct {
+	Limit int32 `form:"limit,optional"`
+}

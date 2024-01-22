@@ -4,14 +4,15 @@
 
 syntax = "v1"
 
-import "common.api"
-import "sms.api"
-import "user.api"
-import "car_brand.api"
-import "car_brand_series.api"
-import "car_owner_info.api"
-import "user_order.api"
-import "partner_store.api"
+import "common.api" 			// 公共模块
+import "sms.api" 				// 短信模块
+import "user.api" 				// 用户模块
+import "car_brand.api"			// 品牌
+import "car_brand_series.api" 	// 系列
+import "car_owner_info.api" 	// 用户车主信息模块
+import "user_order.api" 		// 用户订单模块
+import "partner_store.api"		// 合作门店模块
+import "bulletin.api" 			// 公共模块
 
 info(
 	title: "Carservice"

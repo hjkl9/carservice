@@ -26,23 +26,22 @@ func NewUpdateUserProfileLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *UpdateUserProfileLogic) UpdateUserProfile(req *types.UpdateUserProfileReq) error {
-	if len(req.Username) < 3 {
-		return errcode.InvalidParamsError.Lazy("用户名不能小于三位字符")
+	req.AvatarUrl = ""
+	if len(req.Username) == 0 {
+		return errcode.InvalidParametersErr.SetMessage("用户名不能为空")
 	}
-	// todo: 验证头像 URL
-
 	userId := jwt.GetUserId(l.ctx)
 	query := "UPDATE `members` SET `username` = ?, `avatar_url` = ? WHERE `id` = ?"
 	rs, err := l.svcCtx.DBC.ExecContext(l.ctx, query, req.Username, req.AvatarUrl, userId)
 	if err != nil {
-		return errcode.NewDatabaseErrorx().UpdateError(err)
+		return errcode.DatabaseExecuteErr
 	}
 	n, err := rs.RowsAffected()
 	if err != nil {
-		return errcode.NewDatabaseErrorx().UpdateError(err)
+		return errcode.DatabaseUpdateErr
 	}
 	if n != 1 {
-		return errcode.NewDatabaseErrorx().UpdateError(err)
+		return errcode.DatabaseUpdateErr
 	}
 	return nil
 }

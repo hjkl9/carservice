@@ -5,7 +5,7 @@ import (
 
 	"carservice/internal/logic/user"
 	"carservice/internal/pkg/common/errcode"
-	stdresponse "carservice/internal/pkg/httper/response"
+	"carservice/internal/pkg/httper/api"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -16,12 +16,12 @@ func UpdateUserProfileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.UpdateUserProfileReq
 		if err := httpx.Parse(r, &req); err != nil {
-			stdresponse.ResponseWithCtx(r.Context(), w, nil, errcode.New(http.StatusBadRequest, "feature.", err.Error()))
+			api.ResponseWithCtx(r.Context(), w, nil, errcode.InvalidParametersErr)
 			return
 		}
 
 		l := user.NewUpdateUserProfileLogic(r.Context(), svcCtx)
 		err := l.UpdateUserProfile(&req)
-		stdresponse.Response(w, nil, err)
+		api.ResponseWithCtx(r.Context(), w, struct{}{}, err)
 	}
 }

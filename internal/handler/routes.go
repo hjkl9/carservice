@@ -35,6 +35,10 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
+		[]rest.Route{},
+	)
+
+	server.AddRoutes(
 		[]rest.Route{
 			{
 				Method:  http.MethodGet,
@@ -256,7 +260,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			{
 				Method:  http.MethodGet,
 				Path:    "/bulletin/list",
-				Handler: bulletin.BulletinListHandler(serverCtx),
+				Handler: bulletin.GetBulletinListHandler(serverCtx),
 			},
 		},
 	)

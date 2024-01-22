@@ -4,6 +4,7 @@
 
 syntax = "v1"
 
+import "appset.api"				// APP 公共信息
 import "common.api" 			// 公共模块
 import "sms.api" 				// 短信模块
 import "user.api" 				// 用户模块

@@ -12,7 +12,7 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func BulletinListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetBulletinListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.GetBulletinListReq
 		if err := httpx.Parse(r, &req); err != nil {
@@ -20,8 +20,8 @@ func BulletinListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := bulletin.NewBulletinListLogic(r.Context(), svcCtx)
-		resp, err := l.BulletinList(&req)
+		l := bulletin.NewGetBulletinListLogic(r.Context(), svcCtx)
+		resp, err := l.GetBulletinList(&req)
 		api.ResponseWithCtx(r.Context(), w, resp, err)
 	}
 }

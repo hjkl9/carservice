@@ -17,6 +17,12 @@ type ServerPingDbRep struct {
 	Result string `json:"result"`
 }
 
+type GetAppsetRep struct {
+	AppName string `json:"appName"`
+	AppDesc string `json:"appDesc"`
+	AppVers string `json:"appVers"`
+}
+
 type GetUserPhoneNumberReq struct {
 	Code string `form:"code"`
 }

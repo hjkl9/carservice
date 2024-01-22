@@ -10,21 +10,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type BulletinListLogic struct {
+type GetBulletinListLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewBulletinListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *BulletinListLogic {
-	return &BulletinListLogic{
+func NewGetBulletinListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetBulletinListLogic {
+	return &GetBulletinListLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *BulletinListLogic) BulletinList(req *types.GetBulletinListReq) (resp []types.BulletinListItem, err error) {
+func (l *GetBulletinListLogic) GetBulletinList(req *types.GetBulletinListReq) (resp []types.BulletinListItem, err error) {
 	if req.Limit > 20 {
 		return []types.BulletinListItem{}, errcode.BulletinLimitTooLarge
 	}

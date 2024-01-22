@@ -19,6 +19,6 @@ service carservice {
     @doc(
         summary: "公告列表, 字段 limit <= 20"
     )
-    @handler BulletinList
+    @handler GetBulletinList
     get /bulletin/list (GetBulletinListReq) returns ([]BulletinListItem)
 }

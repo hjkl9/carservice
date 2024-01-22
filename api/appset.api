@@ -1,0 +1,21 @@
+syntax = "v1"
+
+type (
+    GetAppsetRep {
+        AppName string `json:"appName"`
+        AppDesc string `json:"appDesc"`
+        AppVers string `json:"appVers"`
+    }
+)
+
+@server(
+    swtags: App 信息相关
+    group: appset
+)
+service carservice {
+    // @doc(
+    //     summary: "App 信息相关"
+    // )
+    // @handler GetAppset
+    // get /
+}

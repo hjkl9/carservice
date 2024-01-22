@@ -8,6 +8,7 @@ import (
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
+	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -32,16 +33,10 @@ func (l *UpdateUserProfileLogic) UpdateUserProfile(req *types.UpdateUserProfileR
 	}
 	userId := jwt.GetUserId(l.ctx)
 	query := "UPDATE `members` SET `username` = ?, `avatar_url` = ? WHERE `id` = ?"
-	rs, err := l.svcCtx.DBC.ExecContext(l.ctx, query, req.Username, req.AvatarUrl, userId)
+	_, err := l.svcCtx.DBC.ExecContext(l.ctx, query, req.Username, req.AvatarUrl, userId)
 	if err != nil {
+		logc.Errorf(l.ctx, "执行语句时发生错误, err: %s\n", err.Error())
 		return errcode.DatabaseExecuteErr
-	}
-	n, err := rs.RowsAffected()
-	if err != nil {
-		return errcode.DatabaseUpdateErr
-	}
-	if n != 1 {
-		return errcode.DatabaseUpdateErr
 	}
 	return nil
 }

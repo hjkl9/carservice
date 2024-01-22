@@ -94,7 +94,7 @@ service carservice {
 )
 service carservice {
     @doc(
-		summary: "通过手机号获取用户信息 (后端测试用)"
+		summary: "通过手机号获取用户信息 /后端测试用/"
 	)
     @handler GetUserByPhoneNumber
     get /user/getUserByPhoneNumber (GetUserByPhoneNumberReq) returns (GetUserByPhoneNumberRep)

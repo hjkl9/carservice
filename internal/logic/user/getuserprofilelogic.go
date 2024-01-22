@@ -47,6 +47,7 @@ func (l *GetUserProfileLogic) GetUserProfile() (resp *types.GetUserProfileRep, e
 	if err = l.svcCtx.DBC.Get(&userProfile, query, userId); err != nil {
 		return nil, errcode.NewDatabaseErrorx().GetError(err)
 	}
+	userProfile.AvatarUrl = "NO_AVAILABLE_CLOUD_STORAGE"
 	return &types.GetUserProfileRep{
 		Username:    userProfile.Username,
 		PhoneNumber: userProfile.PhoneNumber,

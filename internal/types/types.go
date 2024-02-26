@@ -272,7 +272,7 @@ type GetUserOrderRep struct {
 	OrderNumber         string `json:"orderNumber"`
 	CarOwnerName        string `json:"carOwnerName"`
 	CarOwnerMultiLvAddr string `json:"carOwnerMultiLvAddr"`
-	CarOwnerFullAddr    string `json:"carOwnerFullAddr"`
+	CarOwnerFullAddr    string `json:"carOwnerFullAddress"`
 	CarBrandName        string `json:"carBrandName"`
 	CarSeriesName       string `json:"carSeriesName"`
 	PartnerStore        string `json:"partnerStore"`

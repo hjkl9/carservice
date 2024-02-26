@@ -281,6 +281,9 @@ type GetUserOrderRep struct {
 	OrderStatus         string `json:"orderStatus"`
 	CreatedAt           string `json:"createdAt"`
 	UpdatedAt           string `json:"updatedAt"`
+	CarOwnerPhoneNumber string `json:"carOwnerPhoneNumber"`
+	CarBrandId          uint   `json:"carBrandId"`
+	CarSeriesId         uint   `json:"carSeriesId"`
 }
 
 type GetUserOrderListReq struct {

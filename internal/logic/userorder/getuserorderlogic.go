@@ -34,6 +34,9 @@ func NewGetUserOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetU
 type Order struct {
 	Id                  uint           `db:"id"`
 	OrderNumber         string         `db:"orderNumber"`
+	CarOwnerPhoneNumber string         `db:"carOwnerPhoneNumber"`
+	CarBrandId          uint           `db:"carBrandId"`
+	CarSeriesId         uint           `db:"carSeriesId"`
 	CarOwnerName        string         `db:"carOwnerName"`
 	CarOwnerMultiLvAddr string         `db:"carOwnerMultiLvAddr"`
 	CarOwnerFullAddress string         `db:"carOwnerFullAddress"`
@@ -61,7 +64,7 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 	}
 	// 通过 ID 查询订单
 	var order Order
-	query = "SELECT `uo`.`id` AS `id`, `uo`.`order_number` AS `orderNumber`, `coi`.`name` AS `carOwnerName`, `coi`.`multilevel_address` AS `carOwnerMultiLvAddr`, `coi`.`full_address` AS `carOwnerFullAddress` , `ps`.`title` AS `partnerStore`, `ps`.`full_address` AS `partnerStoreAddress`, `uo`.`comment` AS `comment`, `cb`.`brand_name` AS `carBrandName`, `cbs`.`series_name` AS `carSeriesName` , `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt`, `uo`.`updated_at` AS `updatedAt` FROM `user_orders` `uo` LEFT JOIN `partner_stores` `ps` ON `ps`.`id` = `uo`.`partner_store_id` JOIN `car_owner_infos` `coi` ON `coi`.`user_order_id` = `uo`.`id` JOIN `car_brands` `cb` ON `cb`.`brand_id` = `uo`.`car_brand_id` JOIN `car_brand_series` `cbs` ON `cbs`.`series_id` = `uo`.`car_brand_series_id` WHERE `uo`.`id` = ? AND `uo`.`member_id` = ? LIMIT 1"
+	query = "SELECT `uo`.`id` AS `id`, `uo`.`order_number` AS `orderNumber`, `uo`.`car_brand_id` AS `carBrandId`, `uo`.`car_brand_series_id` AS `carSeriesId`, `coi`.`name` AS `carOwnerName` , `coi`.`phone_number` AS `carOwnerPhoneNumber`, `coi`.`multilevel_address` AS `carOwnerMultiLvAddr`, `coi`.`full_address` AS `carOwnerFullAddress`, `ps`.`title` AS `partnerStore`, `ps`.`full_address` AS `partnerStoreAddress` , `uo`.`comment` AS `comment`, `cb`.`brand_name` AS `carBrandName`, `cbs`.`series_name` AS `carSeriesName`, `uo`.`order_status` AS `orderStatus`, `uo`.`created_at` AS `createdAt` , `uo`.`updated_at` AS `updatedAt` FROM `user_orders` `uo` LEFT JOIN `partner_stores` `ps` ON `ps`.`id` = `uo`.`partner_store_id` JOIN `car_owner_infos` `coi` ON `coi`.`user_order_id` = `uo`.`id` JOIN `car_brands` `cb` ON `cb`.`brand_id` = `uo`.`car_brand_id` JOIN `car_brand_series` `cbs` ON `cbs`.`series_id` = `uo`.`car_brand_series_id` WHERE `uo`.`id` = ? AND `uo`.`member_id` = ? LIMIT 1"
 
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
@@ -70,12 +73,16 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 	if err = stmt.GetContext(l.ctx, &order, req.Id, userId); err != nil {
 		return nil, errcode.DatabaseError.SetDetails(err.Error())
 	}
+
 	return &types.GetUserOrderRep{
 		Id:                  order.Id,
 		OrderNumber:         order.OrderNumber,
 		CarOwnerName:        order.CarOwnerName,
 		CarOwnerMultiLvAddr: order.CarOwnerMultiLvAddr,
 		CarOwnerFullAddr:    order.CarOwnerFullAddress,
+		CarBrandId:          order.CarBrandId,
+		CarSeriesId:         order.CarSeriesId,
+		CarOwnerPhoneNumber: order.CarOwnerPhoneNumber,
 		CarBrandName:        order.CarBrandName,
 		CarSeriesName:       order.CarSeriesName,
 		PartnerStore: func() string {

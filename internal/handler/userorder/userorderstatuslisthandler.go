@@ -13,6 +13,5 @@ func UserOrderStatusListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		l := userorder.NewUserOrderStatusListLogic(r.Context(), svcCtx)
 		resp, err := l.UserOrderStatusList()
 		api.ResponseWithCtx(r.Context(), w, resp, err)
-
 	}
 }

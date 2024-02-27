@@ -312,6 +312,13 @@ type PaymentOrderRep struct {
 	PrepayId string `json:"prepayId"`
 }
 
+type RefundOrderReq struct {
+	Id int64 `path:"id"`
+}
+
+type RefundOrderRep struct {
+}
+
 type PartnerStoreListItem struct {
 	Id          uint    `json:"id"`
 	Title       string  `json:"title"`

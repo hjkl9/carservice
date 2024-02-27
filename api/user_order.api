@@ -109,6 +109,14 @@ type (
     PaymentOrderRep {
         PrepayId string `json:"prepayId"`
     }
+
+    // 退款
+    RefundOrderReq {
+        Id int64 `path:"id"`
+    }
+    RefundOrderRep {
+        // TODO
+    }
 )
 
 @server(
@@ -165,4 +173,10 @@ service carservice {
     )
     @handler PaymentOrder
     get /userOrder/:id/pay (PaymentOrderReq) returns ()
+
+    @doc(
+        summary: "订单退款"
+    )
+    @handler RefundOrder
+    post /userOrder/:id/refund (RefundOrderReq) returns ()
 }

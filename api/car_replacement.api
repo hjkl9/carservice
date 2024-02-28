@@ -1,0 +1,25 @@
+syntax = "v1"
+
+type (
+    CarReplacement {
+        Id uint `json:"id"`
+        Title string `json:"title"`
+        EstF32Price float32 `json:"est_f32_price"`
+        EstU64Price uint64 `json:"est_u64_price"`
+        Counter uint `json:"counter"`
+        Children []CarReplacement `json:"children"`
+    }
+)
+
+@server (
+    swtags: 汽车零件相关
+    group: carreplacement
+    prefix: /v1
+)
+service carservice {
+    @doc(
+        summary: "获取汽车零件列表"
+    )
+    @handler ReplacementList
+    get /carReplacement/list returns ([]CarReplacement)
+}

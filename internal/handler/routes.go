@@ -8,6 +8,7 @@ import (
 	carbrand "carservice/internal/handler/carbrand"
 	carbrandseries "carservice/internal/handler/carbrandseries"
 	carownerinfo "carservice/internal/handler/carownerinfo"
+	carreplacement "carservice/internal/handler/carreplacement"
 	common "carservice/internal/handler/common"
 	partnerstore "carservice/internal/handler/partnerstore"
 	sms "carservice/internal/handler/sms"
@@ -268,5 +269,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: bulletin.GetBulletinListHandler(serverCtx),
 			},
 		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/carReplacement/list",
+				Handler: carreplacement.ReplacementListHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/v1"),
 	)
 }

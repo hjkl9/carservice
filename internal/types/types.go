@@ -343,3 +343,12 @@ type BulletinListItem struct {
 type GetBulletinListReq struct {
 	Limit int32 `form:"limit,optional"`
 }
+
+type CarReplacement struct {
+	Id          uint             `json:"id"`
+	Title       string           `json:"title"`
+	EstF32Price float32          `json:"est_f32_price"`
+	EstU64Price uint64           `json:"est_u64_price"`
+	Counter     uint             `json:"counter"`
+	Children    []CarReplacement `json:"children"`
+}

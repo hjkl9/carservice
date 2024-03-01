@@ -9,6 +9,10 @@ type (
         Counter uint `json:"counter"`
         Children []CarReplacement `json:"children"`
     }
+
+    CarReplacementReq {
+        carSeriesId uint `form:"carSeriesId"`
+    }
 )
 
 @server (

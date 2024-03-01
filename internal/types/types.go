@@ -352,3 +352,7 @@ type CarReplacement struct {
 	Counter     uint             `json:"counter"`
 	Children    []CarReplacement `json:"children"`
 }
+
+type CarReplacementReq struct {
+	CarSeriesId uint `form:"carSeriesId"`
+}

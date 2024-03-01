@@ -2,11 +2,13 @@ package carreplacement
 
 import (
 	"context"
+	"fmt"
 
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
+	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -33,23 +35,84 @@ type replacement struct {
 	Counter     uint8   `db:"counter"`
 }
 
-type tree struct {
-	replacement
-	children []*tree `json:"children"`
+type carSeries struct {
+	officialPriceUp float64 `db:"official_price_up"`
 }
 
-func (l *ReplacementListLogic) ReplacementList() (resp []types.CarReplacement, err error) {
-	query := "SELECT `id` AS `id`, `parent_id` AS `parentId`, `title` AS `title`, `est_f32_price` AS `estF32Price`, `est_u64_price` AS `estU64Price` , `counter` AS `counter` FROM car_replacements ORDER BY `sort`;"
+type OfficialPrice struct {
+	OfficialPriceUp   float64 `db:"officialPriceUp"`
+	OfficialPriceDown float64 `db:"officialPriceDown"`
+}
+
+func (l *ReplacementListLogic) ReplacementList(req *types.CarReplacementReq) (resp []types.CarReplacement, err error) {
+	// todo: 查询车型价格区间
+	if req.CarSeriesId == 0 {
+		return nil, errcode.InvalidParametersErr.SetMessage("无效的参数 carSeriesId")
+	}
+
+	var count int8
+	query := "SELECT COUNT(1) AS `count` FROM `car_brand_series` WHERE `series_id` = ? LIMIT 1;"
+	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	if err != nil {
+		logc.Error(l.ctx, "查询车型是否存在[预处理时]发生错误")
+		return nil, errcode.DatabasePrepareErr
+	}
+	if err = stmt.GetContext(l.ctx, &count, req.CarSeriesId); err != nil {
+		logc.Error(l.ctx, "查询车型是否存在[获取数据时]发生错误")
+		return nil, errcode.DatabaseGetErr
+	}
+
+	if count == 0 {
+		return nil, errcode.InvalidParametersErr.SetMessage("无效的参数 carSeriesId")
+	}
+
+	var officialPrice OfficialPrice
+	query = "SELECT `official_price_up` AS `officialPriceUp`, `official_price_down` AS `officialPriceDown` FROM `car_brand_series` WHERE `series_id` = ? LIMIT 1;"
+	stmt, err = l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	if err != nil {
+		logc.Error(l.ctx, "查询官方售价[预处理时]发生错误", err)
+		return nil, errcode.DatabasePrepareErr
+	}
+	if err = stmt.GetContext(l.ctx, &officialPrice, req.CarSeriesId); err != nil {
+		logc.Error(l.ctx, "查询官方售价[获取数据时]发生错误", err)
+		return nil, errcode.DatabaseGetErr
+	}
+	fmt.Println(officialPrice)
+	// True: 高端
+	// False: 低端
+	var grade bool = func() bool {
+		const P float64 = 30.00
+		if officialPrice.OfficialPriceDown > P || officialPrice.OfficialPriceUp > P {
+			return true
+		}
+		// 其他条件或规则
+		// todo: 处理过滤规则
+		return false
+	}()
+	var addQuery = func() string {
+		if grade {
+			return "`hm_est_f32_price` AS `estF32Price`, `hm_est_u64_price` AS `estU64Price`"
+		} else {
+			return "`lm_est_f32_price` AS `estF32Price`, `lm_est_u64_price` AS `estU64Price`"
+		}
+	}()
+
+	// todo: 处理暂无报价的车型
+
+	query = "SELECT `id` AS `id`, `parent_id` AS `parentId`, `title` AS `title`, %s , `counter` AS `counter` FROM car_replacements ORDER BY `sort`;"
+	query = fmt.Sprintf(query, addQuery)
 
 	var data []*replacement
 
-	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	stmt, err = l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
-		return nil, errcode.InternalServerError.SetMsg("查询数据时发生错误").SetDetails(err.Error())
+		logc.Error(l.ctx, "查询配件列表[预处理时]发生错误", err)
+		return nil, errcode.DatabasePrepareErr
 	}
 	err = stmt.SelectContext(l.ctx, &data)
 	if err != nil {
-		return nil, errcode.InternalServerError.SetMsg("查询数据时发生错误").SetDetails(err.Error())
+		logc.Error(l.ctx, "查询配件列表[获取数据时]发生错误", err)
+		return nil, errcode.DatabaseGetErr
 	}
 
 	// list to tree

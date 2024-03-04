@@ -44,7 +44,10 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 		return nil, errcode.WechatCode2SessionErr
 	}
 	if code2session.Errcode != 0 {
-		logc.Errorf(l.ctx, "微信获取 Session 时发生错误 (2), err: %s\n", err.Error())
+		if code2session.Errcode == 40163 {
+			return nil, errcode.WechatCode2SessionErr.SetMessage("code 已被使用")
+		}
+		logc.Errorf(l.ctx, "微信获取 Session 时发生错误 (2), err: %s\n", code2session.Errmsg)
 		return nil, errcode.WechatCode2SessionErr
 	}
 	openid := code2session.Openid
@@ -90,7 +93,7 @@ func (l *WechatAuthorizationLogic) WechatAuthorization(req *types.WechatAuthoriz
 		// create a new user.
 		// get max increment id.
 		var maxIncrementId uint
-		query := "SELECT MAX(`id`) AS `maxIncrementId` FROM `members` LIMIT 1"
+		query := "SELECT IFNULL(MAX(`id`), 0) AS `maxIncrementId` FROM `members` LIMIT 1"
 		if err = l.svcCtx.DBC.Get(&maxIncrementId, query); err != nil {
 			logc.Error(l.ctx, "获取最新的用户 ID 语句时发生错误, err:"+err.Error())
 			return nil, errcode.DatabaseGetErr

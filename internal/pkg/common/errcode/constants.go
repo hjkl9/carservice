@@ -67,7 +67,7 @@ var (
 	UserIsLockedErr       = api.NewApiCode(http.StatusNotFound, ("20002"), "该用户已被锁定")
 	UserUnauthorizedErr   = api.NewApiCode(http.StatusUnauthorized, ("20003"), "未登录")
 	UserTokenExpiredErr   = api.NewApiCode(http.StatusUnauthorized, ("20004"), "登录过期")
-	WechatCode2SessionErr = api.NewApiCode(http.StatusOK, ("20005"), "TODO")
+	WechatCode2SessionErr = api.NewApiCode(http.StatusOK, ("20005"), "微信获取 session 时发生错误")
 	GenTokenErr           = api.NewApiCode(http.StatusInternalServerError, ("20006"), "生成 Token 时发生错误")
 	InvalidWechatCodeErr  = api.NewApiCode(http.StatusBadRequest, ("20007"), "无效的 jscode")
 	UserInvalidTokenErr   = api.NewApiCode(http.StatusUnauthorized, ("20008"), "无效的 Token")

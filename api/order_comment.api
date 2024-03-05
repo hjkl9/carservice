@@ -1,2 +1,14 @@
 syntax = "v1"
 
+type (
+    CreatOrderCommentReq {}
+    CreatOrderCommentRep {}
+
+    OrderCommentListItem {
+        
+    }
+
+    GetOrderCommentListReq {
+
+    }
+)

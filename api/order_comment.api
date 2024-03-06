@@ -1,8 +1,13 @@
 syntax = "v1"
 
 type (
-    CreatOrderCommentReq {}
-    CreatOrderCommentRep {}
+    CreateOrderCommentReq {
+        UserOrderId uint `json:"userOrderId"`
+        Title string `json:"title,optional"`
+        Rate int8   `json:"rate"`
+        Content string `json:"content"`
+    }
+    CreateOrderCommentRep {}
 
     OrderCommentListItem {
         
@@ -12,3 +17,17 @@ type (
 
     }
 )
+
+@server(
+    swtags: 订单评论
+    group: ordercomment
+    prefix: /v1
+    jwt: JwtConf
+)
+service carservice {
+    @doc(
+        summary: "创建订单评价"
+    )
+    @handler CreateOrderComment
+    post /orderComment (CreateOrderCommentReq)
+}

@@ -344,6 +344,22 @@ type GetBulletinListReq struct {
 	Limit int32 `form:"limit,optional"`
 }
 
+type CreateOrderCommentReq struct {
+	UserOrderId uint   `json:"userOrderId"`
+	Title       string `json:"title,optional"`
+	Rate        int8   `json:"rate"`
+	Content     string `json:"content"`
+}
+
+type CreateOrderCommentRep struct {
+}
+
+type OrderCommentListItem struct {
+}
+
+type GetOrderCommentListReq struct {
+}
+
 type CarReplacement struct {
 	Id          uint             `json:"id"`
 	Title       string           `json:"title"`

@@ -10,6 +10,7 @@ import (
 	carownerinfo "carservice/internal/handler/carownerinfo"
 	carreplacement "carservice/internal/handler/carreplacement"
 	common "carservice/internal/handler/common"
+	ordercomment "carservice/internal/handler/ordercomment"
 	partnerstore "carservice/internal/handler/partnerstore"
 	sms "carservice/internal/handler/sms"
 	user "carservice/internal/handler/user"
@@ -269,6 +270,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: bulletin.GetBulletinListHandler(serverCtx),
 			},
 		},
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/orderComment",
+				Handler: ordercomment.CreateOrderCommentHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
+		rest.WithPrefix("/v1"),
 	)
 
 	server.AddRoutes(

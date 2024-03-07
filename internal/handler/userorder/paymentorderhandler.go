@@ -1,9 +1,11 @@
 package userorder
 
 import (
+	"fmt"
 	"net/http"
 
 	"carservice/internal/logic/userorder"
+	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/httper/api"
 	"carservice/internal/svc"
 	"carservice/internal/types"
@@ -16,7 +18,8 @@ func PaymentOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.PaymentOrderReq
 		if err := httpx.Parse(r, &req); err != nil {
-			api.ResponseWithCtx(r.Context(), w, nil, err)
+			fmt.Println(err.Error())
+			api.ResponseWithCtx(r.Context(), w, nil, errcode.InvalidParametersErr)
 			return
 		}
 

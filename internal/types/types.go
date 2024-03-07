@@ -305,10 +305,12 @@ type CancelUserOrderReq struct {
 }
 
 type PaymentOrderReq struct {
-	Id int64 `path:"id"`
+	Id              int64 `path:"id"`
+	CarReplacements []int `json:"carReplacements"`
 }
 
 type PaymentOrderRep struct {
+	Comment  string `json:"comment"`
 	PrepayId string `json:"prepayId"`
 }
 

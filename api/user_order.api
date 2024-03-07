@@ -105,8 +105,10 @@ type (
     // 确认订单 //
     PaymentOrderReq {
         Id int64 `path:"id"`
+        CarReplacements []int `json:"carReplacements"`
     }
     PaymentOrderRep {
+        Comment string `json:"comment"`
         PrepayId string `json:"prepayId"`
     }
 
@@ -172,7 +174,7 @@ service carservice {
         summary: "订单确认并支付"
     )
     @handler PaymentOrder
-    get /userOrder/:id/pay (PaymentOrderReq) returns ()
+    post /userOrder/:id/pay (PaymentOrderReq) returns (PaymentOrderRep)
 
     @doc(
         summary: "订单退款"

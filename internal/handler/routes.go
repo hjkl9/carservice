@@ -237,7 +237,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: userorder.CancelUserOrderHandler(serverCtx),
 			},
 			{
-				Method:  http.MethodGet,
+				Method:  http.MethodPost,
 				Path:    "/userOrder/:id/pay",
 				Handler: userorder.PaymentOrderHandler(serverCtx),
 			},

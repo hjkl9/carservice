@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"carservice/internal/enum/userorder"
 	uo_enum "carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/conv"
@@ -113,27 +112,20 @@ func (l *GetUserOrderListLogic) GetUserOrderList(req *types.GetUserOrderListReq)
 }
 
 func (l *GetUserOrderListLogic) handleStatusSubQuery(status string) string {
-	if status == "" {
+	var in string = ""
+	if len(status) == 0 {
 		return ""
 	}
-	var statusStr = func(statusSet ...uint8) string {
-		return conv.ToStringWithSep(',', statusSet...)
-	}
-	var in string = ""
-	// ? 在编译的时候确定
+
 	switch status {
-	case "0": // 待处理
-		in = statusStr(userorder.Pending)
-	case "1": // 待付款
-		in = statusStr(userorder.AwaitingPayment)
-	case "2": // 待安装
-		in = statusStr(userorder.AwaitingAssignInstaller, userorder.AwaitingInstallation)
-	case "3": // 已完成
-		in = statusStr(userorder.Completed)
-	case "4": // 已取消
-		in = statusStr(userorder.Cancelled)
-	case "5": // 退款
-		in = statusStr(userorder.Refunded)
+	case "1":
+		in = conv.ToStringWithSep(',', uo_enum.PendingTab...)
+	case "2":
+		in = conv.ToStringWithSep(',', uo_enum.DoingTab...)
+	case "3":
+		in = conv.ToStringWithSep(',', uo_enum.FinishedTab...)
 	}
+	fmt.Println(fmt.Sprintf("AND `order_status` IN (%s)", in))
+
 	return fmt.Sprintf("AND `order_status` IN (%s)", in)
 }

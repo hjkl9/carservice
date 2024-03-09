@@ -17,7 +17,9 @@ const (
 	AwaitingInstallation    uint8 = 3 // 等待安装 -- 已支付完成 +
 	Completed               uint8 = 4 // 订单完成
 	Cancelled               uint8 = 5 // 取消订单
-	Refunded                uint8 = 6 // 已退款
+	RequestRefund           uint8 = 6 // 发起退款
+	Refunding               uint8 = 7 // 退款中
+	Refunded                uint8 = 8 // 已退款
 )
 
 // OrderStatusDesc 获取字符串订单状态
@@ -34,7 +36,11 @@ func OrderStatusDesc(i uint8) string {
 	case Completed:
 		return "已完成"
 	case Cancelled:
-		return "" // 已取消
+		return "已取消" // 已取消
+	case RequestRefund:
+		return "发起退款" // 发起退款
+	case Refunding:
+		return "退款中" // 退款中
 	case Refunded:
 		return "已退款" // 已退款
 	default:
@@ -54,3 +60,11 @@ func ClientTabList() (uint8, [6]*OrderStatus) {
 }
 
 const DefaultAtCreation uint8 = Pending
+
+type StateGroup []uint8
+
+var (
+	PendingTab  StateGroup = []uint8{Pending, AwaitingPayment, Refunding}
+	DoingTab    StateGroup = []uint8{AwaitingAssignInstaller, AwaitingInstallation, RequestRefund}
+	FinishedTab StateGroup = []uint8{Completed, Cancelled, Refunded}
+)

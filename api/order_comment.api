@@ -19,6 +19,9 @@ type (
     DeleteOrderCommentReq {
         Id uint `path:"id"`
     }
+
+    // GetPublicOrderCommentListReq {
+    // }
 )
 
 @server(
@@ -39,4 +42,10 @@ service carservice {
     )
     @handler DeleteOrderComment
     delete /orderComment/:id (DeleteOrderCommentReq)
+
+    // @doc(
+    //     summary: "公共订单评论列表"
+    // )
+    // @handler GetPublicOrderCommentList
+    // get /orderComment/list (GetOrderCommentListReq)
 }

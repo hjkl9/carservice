@@ -373,6 +373,10 @@ type OrderCommentListItem struct {
 type GetOrderCommentListReq struct {
 }
 
+type DeleteOrderCommentReq struct {
+	Id uint `path:"id"`
+}
+
 type CarReplacement struct {
 	Id          uint             `json:"id"`
 	Title       string           `json:"title"`

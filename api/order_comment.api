@@ -10,11 +10,14 @@ type (
     CreateOrderCommentRep {}
 
     OrderCommentListItem {
-        
     }
 
     GetOrderCommentListReq {
+    }
 
+    // 删除用户订单 //
+    DeleteOrderCommentReq {
+        Id uint `path:"id"`
     }
 )
 
@@ -30,4 +33,10 @@ service carservice {
     )
     @handler CreateOrderComment
     post /orderComment (CreateOrderCommentReq)
+
+    @doc(
+        summary: "删除订单评价"
+    )
+    @handler DeleteOrderComment
+    delete /orderComment/:id (DeleteOrderCommentReq)
 }

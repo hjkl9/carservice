@@ -284,6 +284,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/orderComment",
 				Handler: ordercomment.CreateOrderCommentHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/orderComment/:id",
+				Handler: ordercomment.DeleteOrderCommentHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.JwtConf.AccessSecret),
 		rest.WithPrefix("/v1"),

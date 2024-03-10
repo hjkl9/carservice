@@ -85,6 +85,11 @@ var (
 	OrderOprErr                = api.NewApiCode(http.StatusForbidden, "20408", "订单操作有误")
 )
 
+// User order comment
+var (
+	OrderCommentNotFoundErr = api.NewApiCode(http.StatusNotFound, ("20501"), "该订单评价不存在")
+)
+
 // Bulletin service
 var (
 	BulletinLimitTooLarge = api.NewApiCode(http.StatusBadRequest, "20501", "limit 超出范围")

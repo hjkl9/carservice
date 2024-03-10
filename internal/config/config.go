@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	rest.RestConf
+	AppUrl  string
 	LogConf logx.LogConf
 
 	MysqlConf MysqlConf

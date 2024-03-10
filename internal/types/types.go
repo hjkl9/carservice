@@ -310,8 +310,19 @@ type PaymentOrderReq struct {
 }
 
 type PaymentOrderRep struct {
-	Comment  string `json:"comment"`
-	PrepayId string `json:"prepayId"`
+	GoSdkVersion string `json:"goSdkVersion"`
+	PrepayId     string `json:"prepayId"`
+	TimeStamp    string `json:"timeStamp"`
+	NonceStr     string `json:"nonceStr"`
+	Package      string `json:"package"`
+	SignType     string `json:"signType"`
+	PaySign      string `json:"paySign"`
+}
+
+type PaymentOrderCallbackReq struct {
+}
+
+type PaymentOrderCallbackRep struct {
 }
 
 type RefundOrderReq struct {

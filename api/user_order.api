@@ -108,8 +108,14 @@ type (
         CarReplacements []int `json:"carReplacements"`
     }
     PaymentOrderRep {
-        Comment string `json:"comment"`
+        GoSdkVersion string `json:"goSdkVersion"`
         PrepayId string `json:"prepayId"`
+        // Appid string `json:"appid"`
+        TimeStamp string `json:"timeStamp"`
+        NonceStr string `json:"nonceStr"`
+        Package string `json:"package"`
+        SignType string `json:"signType"`
+        PaySign string `json:"paySign"`
     }
 
     // 订单支付回调 //
@@ -183,6 +189,7 @@ service carservice {
     @doc(
         summary: "订单支付回调地址"
     )
+    @handler PaymentOrderCallback
     post /userOrder/pay/callback (PaymentOrderCallbackReq) returns ()
 
     @doc(

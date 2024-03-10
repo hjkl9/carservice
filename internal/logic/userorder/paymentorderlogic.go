@@ -41,8 +41,9 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 	orderId := req.Id
 	replacementIds := req.CarReplacements
 	// ? 处理和计算客户端的配件列表价格
+	l.filterAndCalcAmount()
 	// ! 删除临时配件
-	replacementIds = []int{5, 6, 14}
+	// replacementIds = []int{5, 6, 14}
 
 	// 检查订单是否存在
 	hasOrder, err := l.svcCtx.Repo.UserOrderRelated().GetIfOrderExistsById(l.ctx, userId, uint(orderId))
@@ -123,9 +124,16 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 		OpenId:      openId,
 	}
 
+	_ = payload
+
 	return &types.PaymentOrderRep{
-		Comment:  "*paymentResp.NonceStr",
-		PrepayId: "*paymentResp.PrepayId",
+		GoSdkVersion: "",
+		PrepayId:     "",
+		TimeStamp:    "",
+		NonceStr:     "",
+		Package:      "",
+		SignType:     "",
+		PaySign:      "",
 	}, nil
 
 	// 准备支付配置
@@ -143,8 +151,13 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 	}
 
 	return &types.PaymentOrderRep{
-		Comment:  *paymentResp.NonceStr,
-		PrepayId: *paymentResp.PrepayId,
+		GoSdkVersion: "v0.2.18",
+		PrepayId:     *paymentResp.PrepayId,
+		TimeStamp:    *paymentResp.TimeStamp,
+		NonceStr:     *paymentResp.NonceStr,
+		Package:      *paymentResp.Package,
+		SignType:     *paymentResp.SignType,
+		PaySign:      *paymentResp.PaySign,
 	}, nil
 }
 
@@ -158,4 +171,8 @@ func (l *PaymentOrderLogic) calcAmount(
 		u = u + replacement.EstU64Price
 	}
 	return float64(f), u
+}
+
+func (l *PaymentOrderLogic) filterAndCalcAmount() {
+
 }

@@ -130,6 +130,8 @@ type (
     RefundOrderRep {
         // TODO
     }
+    RefundOrderCallbackReq {}
+    RefundOrderCallbackRep {}
 )
 
 @server(
@@ -197,5 +199,11 @@ service carservice {
         summary: "订单退款"
     )
     @handler RefundOrder
-    post /userOrder/:id/refund (RefundOrderReq) returns ()
+    get /userOrder/:id/refund (RefundOrderReq) returns ()
+
+    @doc(
+        summary: "订单退款回调地址"
+    )
+    @handler RefundOrderCallback
+    post /userOrder/refund/callback (RefundOrderCallbackReq) returns ()
 }

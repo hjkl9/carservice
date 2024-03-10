@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"carservice/internal/enum/userorder"
+	"carservice/internal/datatypes/carreplacement"
+	enum_userorder "carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
-	"carservice/internal/pkg/conv"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/pkg/wechat/payment"
 	"carservice/internal/svc"
@@ -30,9 +30,6 @@ func NewPaymentOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Paym
 	}
 }
 
-type Replacement struct {
-}
-
 // todo: 统一封装
 type OfficialPrice struct {
 	PriceUp   float64 `db:"priceUp"`
@@ -43,9 +40,11 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 	userId := jwt.GetUserId(l.ctx)
 	orderId := req.Id
 	replacementIds := req.CarReplacements
+	// ? 处理和计算客户端的配件列表价格
 	// ! 删除临时配件
 	replacementIds = []int{5, 6, 14}
 
+	// 检查订单是否存在
 	hasOrder, err := l.svcCtx.Repo.UserOrderRelated().GetIfOrderExistsById(l.ctx, userId, uint(orderId))
 	if err != nil {
 		return nil, errcode.DatabaseGetErr
@@ -54,93 +53,80 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 		return nil, errcode.OrderNotFoundErr
 	}
 
-	var order struct {
-		CarBrandSeriesId int64 `db:"carBrandSeriesId"`
-		OrderStatus      uint8 `db:"orderStatus"`
-	}
-
 	// 获取订单
-	query := "SELECT `car_brand_series_id` AS `carBrandSeriesId`, `order_status` AS `orderStatus` FROM `user_orders` WHERE `id` = ? LIMIT 1;"
-	stmtx, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	order, err := l.svcCtx.Repo.
+		UserOrderRelated().
+		GetOrderById(l.ctx, userId, uint(orderId))
 	if err != nil {
-		return nil, errcode.DatabasePrepareErr
-	}
-	if err = stmtx.GetContext(l.ctx, &order, orderId); err != nil {
-		fmt.Println(err.Error())
+		logc.Errorf(l.ctx, "获取订单时发生错误, err: %s\n", err.Error())
 		return nil, errcode.DatabaseGetErr
 	}
 
-	if order.OrderStatus != userorder.AwaitingPayment {
+	// 获取用户 open_id
+	openId, err := l.svcCtx.Repo.UserRelated().GetOpenIdByUserId(l.ctx, userId)
+	if err != nil {
+		return nil, errcode.DatabaseGetErr
+	}
+
+	if uint8(order.OrderStatus) != enum_userorder.AwaitingPayment {
 		return nil, errcode.OrderOprErr.SetMessage("无法支付非待支付的订单")
 	}
 
 	// 获取车型价格和匹配
-	var officialPrice OfficialPrice
-	query = "SELECT `official_price_up` AS `priceUp`, `official_price_down` AS `priceDown` FROM `car_brand_series` WHERE `series_id` = ? LIMIT 1;"
-	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
+	officialPriceDown, officialPriceUp, err := l.svcCtx.Repo.
+		CarBrandSeriesRepoRelated().
+		GetOfficialPrice(l.ctx, order.CarBrandSeriesId)
 	if err != nil {
-		logc.Error(l.ctx, "查询官方售价[预处理时]发生错误", err)
-		return nil, errcode.DatabasePrepareErr
+		logc.Errorf(l.ctx, "查询车型官方报价发生错误, err: %s\n", err.Error())
+		return nil, errcode.DatabaseGetErr.SetMessage("订单官方报价查询发生错误")
 	}
-	if err = stmt.GetContext(l.ctx, &officialPrice, order.CarBrandSeriesId); err != nil {
-		logc.Error(l.ctx, "查询官方售价[获取数据时]发生错误", err)
-		return nil, errcode.DatabaseGetErr
+	// todo: 处理未报价的车型
+	if officialPriceDown == officialPriceUp {
 	}
 
 	// True: 高端
 	// False: 低端
-	var grade bool = func() bool {
-		const P float64 = 30.00
-		if officialPrice.PriceDown > P || officialPrice.PriceUp > P {
-			return true
-		}
-		// 其他条件或规则
-		// todo: 处理过滤规则
-		return false
-	}()
-	var addQuery = func() string {
-		if grade {
-			return "`hm_est_f32_price` AS `estF32Price`, `hm_est_u64_price` AS `estU64Price`"
-		} else {
-			return "`lm_est_f32_price` AS `estF32Price`, `lm_est_u64_price` AS `estU64Price`"
-		}
-	}()
-	query = "SELECT %s FROM `car_replacements` WHERE `id` IN (?);"
-	query = fmt.Sprintf(query, addQuery)
-	var replacements []struct {
-		EstF32Price float64 `db:"estF32Price"`
-		EstU64Price uint64  `db:"estU64Price"`
+	var gradeFunc func() bool = func() bool {
+		return l.svcCtx.Repo.
+			CarBrandSeriesRepoRelated().
+			CheckGradeByCarSeries(officialPriceDown, officialPriceUp)
 	}
-	stmt, err = l.svcCtx.DBC.PreparexContext(l.ctx, query)
+
+	// 获取配件列表
+	replacements, err := l.svcCtx.Repo.
+		CarReplacementRepoRelated().
+		GetEstPriceListByIdSet(l.ctx, gradeFunc, replacementIds)
 	if err != nil {
-		logc.Error(l.ctx, "查询配件列表[预处理时]发生错误", err)
-		return nil, errcode.DatabasePrepareErr
-	}
-	replacementsStr := conv.ToStringWithSep_int(',', replacementIds...)
-	err = stmt.SelectContext(l.ctx, &replacements, replacementsStr)
-	if err != nil {
-		logc.Error(l.ctx, "查询配件列表[获取数据时]发生错误", err)
+		logc.Errorf(l.ctx, "获取配件列表发生错误, err: %s\n", err.Error())
 		return nil, errcode.DatabaseGetErr
 	}
-	fmt.Println(replacements)
+
+	// 匹配和计算配件价格
+	totalEstF32Price, totalEstU64Price := l.calcAmount(replacements)
+	var totalAmount struct {
+		estF32Price float64
+		estU64Price uint64
+	}
+	totalAmount.estF32Price = totalEstF32Price
+	totalAmount.estU64Price = totalEstU64Price
+
+	fmt.Println(totalAmount)
+	fmt.Println(order)
+
+	// 准备预支付数据
+	payload := payment.PaymentPayload{
+		Description: "TODO",
+		OutTradeNo:  order.OrderNumber,
+		Attach:      "TODO",
+		NotifyUrl:   l.svcCtx.Config.AppUrl + "/v1/userOrder/pay/callback",
+		Amount:      int64(totalAmount.estU64Price), // 一分钱
+		OpenId:      openId,
+	}
+
 	return &types.PaymentOrderRep{
 		Comment:  "*paymentResp.NonceStr",
 		PrepayId: "*paymentResp.PrepayId",
 	}, nil
-
-	// 获取配件列表
-
-	// 匹配和计算配件价格
-
-	// 准备预支付数据
-	payload := payment.PaymentPayload{
-		Description: "",
-		OutTradeNo:  "",
-		Attach:      "",
-		NotifyUrl:   "",
-		Amount:      1, // 一分钱
-		OpenId:      "",
-	}
 
 	// 准备支付配置
 	ourConf := l.svcCtx.Config.WechatPayMerchantConf
@@ -160,4 +146,16 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 		Comment:  *paymentResp.NonceStr,
 		PrepayId: *paymentResp.PrepayId,
 	}, nil
+}
+
+func (l *PaymentOrderLogic) calcAmount(
+	replacements []carreplacement.Replacement,
+) (float64, uint64) {
+	var f float32 = 0.00
+	var u uint64 = 0
+	for _, replacement := range replacements {
+		f = f + replacement.EstF32Price
+		u = u + replacement.EstU64Price
+	}
+	return float64(f), u
 }

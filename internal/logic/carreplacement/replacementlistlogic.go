@@ -77,7 +77,6 @@ func (l *ReplacementListLogic) ReplacementList(req *types.CarReplacementReq) (re
 		logc.Error(l.ctx, "查询官方售价[获取数据时]发生错误", err)
 		return nil, errcode.DatabaseGetErr
 	}
-	fmt.Println(officialPrice)
 	// True: 高端
 	// False: 低端
 	var grade bool = func() bool {

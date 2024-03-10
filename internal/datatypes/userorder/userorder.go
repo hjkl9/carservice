@@ -2,7 +2,7 @@ package userorder
 
 import "database/sql"
 
-type UserOrder struct {
+type Facades_UserOrder struct {
 	Id                  uint           `db:"id"`
 	OrderNumber         string         `db:"orderNumber"`
 	CarOwnerName        string         `db:"carOwnerName"`
@@ -17,6 +17,28 @@ type UserOrder struct {
 	CreatedAt           string         `db:"createdAt"`
 	UpdatedAt           string         `db:"updatedAt"`
 	// other fields.
+}
+
+type Native_UserOrder struct {
+	Id                   uint64         `db:"id"`
+	CarBrandId           uint64         `db:"car_brand_id"`
+	CarBrandSeriesId     uint64         `db:"car_brand_series_id"`
+	MemberId             uint64         `db:"member_id"`
+	CarInfoId            uint64         `db:"car_info_id"`
+	OrderNumber          string         `db:"order_number"`
+	EstAmount            float32        `db:"est_amount"`
+	ActAmount            float32        `db:"act_amount"`
+	ExpiredAt            sql.NullString `db:"expired_at"`
+	PaymentMethod        int8           `db:"payment_method"`
+	PaidAt               sql.NullString `db:"paid_at"`
+	OrderStatus          int8           `db:"order_status"`
+	Comment              string         `db:"comment"`
+	CreatedAt            string         `db:"created_at"`
+	UpdatedAt            string         `db:"updated_at"`
+	PartnerStoreId       uint64         `db:"partner_store_id"`
+	DeletedAt            sql.NullString `db:"deleted_at"`
+	InstallerPhoneNumber sql.NullString `db:"installer_phone_number"`
+	InstallerName        sql.NullString `db:"installer_name"`
 }
 
 type UserOrderListItem struct {

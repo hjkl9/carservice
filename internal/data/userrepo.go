@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -8,6 +9,7 @@ import (
 )
 
 type UserRepo interface {
+	GetOpenIdByUserId(ctx context.Context, userId interface{}) (string, error)
 	GetById() error
 	GetByPhoneNumber(string) error
 	CheckIfUserExistsByPhoneNumber(string) bool
@@ -54,4 +56,9 @@ func (u *user) CreateUser(newUser CreateUser) (int64, error) {
 		return 0, errors.New("创建数据时发生错误")
 	}
 	return result.LastInsertId()
+}
+
+func (u *user) GetOpenIdByUserId(ctx context.Context, userId interface{}) (openId string, err error) {
+	query := "SELECT `open_id` AS `openId` FROM `member_binds` WHERE `user_id` = ?"
+	return openId, u.db.GetContext(ctx, &openId, query, userId)
 }

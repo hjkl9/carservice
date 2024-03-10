@@ -112,6 +112,10 @@ type (
         PrepayId string `json:"prepayId"`
     }
 
+    // 订单支付回调 //
+    PaymentOrderCallbackReq {}
+    PaymentOrderCallbackRep {}
+
     // 退款
     RefundOrderReq {
         Id int64 `path:"id"`
@@ -175,6 +179,11 @@ service carservice {
     )
     @handler PaymentOrder
     post /userOrder/:id/pay (PaymentOrderReq) returns (PaymentOrderRep)
+
+    @doc(
+        summary: "订单支付回调地址"
+    )
+    post /userOrder/pay/callback (PaymentOrderCallbackReq) returns ()
 
     @doc(
         summary: "订单退款"

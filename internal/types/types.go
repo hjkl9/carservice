@@ -241,6 +241,7 @@ type CreateUserOrderReq struct {
 	PartnerStoreId      int64   `json:"partnerStoreId,optional"`
 	Requirements        string  `json:"requirements"`
 	AgreeToTerms        uint8   `json:"agreeToTerms"`
+	CarReplacements     []uint  `json:"carReplacements"`
 }
 
 type CreateUserOrderRep struct {

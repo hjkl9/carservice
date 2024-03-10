@@ -36,6 +36,7 @@ type (
         // Comment
         Requirements string `json:"requirements"`
         AgreeToTerms uint8 `json:"agreeToTerms"`
+        CarReplacements []uint `json:"carReplacements"`
     }
     CreateUserOrderRep {
         NewId uint `json:"newId"`

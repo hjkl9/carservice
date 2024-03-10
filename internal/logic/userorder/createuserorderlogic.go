@@ -236,6 +236,12 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
 
+	// update or create the replacement items.
+	err = l.createOrderItems(tx, *newUserOrderId, req.CarReplacements)
+	if err != nil {
+		return nil, err
+	}
+
 	if err = tx.Commit(); err != nil {
 		if err1 := tx.Rollback(); err1 != nil { // Rollback
 			return nil, errcode.DatabaseError.Lazy("数据库回滚时发生错误", err1.Error())
@@ -319,6 +325,23 @@ func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *createUserO
 	newUintId := uint(newId)
 
 	return &newUintId, nil
+}
+
+// createOrderItems 创建用户订单的配件项目
+func (l *CreateUserOrderLogic) createOrderItems(tx *sqlx.Tx, orderId uint, carReplacementIds []uint) error {
+	for _, carReplacementId := range carReplacementIds {
+		query := "INSERT INTO `order_items`(`user_order_id`, `car_replacement_id`) VALUES(?, ?)"
+		_, err := tx.ExecContext(l.ctx, query, orderId, carReplacementId)
+		if err != nil {
+			if err1 := tx.Rollback(); err1 != nil { // Rollback
+				logc.Errorf(l.ctx, "创建用户订单配件项目回滚时发生错误, err: %s\n", err.Error())
+				return errcode.DatabaseRollbackErr
+			}
+			logc.Errorf(l.ctx, "创建用户订单配件项目时发生错误, err: %s\n", err.Error())
+			return errcode.DatabaseExecuteErr
+		}
+	}
+	return nil
 }
 
 type SmsPayload struct {

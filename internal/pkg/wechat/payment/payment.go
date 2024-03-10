@@ -19,14 +19,6 @@ var (
 	PrepayOrderErr    = errors.New("Jsapi 预支付下单调起时发生错误")
 )
 
-type PaymentConfig struct {
-	MchId               string // 商户号
-	MchCertSerialNumber string // 商户证书序列号
-	MchApiV3Key         string // 商户 APIv3 密钥
-	Appid               string
-	PrivateKeyPath      string // 存储私钥路径 `**/**/apiclient_key.pem`
-}
-
 type PaymentPayload struct {
 	Description string // 描述
 	OutTradeNo  string // e.g. 订单号码

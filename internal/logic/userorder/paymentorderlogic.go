@@ -2,7 +2,6 @@ package userorder
 
 import (
 	"context"
-	"fmt"
 
 	"carservice/internal/datatypes/carreplacement"
 	enum_userorder "carservice/internal/enum/userorder"
@@ -28,12 +27,6 @@ func NewPaymentOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Paym
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
-}
-
-// todo: 统一封装
-type OfficialPrice struct {
-	PriceUp   float64 `db:"priceUp"`
-	PriceDown float64 `db:"priceDown"`
 }
 
 func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.PaymentOrderRep, error) {
@@ -110,9 +103,6 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 	}
 	totalAmount.estF32Price = totalEstF32Price
 	totalAmount.estU64Price = totalEstU64Price
-
-	fmt.Println(totalAmount)
-	fmt.Println(order)
 
 	// 准备预支付数据
 	payload := payment.PaymentPayload{

@@ -19,6 +19,13 @@ type (
     }
     
     // 创建用户订单 //
+    CarReplacementItem {
+        Id uint `json:"id"`
+        Title string `json:"title"`
+        EstF32Price float32 `json:"estF32Price"`
+        EstU64Price uint64 `json:"estU64Price"`
+        Counter uint `json:"counter"`
+    }
     CreateUserOrderReq {
         // CarOwner
         CarOwnerName string `json:"carOwnerName"`
@@ -36,7 +43,7 @@ type (
         // Comment
         Requirements string `json:"requirements"`
         AgreeToTerms uint8 `json:"agreeToTerms"`
-        CarReplacements []uint `json:"carReplacements"`
+        CarReplacements []CarReplacementItem `json:"carReplacements"`
     }
     CreateUserOrderRep {
         NewId uint `json:"newId"`

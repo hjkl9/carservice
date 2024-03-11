@@ -229,19 +229,27 @@ type UserOrderListItem struct {
 	UpdatedAt    string `json:"updatedAt"`
 }
 
+type CarReplacementItem struct {
+	Id          uint    `json:"id"`
+	Title       string  `json:"title"`
+	EstF32Price float32 `json:"estF32Price"`
+	EstU64Price uint64  `json:"estU64Price"`
+	Counter     uint    `json:"counter"`
+}
+
 type CreateUserOrderReq struct {
-	CarOwnerName        string  `json:"carOwnerName"`
-	CarOwnerPhoneNumber string  `json:"carOwnerPhoneNumber"`
-	CarOwnerLongitude   float64 `json:"carOwnerLongitude"`
-	CarOwnerLatitude    float64 `json:"carOwnerLatitude"`
-	CarOwnerMultiLvAddr string  `json:"carOwnerMultiLvAddr"`
-	CarOwnerFullAddress string  `json:"carOwnerFullAddress"`
-	CarBrandId          int64   `json:"carBrandId"`
-	CarSeriesId         int64   `json:"carSeriesId"`
-	PartnerStoreId      int64   `json:"partnerStoreId,optional"`
-	Requirements        string  `json:"requirements"`
-	AgreeToTerms        uint8   `json:"agreeToTerms"`
-	CarReplacements     []uint  `json:"carReplacements"`
+	CarOwnerName        string               `json:"carOwnerName"`
+	CarOwnerPhoneNumber string               `json:"carOwnerPhoneNumber"`
+	CarOwnerLongitude   float64              `json:"carOwnerLongitude"`
+	CarOwnerLatitude    float64              `json:"carOwnerLatitude"`
+	CarOwnerMultiLvAddr string               `json:"carOwnerMultiLvAddr"`
+	CarOwnerFullAddress string               `json:"carOwnerFullAddress"`
+	CarBrandId          int64                `json:"carBrandId"`
+	CarSeriesId         int64                `json:"carSeriesId"`
+	PartnerStoreId      int64                `json:"partnerStoreId,optional"`
+	Requirements        string               `json:"requirements"`
+	AgreeToTerms        uint8                `json:"agreeToTerms"`
+	CarReplacements     []CarReplacementItem `json:"carReplacements"`
 }
 
 type CreateUserOrderRep struct {

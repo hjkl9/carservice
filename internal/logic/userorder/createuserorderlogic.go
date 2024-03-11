@@ -236,8 +236,15 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
 
+	// filter out the ids.
+	carReplacementIds := func() (result []uint) {
+		for _, r := range req.CarReplacements {
+			result = append(result, r.Id)
+		}
+		return
+	}()
 	// update or create the replacement items.
-	err = l.createOrderItems(tx, *newUserOrderId, req.CarReplacements)
+	err = l.createOrderItems(tx, *newUserOrderId, carReplacementIds)
 	if err != nil {
 		return nil, err
 	}
@@ -329,6 +336,7 @@ func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *createUserO
 
 // createOrderItems 创建用户订单的配件项目
 func (l *CreateUserOrderLogic) createOrderItems(tx *sqlx.Tx, orderId uint, carReplacementIds []uint) error {
+	fmt.Println(carReplacementIds)
 	for _, carReplacementId := range carReplacementIds {
 		query := "INSERT INTO `order_items`(`user_order_id`, `car_replacement_id`) VALUES(?, ?)"
 		_, err := tx.ExecContext(l.ctx, query, orderId, carReplacementId)

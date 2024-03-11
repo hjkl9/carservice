@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"time"
 
-	"carservice/internal/pkg/captcha"
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/constant"
+	"carservice/internal/pkg/generator/captcha"
 	smsutil "carservice/internal/pkg/sms"
 	"carservice/internal/svc"
 	"carservice/internal/types"

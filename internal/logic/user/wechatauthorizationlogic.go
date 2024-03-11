@@ -7,7 +7,7 @@ import (
 
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/jwt"
-	"carservice/internal/pkg/username"
+	"carservice/internal/pkg/generator/username"
 	"carservice/internal/pkg/wechat"
 	"carservice/internal/svc"
 	"carservice/internal/types"

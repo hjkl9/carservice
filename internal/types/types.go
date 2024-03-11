@@ -333,6 +333,12 @@ type RefundOrderReq struct {
 type RefundOrderRep struct {
 }
 
+type RefundOrderCallbackReq struct {
+}
+
+type RefundOrderCallbackRep struct {
+}
+
 type PartnerStoreListItem struct {
 	Id          uint    `json:"id"`
 	Title       string  `json:"title"`

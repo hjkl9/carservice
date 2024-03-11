@@ -8,7 +8,7 @@ import (
 
 	uo_enum "carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
-	"carservice/internal/pkg/conv"
+	"carservice/internal/pkg/conv/str"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
@@ -119,11 +119,11 @@ func (l *GetUserOrderListLogic) handleStatusSubQuery(status string) string {
 
 	switch status {
 	case "1":
-		in = conv.ToStringWithSep(',', uo_enum.PendingTab...)
+		in = str.ToStringWithSep(',', uo_enum.PendingTab...)
 	case "2":
-		in = conv.ToStringWithSep(',', uo_enum.DoingTab...)
+		in = str.ToStringWithSep(',', uo_enum.DoingTab...)
 	case "3":
-		in = conv.ToStringWithSep(',', uo_enum.FinishedTab...)
+		in = str.ToStringWithSep(',', uo_enum.FinishedTab...)
 	}
 	fmt.Println(fmt.Sprintf("AND `order_status` IN (%s)", in))
 

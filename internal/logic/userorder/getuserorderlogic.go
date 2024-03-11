@@ -9,7 +9,7 @@ import (
 	"carservice/internal/data/tables"
 	"carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
-	"carservice/internal/pkg/format/timex"
+	conv_time "carservice/internal/pkg/conv/time"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
@@ -99,7 +99,7 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 		}(),
 		Requirements: order.Comment,
 		OrderStatus:  userorder.OrderStatusDesc(order.OrderStatus),
-		CreatedAt:    timex.StdFormat1(order.CreatedAt),
-		UpdatedAt:    timex.StdFormat1(order.UpdatedAt),
+		CreatedAt:    conv_time.StdFormat1(order.CreatedAt),
+		UpdatedAt:    conv_time.StdFormat1(order.UpdatedAt),
 	}, nil
 }

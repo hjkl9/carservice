@@ -65,6 +65,7 @@ type (
         PartnerStoreId uint `json:"partnerStoreId"`
         // Comment
         Requirements string `json:"requirements"`
+        CarReplacements []CarReplacementItem `json:"carReplacements"`
     }
     UpdateUserOrderRep {}
 

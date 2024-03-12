@@ -31,28 +31,16 @@ func (l *UpdateUserOrderLogic) UpdateUserOrder(req *types.UpdateUserOrderReq) er
 	if err != nil {
 		return errcode.InternalServerError.Lazy("UserID 类型转换时发生错误").SetDetails(err.Error())
 	}
+	_ = userId
 
-	// validate parameters //
-	// check phone number.
-	if len(req.CarOwnerPhoneNumber) != 11 {
-		return errcode.InvalidPhoneNumberError
-	}
-
-	// check if the data already exists. //
-	// check CarOwnerInfo
-	var counter carOwnerInfoCounter
-	query := "SELECT COUNT(1) AS `count`, MIN(`id`) AS `firstId` FROM `car_owner_infos` WHERE `user_id` = ? LIMIT 1"
-	stmtx, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
-	if err != nil {
-		return err
-	}
-	if err = stmtx.GetContext(l.ctx, &counter, userId); err != nil {
-		return err
-	}
-
-	// what something need to change?
-
-	// update data.
+	// validate CarBrand and CarBrandSeries data.
+	// hasCar, err := l.validateUserCar(req.CarBrandId, req.CarSeriesId)
+	// if err != nil {
+	// 	return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
+	// }
+	// if !hasCar {
+	// 	return nil, errcode.NotFound.SetMsg("该车辆不存在")
+	// }
 
 	return nil
 }

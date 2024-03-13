@@ -66,3 +66,21 @@ type UpdatePayload struct {
 	// CreatedAt        time.Duration `db:"created_at"`
 	// UpdatedAt        time.Duration `db:"updated_at"`
 }
+
+// createUserOrderPayload 创建用户订单数据
+// 内存对齐 OK
+type CreatePayload struct {
+	MemberId         uint `db:"member_id"`
+	CarBrandId       uint `db:"car_brand_id"`
+	CarBrandSeriesId uint `db:"car_brand_series_id"`
+	// CarOwnerInfoId   uint    `db:"car_owner_info_id"` // ! deprecated
+	PartnerStoreId uint    `db:"partner_store_id"` // ! deprecated
+	OrderNumber    string  `db:"order_number"`
+	Comment        string  `db:"comment"`
+	EstAmount      float64 `db:"est_amount"`
+	ActAmount      float64 `db:"act_amount"`
+	PaymentMethod  uint8   `db:"payment_method"`
+	OrderStatus    uint8   `db:"order_status"`
+	// CreatedAt        time.Duration `db:"created_at"`
+	// UpdatedAt        time.Duration `db:"updated_at"`
+}

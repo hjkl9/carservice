@@ -31,7 +31,7 @@ func (l *CancelUserOrderLogic) CancelUserOrder(req *types.CancelUserOrderReq) er
 	userId := jwt.GetUserId(l.ctx)
 
 	// 订单是否存在
-	hasOrder, err := l.svcCtx.Repo.UserOrderRelated().GetIfOrderExistsById(l.ctx, userId, uint(req.Id))
+	hasOrder, err := l.svcCtx.Repo.UserOrder().GetIfOrderExistsById(l.ctx, userId, uint(req.Id))
 	if err != nil {
 		logc.Error(l.ctx, "查询订单是否存在时发生错误")
 	}

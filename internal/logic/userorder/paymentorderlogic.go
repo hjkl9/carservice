@@ -39,7 +39,7 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 	// replacementIds = []int{5, 6, 14}
 
 	// 检查订单是否存在
-	hasOrder, err := l.svcCtx.Repo.UserOrderRelated().GetIfOrderExistsById(l.ctx, userId, uint(orderId))
+	hasOrder, err := l.svcCtx.Repo.UserOrder().GetIfOrderExistsById(l.ctx, userId, uint(orderId))
 	if err != nil {
 		return nil, errcode.DatabaseGetErr
 	}
@@ -49,7 +49,7 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 
 	// 获取订单
 	order, err := l.svcCtx.Repo.
-		UserOrderRelated().
+		UserOrder().
 		GetOrderById(l.ctx, userId, uint(orderId))
 	if err != nil {
 		logc.Errorf(l.ctx, "获取订单时发生错误, err: %s\n", err.Error())

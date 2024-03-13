@@ -237,6 +237,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 	}
 
 	// filter out the ids.
+	// and compute total amount, then update to user order.
 	carReplacementIds := func() (result []uint) {
 		for _, r := range req.CarReplacements {
 			result = append(result, r.Id)

@@ -68,7 +68,7 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 
 	// 获取车型价格和匹配
 	officialPriceDown, officialPriceUp, err := l.svcCtx.Repo.
-		CarBrandSeriesRepoRelated().
+		CarBrandSeriesRepo().
 		GetOfficialPrice(l.ctx, order.CarBrandSeriesId)
 	if err != nil {
 		logc.Errorf(l.ctx, "查询车型官方报价发生错误, err: %s\n", err.Error())
@@ -82,7 +82,7 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 	// False: 低端
 	var gradeFunc func() bool = func() bool {
 		return l.svcCtx.Repo.
-			CarBrandSeriesRepoRelated().
+			CarBrandSeriesRepo().
 			CheckGradeByCarSeries(officialPriceDown, officialPriceUp)
 	}
 

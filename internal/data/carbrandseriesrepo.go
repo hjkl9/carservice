@@ -10,6 +10,7 @@ import (
 const SplitPrice float64 = 30.00
 
 type CarBrandSeriesRepo interface {
+	CheckIfSeriesExists(ctx context.Context, brandId, seriesId uint) (bool, error)
 	GetOfficialPrice(ctx context.Context, seriesId interface{}) (float64, float64, error)
 	CheckGradeByCarSeries(down, up float64) bool
 }
@@ -20,6 +21,19 @@ type carBrandSeries struct {
 
 func newCarBrandSeries(db *sqlx.DB) *carBrandSeries {
 	return &carBrandSeries{db}
+}
+
+func (cbs *carBrandSeries) CheckIfSeriesExists(ctx context.Context, brandId, seriesId uint) (bool, error) {
+	var count uint8
+	query := "SELECT COUNT(1) AS `count` FROM `car_brands` `cb` JOIN `car_brand_series` `cbs` ON `cb`.`brand_id` = `cbs`.`brand_id` WHERE `cbs`.`brand_id` = ? AND `cbs`.`series_id` = ? LIMIT 1;"
+	stmt, err := cbs.db.PreparexContext(ctx, query)
+	if err != nil {
+		return false, err
+	}
+	if err = stmt.GetContext(ctx, &count, brandId, seriesId); err != nil {
+		return false, err
+	}
+	return count == 1, nil
 }
 
 func (cbs *carBrandSeries) GetOfficialPrice(ctx context.Context, seriesId interface{}) (float64, float64, error) {

@@ -14,6 +14,7 @@ type UserOrderRepo interface {
 	GetIfTheListExists(ctx context.Context, memberId uint) (bool, error)
 	GetOrderList(ctx context.Context, memberId uint) (*[]*userorder.UserOrderListItem, error)
 	SoftDeleteOrderById(ctx context.Context, memberId, orderId uint) error
+	Update(ctx context.Context, id uint, payload *userorder.UpdatePayload) error
 }
 
 type userOrder struct {
@@ -116,5 +117,10 @@ func (uo *userOrder) SoftDeleteOrderById(ctx context.Context, memberId, orderId 
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (uo *userOrder) Update(ctx context.Context, id uint, payload *userorder.UpdatePayload) error {
+
 	return nil
 }

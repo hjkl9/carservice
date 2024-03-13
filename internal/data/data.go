@@ -7,7 +7,7 @@ type RepoFactory interface {
 	UserOrderRelated() UserOrderRepo
 	PartnerStoreRelated() PartnerStoreRepo
 	PingRelated() PingRepo
-	CarBrandSeriesRepoRelated() CarBrandSeriesRepo
+	CarBrandSeriesRepo() CarBrandSeriesRepo
 	CarReplacementRepoRelated() CarReplacementRepo
 }
 
@@ -35,7 +35,7 @@ func (ds *datastore) PartnerStoreRelated() PartnerStoreRepo {
 	return newPartnerStore(ds.dbc)
 }
 
-func (ds *datastore) CarBrandSeriesRepoRelated() CarBrandSeriesRepo {
+func (ds *datastore) CarBrandSeriesRepo() CarBrandSeriesRepo {
 	return newCarBrandSeries(ds.dbc)
 }
 

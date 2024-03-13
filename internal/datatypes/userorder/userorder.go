@@ -50,3 +50,19 @@ type UserOrderListItem struct {
 	CreatedAt    string         `db:"createdAt" json:"createdAt"`
 	UpdatedAt    string         `db:"updatedAt" json:"updatedAt"`
 }
+
+type UpdatePayload struct {
+	MemberId         uint `db:"member_id"`
+	CarBrandId       uint `db:"car_brand_id"`
+	CarBrandSeriesId uint `db:"car_brand_series_id"`
+	// CarOwnerInfoId   uint    `db:"car_owner_info_id"` // ! deprecated
+	PartnerStoreId uint    `db:"partner_store_id"` // ! deprecated
+	OrderNumber    string  `db:"order_number"`
+	Comment        string  `db:"comment"`
+	EstAmount      float64 `db:"est_amount"`
+	ActAmount      float64 `db:"act_amount"`
+	PaymentMethod  uint8   `db:"payment_method"`
+	OrderStatus    uint8   `db:"order_status"`
+	// CreatedAt        time.Duration `db:"created_at"`
+	// UpdatedAt        time.Duration `db:"updated_at"`
+}

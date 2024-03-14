@@ -8,3 +8,40 @@ type Replacement struct {
 	EstU64Price uint64  `db:"estU64Price"`
 	Counter     uint8   `db:"counter"`
 }
+
+
+// // ItemId
+// // 实现 contract.ItemPricer 接口
+// func (r *Replacement) ItemId() uint64 {
+// 	return uint64(r.Id)
+// }
+
+// // GetUint64
+// // 实现 contract.ItemPricer 接口
+// func (r *Replacement) GetUint64() uint64 {
+// 	return r.EstU64Price
+// }
+
+// // GetFloat64
+// // 实现 contract.ItemPricer 接口
+// func (r *Replacement) GetFloat64() float64 {
+// 	return float64(r.EstF32Price)
+// }
+
+// ItemId
+// 实现 contract.ItemPricer 接口
+func (r Replacement) ItemId() uint64 {
+	return uint64(r.Id)
+}
+
+// GetUint64
+// 实现 contract.ItemPricer 接口
+func (r Replacement) GetUint64() uint64 {
+	return r.EstU64Price
+}
+
+// GetFloat64
+// 实现 contract.ItemPricer 接口
+func (r Replacement) GetFloat64() float64 {
+	return float64(r.EstF32Price)
+}

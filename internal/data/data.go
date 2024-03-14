@@ -8,7 +8,7 @@ type RepoFactory interface {
 	PartnerStoreRelated() PartnerStoreRepo
 	PingRelated() PingRepo
 	CarBrandSeriesRepo() CarBrandSeriesRepo
-	CarReplacementRepoRelated() CarReplacementRepo
+	CarReplacementRepo() CarReplacementRepo
 }
 
 type datastore struct {
@@ -39,6 +39,6 @@ func (ds *datastore) CarBrandSeriesRepo() CarBrandSeriesRepo {
 	return newCarBrandSeries(ds.dbc)
 }
 
-func (ds *datastore) CarReplacementRepoRelated() CarReplacementRepo {
+func (ds *datastore) CarReplacementRepo() CarReplacementRepo {
 	return newCarReplacement(ds.dbc)
 }

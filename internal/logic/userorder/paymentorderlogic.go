@@ -88,7 +88,7 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 
 	// 获取配件列表
 	replacements, err := l.svcCtx.Repo.
-		CarReplacementRepoRelated().
+		CarReplacementRepo().
 		GetEstPriceListByIdSet(l.ctx, gradeFunc, replacementIds)
 	if err != nil {
 		logc.Errorf(l.ctx, "获取配件列表发生错误, err: %s\n", err.Error())

@@ -90,6 +90,7 @@ type (
         CarOwnerPhoneNumber string `json:"carOwnerPhoneNumber"`
         CarBrandId uint `json:"carBrandId"`
         CarSeriesId uint `json:"carSeriesId"`
+        CarReplacements []CarReplacementItem `json:"carReplacements"`
     }
 
     // 获取用户订单列表 //

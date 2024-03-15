@@ -45,5 +45,5 @@ func (ds *datastore) CarReplacementRepo() CarReplacementRepo {
 }
 
 func (ds *datastore) OrderItem() OrderItemRepo {
-	return nil
+	return newOrderItem(ds.dbc)
 }

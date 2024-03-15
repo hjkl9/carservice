@@ -15,6 +15,10 @@ type UserOrderRepo interface {
 	GetOrderList(ctx context.Context, memberId uint) (*[]*userorder.UserOrderListItem, error)
 	SoftDeleteOrderById(ctx context.Context, memberId, orderId uint) error
 	Update(ctx context.Context, id uint, payload *userorder.UpdatePayload) error
+
+	// ComputeTotalPrice
+	// 创建订单并返回计算的订单总服务费
+	// ComputeTotalPrice(_ context.Context, oid uint, replacementIds []uint) (*userorder.TotalEstPrice, error)
 }
 
 type userOrder struct {

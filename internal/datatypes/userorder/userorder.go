@@ -84,3 +84,8 @@ type CreatePayload struct {
 	// CreatedAt        time.Duration `db:"created_at"`
 	// UpdatedAt        time.Duration `db:"updated_at"`
 }
+
+type TotalEstPrice struct {
+	EstF32Price float64 `db:"est_f32_price"`
+	EstU64Price uint64  `db:"est_u64_price"`
+}

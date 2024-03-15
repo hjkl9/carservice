@@ -32,7 +32,6 @@ func NewPaymentOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Paym
 func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.PaymentOrderRep, error) {
 	userId := jwt.GetUserId(l.ctx)
 	orderId := req.Id
-	replacementIds := req.CarReplacements
 	// ? 处理和计算客户端的配件列表价格
 	l.filterAndCalcAmount()
 	// ! 删除临时配件

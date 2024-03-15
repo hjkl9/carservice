@@ -26,7 +26,7 @@ type CarBrandSeriesRepo interface {
 	// 检查车型档次 =>
 	// 高端返回 true,
 	// 低端返回 false
-	CheckGradeByCarSeries(_ context.Context, seriesId uint) (error, bool)
+	CheckGradeByCarSeries(_ context.Context, seriesId uint) (bool, error)
 }
 
 type carBrandSeries struct {

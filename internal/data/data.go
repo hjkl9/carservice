@@ -9,6 +9,7 @@ type RepoFactory interface {
 	PingRelated() PingRepo
 	CarBrandSeriesRepo() CarBrandSeriesRepo
 	CarReplacementRepo() CarReplacementRepo
+	OrderItem() OrderItemRepo
 }
 
 type datastore struct {
@@ -41,4 +42,8 @@ func (ds *datastore) CarBrandSeriesRepo() CarBrandSeriesRepo {
 
 func (ds *datastore) CarReplacementRepo() CarReplacementRepo {
 	return newCarReplacement(ds.dbc)
+}
+
+func (ds *datastore) OrderItem() OrderItemRepo {
+	return nil
 }

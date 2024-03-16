@@ -1,6 +1,9 @@
 package userorder
 
-import "database/sql"
+import (
+	"database/sql"
+	"time"
+)
 
 type Facades_UserOrder struct {
 	Id                  uint           `db:"id"`
@@ -64,7 +67,7 @@ type UpdatePayload struct {
 	PaymentMethod  uint8   `db:"payment_method"`
 	OrderStatus    uint8   `db:"order_status"`
 	// CreatedAt        time.Duration `db:"created_at"`
-	// UpdatedAt        time.Duration `db:"updated_at"`
+	UpdatedAt time.Time `db:"updated_at"`
 }
 
 // createUserOrderPayload 创建用户订单数据

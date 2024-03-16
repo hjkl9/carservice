@@ -50,7 +50,8 @@ type (
     }
 
     UpdateUserOrderReq {
-         // CarOwner
+        Id uint `path:"id"`
+        // CarOwner
         CarOwnerName string `json:"carOwnerName"`
         CarOwnerPhoneNumber string `json:"carOwnerPhoneNumber"`
         CarOwnerLongitude float64 `json:"carOwnerLongitude"`

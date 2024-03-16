@@ -107,7 +107,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		return
 	}()
 	// update or create the replacement items.
-	err = l.saveOrderItems(tx, *newUserOrderId, carReplacementIds)
+	err = saveOrderItems(tx, *newUserOrderId, carReplacementIds)
 	if err != nil {
 		return nil, err
 	}
@@ -200,9 +200,8 @@ func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *dt_user_ord
 }
 
 // createOrderItems 创建用户订单的配件项目
-func (l *CreateUserOrderLogic) saveOrderItems(tx *sqlx.Tx, orderId uint, carReplacementIds []uint) error {
-	// todo 将配件列表插入到 OrderItem 表中
-	// 删除可能存在的数据
+func saveOrderItems(tx *sqlx.Tx, orderId uint, carReplacementIds []uint) error {
+	// 将配件列表插入到 OrderItem 表中
 	// 删除可能存在的数据
 	query := "DELETE FROM `order_items` WHERE `user_order_id` = ?"
 	_, err := tx.Exec(query, orderId)
@@ -218,10 +217,6 @@ func (l *CreateUserOrderLogic) saveOrderItems(tx *sqlx.Tx, orderId uint, carRepl
 	}()
 
 	// 批量创建数据
-	// 批量创建数据
-	// 如果不存在则创建
-	// 否则删除再创建
-	// todo:
 	query = "INSERT INTO `order_items`(`user_order_id`, `car_replacement_id`) VALUES(:user_order_id, :car_replacement_id)"
 	_, err = tx.NamedExec(query, replacements)
 	if err != nil {

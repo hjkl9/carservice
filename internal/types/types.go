@@ -257,6 +257,7 @@ type CreateUserOrderRep struct {
 }
 
 type UpdateUserOrderReq struct {
+	Id                  uint                 `path:"id"`
 	CarOwnerName        string               `json:"carOwnerName"`
 	CarOwnerPhoneNumber string               `json:"carOwnerPhoneNumber"`
 	CarOwnerLongitude   float64              `json:"carOwnerLongitude"`

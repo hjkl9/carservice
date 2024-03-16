@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"carservice/internal/data/tables"
+	"carservice/internal/datatypes/carreplacement"
 	"carservice/internal/enum/userorder"
 	"carservice/internal/pkg/common/errcode"
 	conv_time "carservice/internal/pkg/conv/time"
@@ -14,6 +15,7 @@ import (
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
+	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -51,6 +53,9 @@ type Order struct {
 	// other fields.
 }
 
+type CarReplacement struct {
+}
+
 func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *types.GetUserOrderRep, err error) {
 	userId := jwt.GetUserId(l.ctx)
 	// 检查订单是否存在
@@ -72,6 +77,21 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 	}
 	if err = stmt.GetContext(l.ctx, &order, req.Id, userId); err != nil {
 		return nil, errcode.DatabaseError.SetDetails(err.Error())
+	}
+
+	// 获取订单下的所有配件
+	carReplacements, err := func() (items []carreplacement.Replacement, err error) {
+		query := "SELECT `id`, `title`, 0.00 AS `estF32Price`, 0 AS `estU64Price`, `counter` FROM `car_replacements` `cr` JOIN `order_items` `oi` ON `oi`.`car_replacement_id` = `cr`.`id` WHERE `oi`.user_order_id = ?"
+
+		if err = l.svcCtx.DBC.SelectContext(l.ctx, &items, query, req.Id); err != nil {
+			return nil, errcode.DatabaseGetErr
+		}
+
+		return
+	}()
+	if err != nil {
+		logc.Errorf(l.ctx, "获取订单的所有配件发生错误, err: %s\n", err.Error())
+		return nil, errcode.DatabaseGetErr
 	}
 
 	return &types.GetUserOrderRep{
@@ -101,5 +121,17 @@ func (l *GetUserOrderLogic) GetUserOrder(req *types.GetUserOrderReq) (resp *type
 		OrderStatus:  userorder.OrderStatusDesc(order.OrderStatus),
 		CreatedAt:    conv_time.StdFormat1(order.CreatedAt),
 		UpdatedAt:    conv_time.StdFormat1(order.UpdatedAt),
+		CarReplacements: func() (items []types.CarReplacementItem) {
+			for _, r := range carReplacements {
+				items = append(items, types.CarReplacementItem{
+					Id:          r.Id,
+					Title:       r.Title,
+					EstF32Price: r.EstF32Price,
+					EstU64Price: r.EstU64Price,
+					Counter:     uint(r.Counter),
+				})
+			}
+			return
+		}(),
 	}, nil
 }

@@ -5,7 +5,7 @@ import (
 
 	"carservice/internal/logic/userorder"
 	"carservice/internal/pkg/common/errcode"
-	stdresponse "carservice/internal/pkg/httper/response"
+	"carservice/internal/pkg/httper/api"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
@@ -16,15 +16,12 @@ func UpdateUserOrderHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.UpdateUserOrderReq
 		if err := httpx.Parse(r, &req); err != nil {
-			stdresponse.ResponseWithCtx(
-				r.Context(), w, nil,
-				errcode.InvalidParamsError.Lazy(err.Error()),
-			)
+			api.ResponseWithCtx(r.Context(), w, nil, errcode.InvalidParametersErr)
 			return
 		}
 
 		l := userorder.NewUpdateUserOrderLogic(r.Context(), svcCtx)
 		err := l.UpdateUserOrder(&req)
-		stdresponse.Response(w, nil, err)
+		api.Response(w, nil, err)
 	}
 }

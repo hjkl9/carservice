@@ -4,12 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/jwt"
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -61,27 +63,22 @@ func (l *UpdateUserOrderLogic) UpdateUserOrder(req *types.UpdateUserOrderReq) er
 		return errcode.DatabaseTrasationErr
 	}
 
-	// todo: 更新车主信息
-
-	// only update order.
-	// updatePayload := &dt_user_order.UpdatePayload{
-	// 	// MemberId:         uint(userId), // ! should'n update UserId.
-	// 	CarBrandId:       req.CarBrandId,
-	// 	CarBrandSeriesId: req.CarSeriesId,
-	// 	// OrderNumber:      order.GenerateNumber(time.Now()), // not allow to update.
-	// 	Comment: req.Requirements, // ! should deprecated it.
-	// 	// EstAmount:     0.000000,         // ! should deprecated it.
-	// 	// ActAmount:     0.000000,         // ! should deprecated it.
-	// 	// PaymentMethod: uint8(payment.DefaultAtCreation),
-	// 	// OrderStatus:   uint8(userorder.DefaultAtCreation),
-	// 	// CarOwnerInfoId:   *carOwnerInfoId, // ! deprecated
-	// 	// PartnerStoreId: uint(req.PartnerStoreId), // ! deprecated
-	// }
+	// 更新车主信息
+	if err = saveCarOwnerInfo(l.ctx, tx, req.Id, req); err != nil {
+		logc.Errorf(l.ctx, "更新车主信息时发生错误, err: %s\n", err.Error())
+		if err1 := tx.Rollback(); err1 != nil {
+			logc.Errorf(l.ctx, "更新车主信息回滚时发生错误, err: %s\n", err1.Error())
+			return errcode.DatabaseRollbackErr
+		}
+		return errcode.DatabaseUpdateErr
+	}
 
 	// update user order.
-	query := "UPDATE `user_order` SET `car_brand_id` = ?, `car_brand_series_id` = ?, `comment` = ?, updated_at = NOW()"
+	query := "UPDATE `user_orders` SET `car_brand_id` = ?, `car_brand_series_id` = ?, `comment` = ?, updated_at = NOW()"
 	if _, err = tx.ExecContext(l.ctx, query, req.CarBrandId, req.CarSeriesId, req.Requirements); err != nil {
+		logc.Errorf(l.ctx, "更新用户订单时发生错误, err: %s\n", err.Error())
 		if err1 := tx.Rollback(); err1 != nil {
+			logc.Errorf(l.ctx, "更新用户订单回滚时发生错误, err: %s\n", err.Error())
 			return errcode.DatabaseRollbackErr
 		}
 		return errcode.DatabaseUpdateErr
@@ -97,7 +94,80 @@ func (l *UpdateUserOrderLogic) UpdateUserOrder(req *types.UpdateUserOrderReq) er
 	}()
 	// update or create the replacement items.
 	if err = saveOrderItems(tx, req.Id, carReplacementIds); err != nil {
+		logc.Errorf(l.ctx, "更新用户订单项目时发生错误, err: %s\n", err.Error())
+		if err1 := tx.Rollback(); err1 != nil {
+			logc.Errorf(l.ctx, "更新用户订单项目回滚时发生错误, err: %s\n", err1.Error())
+			return errcode.DatabaseRollbackErr
+		}
 		return errcode.DatabaseUpdateErr
+	}
+
+	if err = tx.Commit(); err != nil {
+		logc.Errorf(l.ctx, "更新用户订单提交时发生错误, err: %s\n", err.Error())
+		if err1 := tx.Rollback(); err1 != nil {
+			logc.Errorf(l.ctx, "更新用户订单提交回滚时发生错误, err: %s\n", err1.Error())
+			return errcode.DatabaseRollbackErr
+		}
+		return errcode.DatabaseCommitErr
+	}
+
+	return nil
+}
+
+// saveCarOwnerInfo 更新车主信息
+func saveCarOwnerInfo(
+	ctx context.Context,
+	tx *sqlx.Tx,
+	orderId uint,
+	reqData *types.UpdateUserOrderReq,
+) error {
+	// 获取订单用户车主信息
+	query := "SELECT `name` AS `name`, `phone_number` AS `phoneNumber`, `multilevel_address` AS `multilevelAddress`, `full_address` AS `fullAddress` FROM `car_owner_infos` WHERE `user_order_id` = ? LIMIT 1;"
+
+	var carOwnerInfo struct {
+		Name              string `db:"name"`
+		PhoneNumber       string `db:"phoneNumber"`
+		MultilevelAddress string `db:"multilevelAddress"`
+		FullAddress       string `db:"fullAddress"`
+	}
+
+	if err := tx.GetContext(ctx, &carOwnerInfo, query, orderId); err != nil {
+		return err
+	}
+
+	var updateMap map[string]string = make(map[string]string, 4)
+	if reqData.CarOwnerName != carOwnerInfo.Name {
+		updateMap["name"] = reqData.CarOwnerName
+	}
+	if reqData.CarOwnerPhoneNumber != carOwnerInfo.PhoneNumber {
+		updateMap["phone_number"] = reqData.CarOwnerPhoneNumber
+	}
+	if reqData.CarOwnerMultiLvAddr != carOwnerInfo.MultilevelAddress {
+		updateMap["multilevel_address"] = reqData.CarOwnerMultiLvAddr
+	}
+	if reqData.CarOwnerFullAddress != carOwnerInfo.FullAddress {
+		updateMap["full_address"] = reqData.CarOwnerFullAddress
+	}
+
+	// if there is nothing to update
+	if len(updateMap) == 0 {
+		return nil
+	}
+
+	var i = 0
+	var n = len(updateMap)
+	fieldSetString := ""
+	for k, v := range updateMap {
+		fieldSetString += fmt.Sprintf("`%s` = \"%s\"", k, v)
+		if i != (n - 1) {
+			fieldSetString += ","
+		}
+		i++
+	}
+
+	query = fmt.Sprintf("UPDATE `car_owner_infos` SET %s WHERE `user_order_id` = ? LIMIT 1", fieldSetString)
+	if _, err := tx.ExecContext(ctx, query, orderId); err != nil {
+		return err
 	}
 
 	return nil

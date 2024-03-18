@@ -262,7 +262,7 @@ type UpdateUserOrderReq struct {
 	CarOwnerPhoneNumber string               `json:"carOwnerPhoneNumber"`
 	CarOwnerLongitude   float64              `json:"carOwnerLongitude"`
 	CarOwnerLatitude    float64              `json:"carOwnerLatitude"`
-	CarOwnerMultLvAddr  string               `json:"carOwnerMultLvAddr"`
+	CarOwnerMultiLvAddr string               `json:"carOwnerMultiLvAddr"`
 	CarOwnerFullAddress string               `json:"carOwnerFullAddress"`
 	CarBrandId          uint                 `json:"carBrandId"`
 	CarSeriesId         uint                 `json:"carSeriesId"`

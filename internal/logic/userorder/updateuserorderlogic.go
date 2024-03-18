@@ -172,3 +172,8 @@ func saveCarOwnerInfo(
 
 	return nil
 }
+
+// todo: what's conditions could update the order ?
+func updatable() (bool, error) {
+	return false, nil
+}

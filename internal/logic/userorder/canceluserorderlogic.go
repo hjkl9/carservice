@@ -33,16 +33,16 @@ func (l *CancelUserOrderLogic) CancelUserOrder(req *types.CancelUserOrderReq) er
 	// 订单是否存在
 	hasOrder, err := l.svcCtx.Repo.UserOrder().GetIfOrderExistsById(l.ctx, userId, uint(req.Id))
 	if err != nil {
-		logc.Error(l.ctx, "查询订单是否存在时发生错误")
+		logc.Errorf(l.ctx, "查询订单是否存在时发生错误, %s\n", err.Error())
+		return errcode.DatabaseGetErr
 	}
 	if !hasOrder {
-		return errcode.NotFound.Lazy("该订单不存在")
+		return errcode.InvalidParametersErr.SetMessage("无效的订单")
 	}
 
 	// 取消订单的条件
-	// userorder.ToBePaid
+	// userorder.AwaitingPayment
 	// userorder.Pending
-	// userorder.ToBeAcceptedByUser
 
 	// CheckIfOrderCanBeCanceled
 	// 检查是否满足取消订单的条件
@@ -50,8 +50,8 @@ func (l *CancelUserOrderLogic) CancelUserOrder(req *types.CancelUserOrderReq) er
 	query := "SELECT (COUNT(1) = 1) AS `cancellable` FROM `user_orders` WHERE 1 = 1 AND `order_status` IN (?, ?) AND `id` = ? AND `member_id` = ? LIMIT 1"
 	stmt, err := l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
-		logc.Error(l.ctx, "预处理查询是否满足取消订单时发生错误")
-		return errcode.NewDatabaseErrorx().GetError(err)
+		logc.Errorf(l.ctx, "预处理查询是否满足取消订单时发生错误, %s\n", err.Error())
+		return errcode.DatabasePrepareErr
 	}
 	if err = stmt.GetContext(
 		l.ctx,
@@ -61,23 +61,23 @@ func (l *CancelUserOrderLogic) CancelUserOrder(req *types.CancelUserOrderReq) er
 		req.Id,
 		userId,
 	); err != nil {
-		logc.Error(l.ctx, "开始查询是否满足取消订单时发生错误")
-		return errcode.NewDatabaseErrorx().GetError(err)
+		logc.Errorf(l.ctx, "查询是否满足取消订单时发生错误, %s\n", err.Error())
+		return errcode.DatabaseGetErr
 	}
 	if cancellable != 1 {
-		return errcode.StatusForbiddenError.SetMsg("该订单无法被取消")
+		return errcode.StatusForbiddenError.SetMsg("订单未满足取消条件")
 	}
 	// 更新订单状态
 	query = "UPDATE `user_orders` SET `order_status` = ?, `updated_at` = NOW() WHERE `id` = ? AND `member_id` = ?"
 	stmt, err = l.svcCtx.DBC.PreparexContext(l.ctx, query)
 	if err != nil {
 		logc.Error(l.ctx, "预处理更新状态的 SQL 语句时发生错误")
-		return errcode.NewDatabaseErrorx().UpdateError(err)
+		return errcode.DatabasePrepareErr
 	}
 	_, err = stmt.ExecContext(l.ctx, userorder.Cancelled, req.Id, userId)
 	if err != nil {
-		logc.Error(l.ctx, "执行更新状态的 SQL 语句时发生错误")
-		return errcode.NewDatabaseErrorx().UpdateError(err)
+		logc.Errorf(l.ctx, "执行更新状态的 SQL 语句时发生错误, %s\n", err.Error())
+		return errcode.DatabaseExecuteErr
 	}
 	return nil
 }

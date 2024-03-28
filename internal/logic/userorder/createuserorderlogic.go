@@ -15,10 +15,10 @@ import (
 	"carservice/internal/svc"
 	"carservice/internal/types"
 
+	"carservice/internal/datatypes/orderitem"
 	dt_user_order "carservice/internal/datatypes/userorder"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -98,8 +98,8 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		return nil, errcode.DatabaseError.Lazy("操作数据库时发生错误", err.Error())
 	}
 
-	// filter out the ids.
-	// and compute total amount, then update to user order.
+	// filter out the id set and compute total amount, then update to user order.
+	// no need to calculate the finally service amount.
 	carReplacementIds := func() (result []uint) {
 		for _, r := range req.CarReplacements {
 			result = append(result, r.Id)
@@ -107,7 +107,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		return
 	}()
 	// update or create the replacement items.
-	err = l.createOrderItems(tx, *newUserOrderId, carReplacementIds)
+	err = saveOrderItems(tx, *newUserOrderId, carReplacementIds)
 	if err != nil {
 		return nil, err
 	}
@@ -119,6 +119,7 @@ func (l *CreateUserOrderLogic) CreateUserOrderFeature(req *types.CreateUserOrder
 		return nil, errcode.DatabaseError.Lazy("数据库提交数据时发生错误", err.Error())
 	}
 	// todo: 发送下单成功短信
+
 	return &types.CreateUserOrderRep{
 		NewId: *newUserOrderId,
 	}, nil
@@ -165,7 +166,7 @@ func (l *CreateUserOrderLogic) validateUserCar(carBrand, carBrandSeriesId int64)
 
 // createUserOrder 创建用户订单
 func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *dt_user_order.CreatePayload) (*uint, error) {
-	query := "INSERT INTO `user_orders`(`member_id`, `car_brand_id`, `car_brand_series_id`, `car_info_id`, `partner_store_id`, `order_number`, `order_status`, `comment`, `est_amount`, `act_amount`, `payment_method`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())"
+	query := "INSERT INTO `user_orders`(`member_id`, `car_brand_id`, `car_brand_series_id`, `car_info_id`, `partner_store_id`, `order_number`, `order_status`, `comment`, `est_amount`, `act_amount`, `est_f32_total_price`, `est_u64_total_price`, `payment_method`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())"
 	stmt, err := tx.PrepareContext(l.ctx, query)
 	if err != nil {
 		return nil, err
@@ -183,6 +184,8 @@ func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *dt_user_ord
 		payload.Comment,
 		payload.EstAmount,
 		payload.ActAmount,
+		0.00,
+		0,
 		payload.PaymentMethod,
 	)
 	if err != nil {
@@ -198,20 +201,29 @@ func (l *CreateUserOrderLogic) createUserOrder(tx *sqlx.Tx, payload *dt_user_ord
 }
 
 // createOrderItems 创建用户订单的配件项目
-func (l *CreateUserOrderLogic) createOrderItems(tx *sqlx.Tx, orderId uint, carReplacementIds []uint) error {
-	fmt.Println(carReplacementIds)
-	for _, carReplacementId := range carReplacementIds {
-		query := "INSERT INTO `order_items`(`user_order_id`, `car_replacement_id`) VALUES(?, ?)"
-		_, err := tx.ExecContext(l.ctx, query, orderId, carReplacementId)
-		if err != nil {
-			if err1 := tx.Rollback(); err1 != nil { // Rollback
-				logc.Errorf(l.ctx, "创建用户订单配件项目回滚时发生错误, err: %s\n", err.Error())
-				return errcode.DatabaseRollbackErr
-			}
-			logc.Errorf(l.ctx, "创建用户订单配件项目时发生错误, err: %s\n", err.Error())
-			return errcode.DatabaseExecuteErr
-		}
+func saveOrderItems(tx *sqlx.Tx, orderId uint, carReplacementIds []uint) error {
+	// 将配件列表插入到 OrderItem 表中
+	// 删除可能存在的数据
+	query := "DELETE FROM `order_items` WHERE `user_order_id` = ?"
+	_, err := tx.Exec(query, orderId)
+	if err != nil {
+		return err
 	}
+
+	replacements := func() (items []orderitem.CreateItem) {
+		for _, id := range carReplacementIds {
+			items = append(items, orderitem.CreateItem{orderId, id})
+		}
+		return
+	}()
+
+	// 批量创建数据
+	query = "INSERT INTO `order_items`(`user_order_id`, `car_replacement_id`) VALUES(:user_order_id, :car_replacement_id)"
+	_, err = tx.NamedExec(query, replacements)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

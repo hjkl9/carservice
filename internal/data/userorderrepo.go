@@ -1,6 +1,7 @@
 package data
 
 import (
+	"carservice/internal/datatypes/carreplacement"
 	"carservice/internal/datatypes/userorder"
 	"context"
 
@@ -15,6 +16,15 @@ type UserOrderRepo interface {
 	GetOrderList(ctx context.Context, memberId uint) (*[]*userorder.UserOrderListItem, error)
 	SoftDeleteOrderById(ctx context.Context, memberId, orderId uint) error
 	Update(ctx context.Context, id uint, payload *userorder.UpdatePayload) error
+
+	// ComputeTotalPrice
+	// 创建订单并返回计算的订单总服务费
+	// ComputeTotalPrice(_ context.Context, oid uint, replacementIds []uint) (*userorder.TotalEstPrice, error)
+
+	// GetOrderItems
+	//
+	// 获取订单商品项目 (配件)
+	GetOrderItemsById(context.Context, uint) ([]carreplacement.Replacement, error)
 }
 
 type userOrder struct {
@@ -123,4 +133,10 @@ func (uo *userOrder) SoftDeleteOrderById(ctx context.Context, memberId, orderId 
 func (uo *userOrder) Update(ctx context.Context, id uint, payload *userorder.UpdatePayload) error {
 
 	return nil
+}
+
+func (uo *userOrder) GetOrderItemsById(context.Context, uint) ([]carreplacement.Replacement, error) {
+	
+	
+	return nil, nil
 }

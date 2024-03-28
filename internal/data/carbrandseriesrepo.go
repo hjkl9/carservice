@@ -11,8 +11,22 @@ const SplitPrice float64 = 30.00
 
 type CarBrandSeriesRepo interface {
 	CheckIfSeriesExists(ctx context.Context, brandId, seriesId uint) (bool, error)
+
+	// GetOfficialPrice 获取官方价格区间
+	//
+	// 0: 官方起步价 down
+	//
+	// 1: 官方最高价 up
+	//
+	// 2: 错误
 	GetOfficialPrice(ctx context.Context, seriesId interface{}) (float64, float64, error)
-	CheckGradeByCarSeries(down, up float64) bool
+
+	// CheckGradeByCarSeries
+	//
+	// 检查车型档次 =>
+	// 高端返回 true,
+	// 低端返回 false
+	CheckGradeByCarSeries(_ context.Context, seriesId uint) (bool, error)
 }
 
 type carBrandSeries struct {
@@ -56,12 +70,17 @@ func (cbs *carBrandSeries) GetOfficialPrice(ctx context.Context, seriesId interf
 	return officialPrice.OfficialPriceDown, officialPrice.OfficialPriceUp, nil
 }
 
-func (cbs *carBrandSeries) CheckGradeByCarSeries(down, up float64) bool {
+func (cbs *carBrandSeries) CheckGradeByCarSeries(ctx context.Context, seriesId uint) (bool, error) {
+	down, up, err := cbs.GetOfficialPrice(ctx, seriesId)
+	if err != nil {
+		return false, err
+	}
+
 	if down > SplitPrice || up > SplitPrice {
-		return true
+		return true, nil
 	}
 	// 其他条件或规则
 	// todo: 处理过滤规则
 
-	return false
+	return false, nil
 }

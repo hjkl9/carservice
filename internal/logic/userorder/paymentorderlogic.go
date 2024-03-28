@@ -32,7 +32,6 @@ func NewPaymentOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Paym
 func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.PaymentOrderRep, error) {
 	userId := jwt.GetUserId(l.ctx)
 	orderId := req.Id
-	replacementIds := req.CarReplacements
 	// ? 处理和计算客户端的配件列表价格
 	l.filterAndCalcAmount()
 	// ! 删除临时配件
@@ -66,43 +65,7 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 		return nil, errcode.OrderOprErr.SetMessage("无法支付非待支付的订单")
 	}
 
-	// 获取车型价格和匹配
-	officialPriceDown, officialPriceUp, err := l.svcCtx.Repo.
-		CarBrandSeriesRepo().
-		GetOfficialPrice(l.ctx, order.CarBrandSeriesId)
-	if err != nil {
-		logc.Errorf(l.ctx, "查询车型官方报价发生错误, err: %s\n", err.Error())
-		return nil, errcode.DatabaseGetErr.SetMessage("订单官方报价查询发生错误")
-	}
-	// todo: 处理未报价的车型
-	if officialPriceDown == officialPriceUp {
-	}
-
-	// True: 高端
-	// False: 低端
-	var gradeFunc func() bool = func() bool {
-		return l.svcCtx.Repo.
-			CarBrandSeriesRepo().
-			CheckGradeByCarSeries(officialPriceDown, officialPriceUp)
-	}
-
-	// 获取配件列表
-	replacements, err := l.svcCtx.Repo.
-		CarReplacementRepoRelated().
-		GetEstPriceListByIdSet(l.ctx, gradeFunc, replacementIds)
-	if err != nil {
-		logc.Errorf(l.ctx, "获取配件列表发生错误, err: %s\n", err.Error())
-		return nil, errcode.DatabaseGetErr
-	}
-
-	// 匹配和计算配件价格
-	totalEstF32Price, totalEstU64Price := l.calcAmount(replacements)
-	var totalAmount struct {
-		estF32Price float64
-		estU64Price uint64
-	}
-	totalAmount.estF32Price = totalEstF32Price
-	totalAmount.estU64Price = totalEstU64Price
+	// todo: 其他逻辑
 
 	// 准备预支付数据
 	payload := payment.PaymentPayload{
@@ -110,7 +73,7 @@ func (l *PaymentOrderLogic) PaymentOrder(req *types.PaymentOrderReq) (*types.Pay
 		OutTradeNo:  order.OrderNumber,
 		Attach:      "TODO",
 		NotifyUrl:   l.svcCtx.Config.AppUrl + "/v1/userOrder/pay/callback",
-		Amount:      int64(totalAmount.estU64Price), // 一分钱
+		Amount:      int64(1), // 一分钱
 		OpenId:      openId,
 	}
 

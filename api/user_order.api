@@ -50,12 +50,13 @@ type (
     }
 
     UpdateUserOrderReq {
-         // CarOwner
+        Id uint `path:"id"`
+        // CarOwner
         CarOwnerName string `json:"carOwnerName"`
         CarOwnerPhoneNumber string `json:"carOwnerPhoneNumber"`
         CarOwnerLongitude float64 `json:"carOwnerLongitude"`
         CarOwnerLatitude float64 `json:"carOwnerLatitude"`
-        CarOwnerMultLvAddr string `json:"carOwnerMultLvAddr"`
+        CarOwnerMultiLvAddr string `json:"carOwnerMultiLvAddr"`
         CarOwnerFullAddress string `json:"carOwnerFullAddress"`
         // CarBrand
         CarBrandId uint `json:"carBrandId"`
@@ -90,6 +91,7 @@ type (
         CarOwnerPhoneNumber string `json:"carOwnerPhoneNumber"`
         CarBrandId uint `json:"carBrandId"`
         CarSeriesId uint `json:"carSeriesId"`
+        CarReplacements []CarReplacementItem `json:"carReplacements"`
     }
 
     // 获取用户订单列表 //

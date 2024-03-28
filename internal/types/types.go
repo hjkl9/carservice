@@ -257,11 +257,12 @@ type CreateUserOrderRep struct {
 }
 
 type UpdateUserOrderReq struct {
+	Id                  uint                 `path:"id"`
 	CarOwnerName        string               `json:"carOwnerName"`
 	CarOwnerPhoneNumber string               `json:"carOwnerPhoneNumber"`
 	CarOwnerLongitude   float64              `json:"carOwnerLongitude"`
 	CarOwnerLatitude    float64              `json:"carOwnerLatitude"`
-	CarOwnerMultLvAddr  string               `json:"carOwnerMultLvAddr"`
+	CarOwnerMultiLvAddr string               `json:"carOwnerMultiLvAddr"`
 	CarOwnerFullAddress string               `json:"carOwnerFullAddress"`
 	CarBrandId          uint                 `json:"carBrandId"`
 	CarSeriesId         uint                 `json:"carSeriesId"`
@@ -278,22 +279,23 @@ type GetUserOrderReq struct {
 }
 
 type GetUserOrderRep struct {
-	Id                  uint   `json:"id"`
-	OrderNumber         string `json:"orderNumber"`
-	CarOwnerName        string `json:"carOwnerName"`
-	CarOwnerMultiLvAddr string `json:"carOwnerMultiLvAddr"`
-	CarOwnerFullAddr    string `json:"carOwnerFullAddress"`
-	CarBrandName        string `json:"carBrandName"`
-	CarSeriesName       string `json:"carSeriesName"`
-	PartnerStore        string `json:"partnerStore"`
-	PartnerStoreAddr    string `json:"partnerStoreAddr"`
-	Requirements        string `json:"requirements"`
-	OrderStatus         string `json:"orderStatus"`
-	CreatedAt           string `json:"createdAt"`
-	UpdatedAt           string `json:"updatedAt"`
-	CarOwnerPhoneNumber string `json:"carOwnerPhoneNumber"`
-	CarBrandId          uint   `json:"carBrandId"`
-	CarSeriesId         uint   `json:"carSeriesId"`
+	Id                  uint                 `json:"id"`
+	OrderNumber         string               `json:"orderNumber"`
+	CarOwnerName        string               `json:"carOwnerName"`
+	CarOwnerMultiLvAddr string               `json:"carOwnerMultiLvAddr"`
+	CarOwnerFullAddr    string               `json:"carOwnerFullAddress"`
+	CarBrandName        string               `json:"carBrandName"`
+	CarSeriesName       string               `json:"carSeriesName"`
+	PartnerStore        string               `json:"partnerStore"`
+	PartnerStoreAddr    string               `json:"partnerStoreAddr"`
+	Requirements        string               `json:"requirements"`
+	OrderStatus         string               `json:"orderStatus"`
+	CreatedAt           string               `json:"createdAt"`
+	UpdatedAt           string               `json:"updatedAt"`
+	CarOwnerPhoneNumber string               `json:"carOwnerPhoneNumber"`
+	CarBrandId          uint                 `json:"carBrandId"`
+	CarSeriesId         uint                 `json:"carSeriesId"`
+	CarReplacements     []CarReplacementItem `json:"carReplacements"`
 }
 
 type GetUserOrderListReq struct {

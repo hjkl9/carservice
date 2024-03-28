@@ -13,7 +13,7 @@ type CarReplacementRepo interface {
 	GetEstPriceListByIdSet(
 		ctx context.Context,
 		f func() bool,
-		idSet []int,
+		idSet []uint,
 	) ([]carreplacement.Replacement, error)
 }
 
@@ -28,7 +28,7 @@ func newCarReplacement(db *sqlx.DB) *carReplacement {
 func (cr *carReplacement) GetEstPriceListByIdSet(
 	ctx context.Context,
 	f func() bool,
-	idSet []int,
+	idSet []uint,
 
 ) ([]carreplacement.Replacement, error) {
 	var dest []carreplacement.Replacement

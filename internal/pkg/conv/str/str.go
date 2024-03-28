@@ -32,3 +32,17 @@ func ToStringWithSep_int(sep byte, d ...int) string {
 	}
 	return builder.String()
 }
+
+func ToStringWithSep_uint(sep byte, d ...uint) string {
+	l := len(d)
+	var builder strings.Builder
+	// 1,2,3,4,5
+	builder.Grow(l*2 - 1)
+	for k, v := range d {
+		builder.WriteString(strconv.FormatUint(uint64(v), 10))
+		if k != l-1 {
+			builder.WriteByte(sep)
+		}
+	}
+	return builder.String()
+}

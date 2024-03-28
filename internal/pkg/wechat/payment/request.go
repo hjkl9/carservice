@@ -81,18 +81,5 @@ package payment
 //     }
 // }
 type DecryptedResource struct {
-	Mchid               string `json:"mchid"`
-	TransactionId       string `json:"transactionId"`
-	OutTradeNo          string `json:"outTradeNo"`
-	RefundId            string `json:"refundId"`
-	OutRefundNo         string `json:"outRefundNo"`
-	RefundStatus        string `json:"refundStatus"`
-	SuccessTime         string `json:"successTime"`
-	UserReceivedAccount string `json:"userReceivedAccount"`
-	Amount              struct {
-		Total       uint64 `json:"total"`
-		Refund      uint64 `json:"refund"`
-		PayerTotal  uint64 `json:"payerTotal"`
-		PayerRefund uint64 `json:"payerRefund"`
-	} `json:"amount"`
+	// todo
 }

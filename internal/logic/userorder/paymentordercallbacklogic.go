@@ -3,9 +3,9 @@ package userorder
 import (
 	"context"
 
+	"carservice/internal/pkg/wechat/payment"
 	"carservice/internal/svc"
 
-	"github.com/wechatpay-apiv3/wechatpay-go/core/notify"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -23,8 +23,7 @@ func NewPaymentOrderCallbackLogic(ctx context.Context, svcCtx *svc.ServiceContex
 	}
 }
 
-func (l *PaymentOrderCallbackLogic) PaymentOrderCallback(req *notify.Request) error {
-	
+func (l *PaymentOrderCallbackLogic) PaymentOrderCallback(req *payment.DecryptedResource) error {
 
 	return nil
 }

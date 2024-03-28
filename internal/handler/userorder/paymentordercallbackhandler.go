@@ -8,6 +8,7 @@ import (
 	"carservice/internal/logic/userorder"
 	"carservice/internal/pkg/common/errcode"
 	"carservice/internal/pkg/httper/api"
+	"carservice/internal/pkg/wechat/payment"
 	"carservice/internal/svc"
 
 	"github.com/wechatpay-apiv3/wechatpay-go/core"
@@ -46,7 +47,7 @@ func PaymentOrderCallbackHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			OutContractCode *string    `json:"out_contract_code"`
 		}
 
-		decryptedContent := new(contentType)
+		decryptedContent := new(payment.DecryptedResource)
 
 		_, err = handler.ParseNotifyRequest(r.Context(), r, decryptedContent)
 		if err != nil {

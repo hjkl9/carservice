@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"carservice/internal/svc"
-	"carservice/internal/types"
 
+	"github.com/wechatpay-apiv3/wechatpay-go/core/notify"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -23,8 +23,8 @@ func NewPaymentOrderCallbackLogic(ctx context.Context, svcCtx *svc.ServiceContex
 	}
 }
 
-func (l *PaymentOrderCallbackLogic) PaymentOrderCallback(req *types.PaymentOrderCallbackReq) error {
-	// todo: add your logic here and delete this line
+func (l *PaymentOrderCallbackLogic) PaymentOrderCallback(req *notify.Request) error {
+	
 
 	return nil
 }

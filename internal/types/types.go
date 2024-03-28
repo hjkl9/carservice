@@ -329,7 +329,20 @@ type PaymentOrderRep struct {
 	PaySign      string `json:"paySign"`
 }
 
+type CallbackReqWithResource struct {
+	Algorithm     string `json:"algorithm"`
+	Ciphertext    string `json:"ciphertext"`
+	Original_type string `json:"original_type"`
+	Nonce         string `json:"nonce"`
+}
+
 type PaymentOrderCallbackReq struct {
+	Id           string                  `json:"id"`
+	CreateTime   string                  `json:"create_time"`
+	EventType    string                  `json:"event_type"`
+	ResourceType string                  `json:"resource_type"`
+	Resource     CallbackReqWithResource `json:"resource"`
+	Summary      string                  `json:"summary"`
 }
 
 type PaymentOrderCallbackRep struct {

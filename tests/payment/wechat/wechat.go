@@ -12,11 +12,11 @@ import (
 
 func RequestPayment() error {
 	var (
-		appId                      string = "YOUR_APP_ID"
-		privateKeyPath             string = "/path/to/your/merchant/apiclient_key.pem"
-		mchID                      string = "190000****"                               // 商户号
-		mchCertificateSerialNumber string = "3775B6A45ACD588826D15E583A95F5DD********" // 商户证书序列号
-		mchAPIv3Key                string = "2ab9****************************"         // 商户APIv3密钥
+		appId                      string = "UNKNOWN_YOUR_APP_ID"
+		privateKeyPath             string = "/path/to/your/merchant/unknown_apiclient_key.pem"
+		mchID                      string = "unknown_190000****"                               // 商户号
+		mchCertificateSerialNumber string = "unknown_3775B6A45ACD588826D15E583A95F5DD********" // 商户证书序列号
+		mchAPIv3Key                string = "unknown_2ab9****************************"         // 商户APIv3密钥
 	)
 	// load merchant private key file.
 	mchPrivateKey, err := utils.LoadPrivateKey(privateKeyPath)

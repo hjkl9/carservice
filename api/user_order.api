@@ -128,7 +128,21 @@ type (
     }
 
     // 订单支付回调 //
-    PaymentOrderCallbackReq {}
+    // ? Is it possible that the callback payment and refund will use the same structure?
+    CallbackReqWithResource {
+        Algorithm string `json:"algorithm"`
+        Ciphertext string `json:"ciphertext"`
+        Original_type string `json:"original_type"`
+        Nonce string `json:"nonce"`
+    }
+    PaymentOrderCallbackReq {
+        Id string `json:"id"`
+        CreateTime string `json:"create_time"`
+        EventType string `json:"event_type"`
+        ResourceType string `json:"resource_type"`
+        Resource CallbackReqWithResource `json:"resource"`
+        Summary string `json:"summary"`
+    }
     PaymentOrderCallbackRep {}
 
     // 退款
@@ -201,7 +215,9 @@ service carservice {
         summary: "订单支付回调地址"
     )
     @handler PaymentOrderCallback
-    post /userOrder/pay/callback (PaymentOrderCallbackReq) returns ()
+    // !deprecated
+    // post /userOrder/pay/callback (PaymentOrderCallbackReq) returns ()
+    post /userOrder/pay/callback
 
     @doc(
         summary: "订单退款"
